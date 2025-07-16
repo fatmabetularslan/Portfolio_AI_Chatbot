@@ -1,0 +1,154 @@
+{
+    "name": "Fatma Betül Arslan",
+    "title": "Data Scientist",
+    "location": "İstanbul, Turkey",
+    "email": "betularsln01@gmail.com",
+    "phone": "+90 546 911 1024",
+    "links": {
+        "linkedin": "https://linkedin.com/in/fatma-betül-arslan",
+        "github": "https://github.com/fatmabetularslan",
+        "medium": "https://medium.com/@betularsln01"
+    },
+    "profile": "I am a data scientist who is passionate about creating user-focused solutions, eager to learn and values cross-functional collaboration. With a strong foundation in mathematics, I have spent the past two years developing data science projects across various domains including churn prediction, recommendation systems and user segmentation. I enjoy transforming data into meaningful insights that contribute to product growth."
+
+    ,
+    "education": [
+        {
+            "institution": "Ankara Yıldırım Beyazıt University",
+            "degree": "Bachelor's Degree - Mathematics",
+            "years": "Sep 2018 – Jul 2024"
+        }
+    ],
+    "experience": [
+        {
+            "title": "SAP ABAP & Fiori Consultant",
+            "company": "UISAP Software Solutions",
+            "duration": "Apr 2025 – Jun 2025",
+            "description": "Developed ABAP code and SAPUI5-based Fiori applications. Created OData services and improved reporting and integration in SAP S/4HANA systems."
+        },
+        {
+            "title": "Data Science Intern",
+            "company": "Ordulu Technology",
+            "duration": "Oct 2023 – May 2024",
+            "description": "Automated data workflows with Apache Airflow. Improved product classification accuracy. Collaborated to integrate ML solutions into systems."
+        },
+        {
+            "title": "Database Administrator Intern",
+            "company": "DMC Information Technologies",
+            "duration": "Jul 2023 – Sep 2023",
+            "description": "Developed SQL-based solutions. Automated reporting using Python. Assisted in database optimization."
+        }
+    ],
+    "skills": {
+        "Programming & Data Analysis": ["Python", "Pandas", "Numpy", "SQL", "Javascript", "Jupyter", "Git"],
+        "Machine Learning & Data Science": ["Scikit-learn", "TensorFlow", "Feature Engineering", "Natural Language Processing", "Regression Modeling", "Time Series Analysis", "A/B Testing"],
+        "Data Engineering & Automation": ["Apache Airflow", "Docker", "Linux", "REST API integration"],
+        "Data Visualization": ["Matplotlib", "Seaborn", "Power BI", "Plotly"]
+    },
+    "projects": [
+        {
+            "name": "AI-Powered Portfolio Chatbot",
+            "technology": "Python · Streamlit · Google Gemini 1.5 API · RAG · ReportLab",
+            "description": "Interactive chatbot for my portfolio site that answers questions by querying my CV with RAG, generates role-specific cover letters and job-fit reports (EN/TR) and exports them as PDF. Features dark/light theme, glassmorphism UI and component-based architecture."
+          },
+          
+        {
+            "name": "Mobile App User Behavior Analysis & Segmentation",
+            "technology": "Python, K-Means, Plotly",
+            "description": "Segmented users by screen time, spending, and ratings. Visualized patterns to support retention strategies."
+        },
+        {
+            "name": "Customer Churn Prediction",
+            "technology": "PySpark, SMOTE, Random Forest, XGBoost",
+            "description": "Predicted churn on imbalanced data using ensemble models and sampling techniques."
+        },
+        {
+            "name": "Movie Recommendation System",
+            "technology": "DuckDB, Collaborative Filtering, Content-Based Filtering",
+            "description": "Processed 150M+ records efficiently for personalized recommendations."
+        },
+        {
+            "name": "Natural Language to SQL Query Tool",
+            "technology": "LangChain · OpenAI API · SQLite · Python",
+            "description": "This project enables users to query a SQLite database using natural language (in English). Through LangChain, user prompts are translated into SQL queries, which are executed on the underlying database. The system infers the table structure and returns accurate results without requiring SQL knowledge."
+          },
+          
+        {
+            "name": "Smart Home Energy Management Application",
+            "technology": "REST API, Docker, Pytest",
+            "description": "Built scalable energy prediction API and documented workflows."
+        },
+        {
+            "name": "Credit Score Prediction",
+            "technology": "Python, pandas, scikit-learn, TensorFlow, Tkinter",
+            "description": "Neural network for credit scoring with GUI and feature analysis."
+        },
+        {
+            "name": "Energy Consumption Prediction API",
+            "technology": "Python · FastAPI · XGBoost · Scikit-learn · Docker",
+            "description": "A RESTful API designed to predict energy consumption over 24 time intervals using the Appliances Energy Prediction dataset. The system accepts 43 environmental input features, scales them with MinMaxScaler, and performs predictions using an XGBoost model. Built with FastAPI and packaged using Docker, the project offers a scalable and efficient backend for energy optimization solutions."
+          },
+          
+        {
+            "name": "AdventureWorks Sales Dashboard",
+            "technology": "Power BI",
+            "description": "Interactive dashboard for sales optimization and insights."
+        },
+        {
+            "name": "Real-Time Face Recognition App",
+            "technology": "Streamlit · OpenCV · Face Recognition · dlib · Python",
+            "description": "This application performs real-time face recognition using webcam input, based on user-uploaded ID photos. Recognized faces are marked with a green box and label, while unrecognized ones are shown with a red box and 'Unknown' tag. The app offers an intuitive Streamlit-based interface for uploading photos and starting the live camera stream with automatic face matching."
+          },
+          {
+            "name": "Safe Area Detection",
+            "technology": "Python, OpenCV, NumPy",
+            "description": "Kamera görüntüsü üzerinde kullanıcı tarafından çizilen alan güvenli bölge olarak tanımlanır. Gerçek zamanlı izleme yapılır ve bu alana bir nesne girdiğinde sistem 'DANGEROUS' uyarısı verir. Güvenlik ve otomasyon sistemleri için prototip oluşturur."
+          }
+,          
+        {
+            "name": "Market Prices Automation",
+            "technology": "Python, SQL, Apache Airflow",
+            "description": "Automated fruit/vegetable market price tracking and reporting."
+        },
+        {
+            "name": "Simple E-Commerce System with Python",
+            "technology": "Python · SQL Server · pyodbc",
+            "description": "A console-based e-commerce system built with Python and SQL Server. The application supports core functionalities such as customer and product management, adding items to cart, processing payments, and tracking orders. It connects to a SQL Server database using the pyodbc library, offering a modular and extendable backend logic for basic retail operations."
+          }
+          
+    ],
+    "awards": [
+        {
+            "name": "BTK Datathon 2024",
+            "organization": "BTK",
+            "description": "2nd/3rd Place in public/private stage among 364 teams."
+        },
+        {
+            "name": "Gdz Electric Datathon 2024",
+            "organization": "Gdz Elektrik",
+            "description": "Ranked in top 7% with power outage prediction model."
+        }
+    ],
+    "certifications": [
+        "Machine Learning Specialization - Stanford Online",
+        "Machine Learning Summer Camp - MIUUL",
+        "Big Data Camp - Türk Telekom"
+    ],
+    "languages": {
+        "Turkish": "Native",
+        "English": "Upper-intermediate"
+    },
+    "volunteering": [
+        "TEGV - Volunteer",
+        "LÖSEV - Volunteer"
+    ],
+    "references": [
+        {
+            "name": "Furkan Alaybeg",
+            "title": "Mentor, Data Engineer",
+            "organization": "Vodafone",
+            "phone": "+90 531 400 1476"
+        }
+    ]
+}
+
