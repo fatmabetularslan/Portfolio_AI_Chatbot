@@ -4,7 +4,7 @@ import base64
 
 st.set_page_config(page_title="Fatma Betül Arslan", page_icon="🤖", layout="centered")
 
-# --- Query parametre kontrolü ve state güncellemesi EN ÜSTE ALINDI ---
+
 qp = st.query_params
 cv_btn_click  = qp.get('cv_btn_click')   # isim eşitlendi
 chat_btn_click = qp.get('chat_btn_click')# isim eşitlendi
@@ -21,7 +21,7 @@ from rag_system import load_cv_index
 from pathlib import Path
 PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
 
-# --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
+# --- Modern Language Toggle Bar  ---
 def language_and_theme_toggle():
     lang = st.session_state.get("lang", "tr")
     dark = st.session_state.get("dark_mode", False)
@@ -206,9 +206,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 5. Modern butonlar (sadece bir yerde, ortalanmış) ---
-# Üstteki butonları kaldır, sadece alttaki kalsın
-# (Yalnızca bir kez, ana başlık ve sosyal medya linklerinden sonra göster)
 
 # --- Animasyonlu butonlar için özel CSS ---
 st.markdown("""
