@@ -4,7 +4,7 @@ import base64
 
 st.set_page_config(page_title="Fatma Betül Arslan", page_icon="🤖", layout="centered")
 
-
+# --- Query parametre kontrolü ve state güncellemesi EN ÜSTE ALINDI ---
 qp = st.query_params
 cv_btn_click  = qp.get('cv_btn_click')   # isim eşitlendi
 chat_btn_click = qp.get('chat_btn_click')# isim eşitlendi
@@ -21,7 +21,7 @@ from rag_system import load_cv_index
 from pathlib import Path
 PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
 
-# --- Modern Language Toggle Bar  ---
+# --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
 def language_and_theme_toggle():
     lang = st.session_state.get("lang", "tr")
     dark = st.session_state.get("dark_mode", False)
@@ -194,18 +194,21 @@ st.markdown(f'<div class="big-subheader">{lang_text["sub"]}</div>', unsafe_allow
 # 4. Sosyal medya linkleri
 st.markdown("""
 <div class="social-links" style="display: flex; justify-content: center; gap: 32px; margin: 18px 0 8px 0; flex-wrap: wrap;">
-  <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank" style="text-decoration: none; font-size: 1.15em;">
-    🖋️ LinkedIn
+  <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn" style="width:22px; height:22px; vertical-align:middle;"> LinkedIn
   </a>
-  <a href="https://github.com/fatmabetularslan" target="_blank" style="text-decoration: none; font-size: 1.15em;">
-    💻 GitHub
+  <a href="https://github.com/fatmabetularslan" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style="width:22px; height:22px; vertical-align:middle;"> GitHub
   </a>
-  <a href="https://medium.com/@betularsln01" target="_blank" style="text-decoration: none; font-size: 1.15em;">
-    📝 Medium
+  <a href="https://medium.com/@betularsln01" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/medium/medium-original.svg" alt="Medium" style="width:22px; height:22px; vertical-align:middle;"> Medium
   </a>
 </div>
 """, unsafe_allow_html=True)
 
+# 5. Modern butonlar (sadece bir yerde, ortalanmış) ---
+# Üstteki butonları kaldır, sadece alttaki kalsın
+# (Yalnızca bir kez, ana başlık ve sosyal medya linklerinden sonra göster)
 
 # --- Animasyonlu butonlar için özel CSS ---
 st.markdown("""
