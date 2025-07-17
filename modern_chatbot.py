@@ -7,7 +7,7 @@ from common_css import LIGHT_CSS, DARK_CSS
 import ast
 import re
 # ------------------------------------------------------------------ #
-# (İstersen bu uzun CSS'i ayrı bir dosyaya da taşıyabilirsin)
+
 CSS = """
 <style>
 /* —— KISA NOT —— 
@@ -51,7 +51,7 @@ LANG_TEXTS = {
     },
 }
 
-# --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
+# --- Modern Language Toggle Bar  ---
 def language_and_theme_toggle():
     lang = st.session_state.get("lang", "tr")
     dark = st.session_state.get("dark_mode", False)
@@ -120,7 +120,7 @@ def language_and_theme_toggle():
     </div>
     ''', unsafe_allow_html=True)
 
-    # Query param ile state güncelle
+    
     qp = st.query_params
     rerun_needed = False
     if qp.get("setlang"):
@@ -151,7 +151,7 @@ def run(*, tool_def, rag, cv_json):
     }.items():
         st.session_state.setdefault(k, v)
 
-    # --- Modern Language Toggle Bar (sağ üstte, sabit) ---
+    # --- Language Toggle Bar  ---
     st.markdown("""
     <style>
     .top-right-toggles {
@@ -227,7 +227,7 @@ def run(*, tool_def, rag, cv_json):
         qp.clear()
         st.rerun()
 
-    # --- Geri butonu (sol üstte, sabit) ---
+    # --- Geri butonu  ---
     st.markdown('''
     <style>
     .back-btn-fixed {
@@ -322,10 +322,10 @@ def run(*, tool_def, rag, cv_json):
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
         
-    # --- Eski, büyük, yatay butonlar ve ilgili kodlar tamamen kaldırıldı ---
+   
 
     # ---------- Chat geçmişi ----------
-    # --- 2) Ekrana mevcut geçmişi bas ---
+   
     for m in st.session_state.chat_history:
         if isinstance(m, dict):
             role = m.get("role", "assistant")
@@ -473,4 +473,3 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Remove main page buttons at the end ---
