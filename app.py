@@ -201,7 +201,7 @@ st.markdown("""
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style="width:22px; height:22px; vertical-align:middle;"> GitHub
   </a>
   <a href="https://medium.com/@betularsln01" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/medium/medium-original.svg" alt="Medium" style="width:22px; height:22px; vertical-align:middle;"> Medium
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Medium_logo_Monogram.svg" alt="Medium" style="width:22px; height:22px; vertical-align:middle;"> Medium
   </a>
 </div>
 """, unsafe_allow_html=True)
