@@ -334,7 +334,7 @@ def run(*, tool_def, rag, cv_json):
         with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
             st.markdown(content, unsafe_allow_html=True)
 
-    # ---------- Önce PDF butonu (varsa) ----------
+    # --- Cover letter PDF indir butonu ---
     if "cover_pdf_bytes" in st.session_state:
         st.download_button(
             "💾 Ön Yazıyı PDF Olarak İndir",
@@ -343,6 +343,11 @@ def run(*, tool_def, rag, cv_json):
             mime      = "application/pdf",
             key       = "cover_pdf_dl"
         )
+
+    # --- Cover letter formu ---
+    if st.session_state.get("show_cover_form"):
+        _cover_letter_form(tool_def, rag)
+        st.stop()
 
     # ---------- Aktif formlar ----------
     if st.session_state.show_cover_form:
