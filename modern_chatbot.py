@@ -322,12 +322,15 @@ def run(*, tool_def, rag, cv_json):
     # --- Eski, büyük, yatay butonlar ve ilgili kodlar tamamen kaldırıldı ---
 
     # ---------- Chat geçmişi ----------
-    for msg in st.session_state.chat_history:
-        if isinstance(msg, dict):
-            role = msg.get("role", "bot")
-            content = msg.get("content", "")
+    # --- 2) Ekrana mevcut geçmişi bas ---
+    for m in st.session_state.chat_history:
+        if isinstance(m, dict):
+            role = m.get("role", "assistant")
+            content = m.get("content", "")
+        elif isinstance(m, tuple) and len(m) == 2:
+            role, content = m
         else:
-            role, content = msg
+            continue  # Beklenmeyen tipte veri varsa atla
         with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
             st.markdown(content, unsafe_allow_html=True)
 
