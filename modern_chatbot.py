@@ -364,8 +364,9 @@ def run(*, tool_def, rag, cv_json):
     # --- 1) Girdiyi anında yakala ---
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
 
-    # Kullanıcı 'cover letter yaz' derse formu aç
-    if user_msg and "cover letter yaz" in user_msg.lower():
+    # Kullanıcı 'cover letter yaz', 'ön yazı', 'cover letter', veya 'ön yazı yaz' derse formu aç
+    trigger_phrases = ["cover letter yaz", "ön yazı", "cover letter", "ön yazı yaz"]
+    if user_msg and any(p in user_msg.lower() for p in trigger_phrases):
         st.session_state.show_cover_form = True
         st.rerun()
 
