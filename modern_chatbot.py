@@ -398,24 +398,15 @@ def _cover_letter_form(tool_def, rag):
 
     if res["success"]:
         letter_text = res["data"]["text"]
-        st.session_state.chat_history.append({"role": "bot", "content": letter_text})
-        with st.chat_message("🤖"):
-            st.markdown(letter_text)
-            # PDF’i oturumda sakla  🔸
+        st.session_state.chat_history.append({"role": "assistant", "content": letter_text})
         st.session_state.cover_pdf_bytes = res["data"]["pdf_bytes"]
         st.session_state.cover_pdf_name  = res["data"]["filename"]
-        # 💾 2) PDF indir butonu
-        st.download_button(
-            "💾 Ön Yazıyı PDF Olarak İndir",
-            data      = res["data"]["pdf_bytes"],
-            file_name = res["data"]["filename"],
-            mime      = "application/pdf"
-        )
+        st.session_state.show_cover_form = False
+        st.rerun()
     else:
-        st.session_state.chat_history.append({"role": "bot", "content": f"❌ {res['message']}"})
-
-    st.session_state.show_cover_form = False
-    #st.rerun()
+        st.session_state.chat_history.append({"role": "assistant", "content": f"❌ {res['message']}"})
+        st.session_state.show_cover_form = False
+        st.rerun()
 
 
 
