@@ -1068,19 +1068,19 @@ class JobCompatibilityPDFGenerator:
         # Spacer before footer
         footer_elements.append(Spacer(1, 40))
 
-        # Enhanced footer separator
-        if self.pdf_builder.doc_width is not None:
-            footer_elements.append(SectionDivider(
-                self.pdf_builder.doc_width,
-                color_scheme=self.color_scheme,
-                fonts=self.pdf_builder.fonts
-            ))
-        else:
-            footer_elements.append(SectionDivider(
-                12*cm,  # fallback width
-                color_scheme=self.color_scheme,
-                fonts=self.pdf_builder.fonts
-            ))
+        # Enhanced footer separator (MAVİ ÇİZGİYİ KALDIRDIK)
+        # if self.pdf_builder.doc_width is not None:
+        #     footer_elements.append(SectionDivider(
+        #         self.pdf_builder.doc_width,
+        #         color_scheme=self.color_scheme,
+        #         fonts=self.pdf_builder.fonts
+        #     ))
+        # else:
+        #     footer_elements.append(SectionDivider(
+        #         12*cm,  # fallback width
+        #         color_scheme=self.color_scheme,
+        #         fonts=self.pdf_builder.fonts
+        #     ))
         footer_elements.append(Spacer(1, 15))
 
         # Footer content
