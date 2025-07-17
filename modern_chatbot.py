@@ -356,30 +356,15 @@ def run(*, tool_def, rag, cv_json):
     # --- 1) Girdiyi anında yakala ---
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
 
-    # --- 2) Ekrana mevcut geçmişi bas ---
-    for m in st.session_state.chat_history:
-        if isinstance(m, dict):
-            role = m.get("role", "assistant")
-            content = m.get("content", "")
-        elif isinstance(m, tuple) and len(m) == 2:
-            role, content = m
-        else:
-            continue  # Beklenmeyen tipte veri varsa atla
-        with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
-            st.markdown(content, unsafe_allow_html=True)
-
-    # --- 3) Yeni mesaj varsa hemen işleyin ---
-    if user_msg:
+    if user_msg and (not st.session_state.get("last_user_msg") or st.session_state.last_user_msg != user_msg):
         st.session_state.chat_history.append({"role": "user", "content": user_msg})
-        with st.spinner("Yanıt hazırlanıyor..."):
-            # Chat geçmişini string olarak birleştir
-            history_text = "\n".join([
+        st.session_state.last_user_msg = user_msg
+        history_text = "\n".join([
                 f"{m['role']}: {m['content']}" for m in st.session_state.chat_history if isinstance(m, dict)
             ])
-            assistant_reply = ask_gemini(history_text)
-        msg_dict = {"role": "assistant", "content": assistant_reply}
-        st.session_state.chat_history.append(msg_dict)
-        st.rerun()  # kullanıcı cevabı hemen görsün
+        assistant_reply = ask_gemini(history_text)
+        st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
+        st.rerun()
 
 
 
