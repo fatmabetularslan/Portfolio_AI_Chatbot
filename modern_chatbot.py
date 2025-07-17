@@ -358,7 +358,13 @@ def run(*, tool_def, rag, cv_json):
 
     # --- 2) Ekrana mevcut geçmişi bas ---
     for m in st.session_state.chat_history:
-        st.chat_message(m["role"]).write(m["content"])
+        if isinstance(m, dict):
+            role = m.get("role", "assistant")
+            content = m.get("content", "")
+        else:
+            role, content = m
+        with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
+            st.markdown(content, unsafe_allow_html=True)
 
     # --- 3) Yeni mesaj varsa hemen işleyin ---
     if user_msg:
