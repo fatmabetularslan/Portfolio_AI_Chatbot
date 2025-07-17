@@ -261,12 +261,12 @@ class ToolDefinitions:
 
                     # -- PDF
                     pdf_bytes = self.pdf_generator.generate_pdf(
-                        text,
-                        "Fatma Betül Arslan",
-                        tool_args.get("language", "tr")
-                    )
+                        report_content=text,
+                        candidate_name="Fatma Betül Arslan",
+                        language=tool_args.get("language", "tr"),
+                        company_name=tool_args.get("company_name", "Unknown Company"))
                     filename = f"cover_letter_{datetime.now():%Y%m%d_%H%M%S}.pdf"
-
+                    
                     return {
                         "success": True,   
                         "data": {
