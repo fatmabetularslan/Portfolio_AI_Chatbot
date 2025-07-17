@@ -235,6 +235,9 @@ def run(*, tool_def, rag, cv_json):
         left: 32px;
         top: 64px;
         z-index: 1001;
+        display: flex;
+        align-items: center;
+        height: 54px;
     }
     @media (max-width: 600px) {
         .back-btn-fixed { left: 8px; top: 32px; }
