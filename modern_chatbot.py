@@ -313,8 +313,8 @@ def run(*, tool_def, rag, cv_json):
             </style>
             """, unsafe_allow_html=True)
             response = "".join(f"<div class='chat-block'>{line}</div>" for line in lines)
-            st.session_state.chat_history.append(("user", section.capitalize()))
-            st.session_state.chat_history.append(("bot", response))
+            st.session_state.chat_history.append({"role": "user", "content": section.capitalize()})
+            st.session_state.chat_history.append({"role": "assistant", "content": response})
             st.session_state.page = "chat"
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -361,8 +361,11 @@ def run(*, tool_def, rag, cv_json):
         if isinstance(m, dict):
             role = m.get("role", "assistant")
             content = m.get("content", "")
-        else:
+        elif isinstance(m, tuple) and len(m) == 2:
+            # Eski tuple formatını dict'e çevirerek işle
             role, content = m
+        else:
+            continue
         with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
             st.markdown(content, unsafe_allow_html=True)
 
@@ -372,10 +375,11 @@ def run(*, tool_def, rag, cv_json):
         with st.spinner("Yanıt hazırlanıyor..."):
             # Chat geçmişini string olarak birleştir
             history_text = "\n".join([
-                f"{m['role']}: {m['content']}" for m in st.session_state.chat_history
+                f"{m['role']}: {m['content']}" for m in st.session_state.chat_history if isinstance(m, dict)
             ])
             assistant_reply = ask_gemini(history_text)
-        st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
+        msg_dict = {"role": "assistant", "content": assistant_reply}
+        st.session_state.chat_history.append(msg_dict)
         st.rerun()  # kullanıcı cevabı hemen görsün
 
 
@@ -402,7 +406,7 @@ def _cover_letter_form(tool_def, rag):
 
     if res["success"]:
         letter_text = res["data"]["text"]
-        st.session_state.chat_history.append(("bot", letter_text))
+        st.session_state.chat_history.append({"role": "bot", "content": letter_text})
         with st.chat_message("🤖"):
             st.markdown(letter_text)
             # PDF’i oturumda sakla  🔸
@@ -416,7 +420,7 @@ def _cover_letter_form(tool_def, rag):
             mime      = "application/pdf"
         )
     else:
-        st.session_state.chat_history.append(("bot", f"❌ {res['message']}"))
+        st.session_state.chat_history.append({"role": "bot", "content": f"❌ {res['message']}"})
 
     st.session_state.show_cover_form = False
     #st.rerun()
@@ -446,7 +450,7 @@ def _job_compatibility_flow(tool_def, LTXT):
         if result.get("success")
         else "Analiz oluşturulamadı 😕"
     )
-    st.session_state.chat_history.append(("bot", reply))
+    st.session_state.chat_history.append({"role": "bot", "content": reply})
 
 st.markdown("""
 <style>
