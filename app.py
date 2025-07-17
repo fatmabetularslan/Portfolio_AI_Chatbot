@@ -221,7 +221,7 @@ st.markdown("""
   margin-top: 18px;
 }
 div.stButton > button {
-  background: linear-gradient(90deg, #1D3557, #457B9D);
+  background: linear-gradient(90deg, #1D3557, #2563eb);
   color: white;
   padding: 22px 48px;
   font-weight: bold;
@@ -240,6 +240,7 @@ div.stButton > button {
 div.stButton > button:hover {
   cursor: pointer;
   filter: brightness(1.08);
+  background: linear-gradient(90deg, #274472, #2563eb);
 }
 </style>
 """, unsafe_allow_html=True)
