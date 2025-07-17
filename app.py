@@ -201,7 +201,7 @@ st.markdown("""
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style="width:22px; height:22px; vertical-align:middle;"> GitHub
   </a>
   <a href="https://medium.com/@betularsln01" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Medium_logo_Monogram.svg" alt="Medium" style="width:22px; height:22px; vertical-align:middle;"> Medium
+    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium" style="width:22px; height:22px; vertical-align:middle;"> Medium
   </a>
 </div>
 """, unsafe_allow_html=True)
@@ -328,7 +328,7 @@ div.stButton > button[data-baseweb="button"][id*="cv_download_btn"]:hover {
 </style>
 """, unsafe_allow_html=True)
 
-# --- Butonlara tıklama için JS event yakalayıp Streamlit'e ilet ---
+
 st.markdown("""
 <script>
 function startChat() {
