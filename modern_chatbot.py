@@ -362,10 +362,9 @@ def run(*, tool_def, rag, cv_json):
             role = m.get("role", "assistant")
             content = m.get("content", "")
         elif isinstance(m, tuple) and len(m) == 2:
-            # Eski tuple formatını dict'e çevirerek işle
             role, content = m
         else:
-            continue
+            continue  # Beklenmeyen tipte veri varsa atla
         with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
             st.markdown(content, unsafe_allow_html=True)
 
