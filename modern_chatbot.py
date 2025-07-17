@@ -231,16 +231,16 @@ def run(*, tool_def, rag, cv_json):
     st.markdown('''
     <style>
     .back-btn-fixed {
-        position: fixed;
-        left: 32px;
-        top: 64px;
-        z-index: 1001;
-        display: flex;
-        align-items: center;
-        height: 54px;
+        position: fixed !important;
+        left: 32px !important;
+        top: 64px !important;
+        z-index: 1001 !important;
+        display: flex !important;
+        align-items: center !important;
+        height: 54px !important;
     }
     @media (max-width: 600px) {
-        .back-btn-fixed { left: 8px; top: 32px; }
+        .back-btn-fixed { left: 8px !important; top: 32px !important; }
     }
     </style>
     ''', unsafe_allow_html=True)
