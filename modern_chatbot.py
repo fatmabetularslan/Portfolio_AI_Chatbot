@@ -364,6 +364,11 @@ def run(*, tool_def, rag, cv_json):
     # --- 1) Girdiyi anında yakala ---
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
 
+    # Kullanıcı 'cover letter yaz' derse formu aç
+    if user_msg and "cover letter yaz" in user_msg.lower():
+        st.session_state.show_cover_form = True
+        st.rerun()
+
     if user_msg and (not st.session_state.get("last_user_msg") or st.session_state.last_user_msg != user_msg):
         st.session_state.chat_history.append({"role": "user", "content": user_msg})
         st.session_state.last_user_msg = user_msg
