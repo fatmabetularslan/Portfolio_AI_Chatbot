@@ -193,7 +193,7 @@ st.markdown(f'<div class="big-subheader">{lang_text["sub"]}</div>', unsafe_allow
 
 # 4. Sosyal medya linkleri
 st.markdown("""
-<div style="display: flex; justify-content: center; gap: 32px; margin: 18px 0 8px 0;">
+<div class="social-links" style="display: flex; justify-content: center; gap: 32px; margin: 18px 0 8px 0; flex-wrap: wrap;">
   <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank" style="text-decoration: none; font-size: 1.15em;">
     🖋️ LinkedIn
   </a>
@@ -241,6 +241,27 @@ div.stButton > button:hover {
   cursor: pointer;
   filter: brightness(1.08);
   background: linear-gradient(90deg, #274472, #2563eb) !important;
+}
+@media (max-width: 600px) {
+  .animated-btns-wrap {
+    gap: 18px;
+    margin-top: 8px;
+  }
+  div.stButton > button {
+    font-size: 1.05em !important;
+    padding: 14px 8px !important;
+    min-width: 90vw !important;
+    max-width: 98vw !important;
+    border-radius: 12px !important;
+    gap: 8px !important;
+  }
+  .big-header { font-size: 1.5em !important; }
+  .big-subheader { font-size: 1em !important; }
+  .social-links {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: center !important;
+  }
 }
 </style>
 """, unsafe_allow_html=True)
