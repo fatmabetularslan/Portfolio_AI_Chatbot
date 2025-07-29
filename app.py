@@ -4,15 +4,6 @@ import base64
 
 st.set_page_config(page_title="Fatma Betül Arslan", page_icon="🤖", layout="centered")
 
-# --- Query parametre kontrolü ve state güncellemesi EN ÜSTE ALINDI ---
-qp = st.query_params
-cv_btn_click  = qp.get('cv_btn_click')   # isim eşitlendi
-chat_btn_click = qp.get('chat_btn_click')# isim eşitlendi
-if chat_btn_click is not None:
-    st.session_state['page'] = 'chat'
-    qp.clear()
-    st.rerun()
-
 import json
 from tools.tool_definitions import ToolDefinitions
 import modern_chatbot
@@ -329,19 +320,3 @@ div.stButton > button[data-baseweb="button"][id*="cv_download_btn"]:hover {
 """, unsafe_allow_html=True)
 
 
-st.markdown("""
-<script>
-function startChat() {
-  const url = new URL(window.location.href);
-  url.searchParams.set('chat_btn_click', '1');
-  window.location.href = url.toString();
-}
-function viewCV() {
-  const url = new URL(window.location.href);
-  url.searchParams.set('cv_btn_click', '1');
-  window.location.href = url.toString();
-}
-document.querySelector('.cv-button')  ?.addEventListener('click', viewCV);
-document.querySelector('.chat-button')?.addEventListener('click', startChat);
-</script>
-""", unsafe_allow_html=True)
