@@ -36,14 +36,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Ana sayfa butonları ---
-# Fazladan 'CV’yi Gör' butonunu ve ona bağlı state kodlarını tamamen kaldırıyorum. Sadece ana sayfa (app.py) butonu kalsın.
-
-# 'chat_btn_home' -> 'chat_btn_tooldef' olarak değiştiriyorum.
-if st.button("🤖  Sohbete Başla", key="chat_btn_tooldef", use_container_width=True):
-    st.session_state['page'] = 'chat'
-    st.rerun()
-
 class ToolDefinitions:
     """Tool definitions for Gemini function calling."""
 
