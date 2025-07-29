@@ -10,7 +10,7 @@ import modern_chatbot
 from common_css import LIGHT_CSS, DARK_CSS
 from rag_system import load_cv_index
 from pathlib import Path
-PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
+PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv-optimized.pdf"
 
 # --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
 def language_and_theme_toggle():
@@ -261,9 +261,21 @@ st.markdown('<div class="animated-btns-wrap">', unsafe_allow_html=True)
 if st.session_state.get('page') != 'chat':
     left, center, right = st.columns([1, 2, 1])
     with center:
-        if st.button("📁  CV’yi Gör", key="cv_btn_home", use_container_width=True):
+        if st.button("📁  CV'yi Gör", key="cv_btn_home", use_container_width=True):
+            # PDF'i önce önizleme olarak göster
             with open(PDF_PATH, "rb") as f:
                 pdf_bytes = f.read()
+            
+            # PDF'i Streamlit'te göster
+            st.markdown("### 📄 CV Önizleme")
+            st.markdown("Aşağıdaki PDF'i inceleyebilir ve indirebilirsiniz:")
+            
+            # PDF'i embed et
+            base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+            pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
+            st.markdown(pdf_display, unsafe_allow_html=True)
+            
+            # İndirme butonu
             st.download_button(
                 label="📥 PDF'i İndir",
                 data=pdf_bytes,
