@@ -49,72 +49,116 @@
         {
             "name": "AI-Powered Portfolio Chatbot",
             "technology": "Python · Streamlit · Google Gemini 1.5 API · RAG · ReportLab",
-            "description": "Interactive chatbot for my portfolio site that answers questions by querying my CV with RAG, generates role-specific cover letters and job-fit reports (EN/TR) and exports them as PDF. Features dark/light theme, glassmorphism UI and component-based architecture."
+            "description": {
+                "tr": "Portföy sitem için interaktif chatbot. CV'mden veri çekerek soruları yanıtlar, role özel cover letter ve iş uyumluluğu raporları oluşturur (TR/EN) ve PDF olarak dışa aktarır.",
+                "en": "Interactive chatbot for my portfolio site that answers questions by querying my CV with RAG, generates role-specific cover letters and job-fit reports (EN/TR) and exports them as PDF."
+            },
+            "features": {
+                "tr": ["TR/EN dil desteği", "PDF export özelliği", "Karanlık/Açık tema", "Glassmorphism UI", "Component-based mimari"],
+                "en": ["TR/EN language support", "PDF export feature", "Dark/Light theme", "Glassmorphism UI", "Component-based architecture"]
+            },
+            "github": "https://github.com/fatmabetularslan/Portfolio_AI_Chatbot"
           },
           
         {
             "name": "Mobile App User Behavior Analysis & Segmentation",
             "technology": "Python, K-Means, Plotly",
-            "description": "Segmented users by screen time, spending, and ratings. Visualized patterns to support retention strategies."
+            "description": {
+                "tr": "Ekran süresi, harcama ve değerlendirmelere göre kullanıcıları segmentlere ayırdım. Retention stratejilerini desteklemek için kalıpları görselleştirdim.",
+                "en": "Segmented users by screen time, spending, and ratings. Visualized patterns to support retention strategies."
+            },
+            "features": {
+                "tr": ["Kullanıcı segmentasyonu", "K-Means clustering", "Veri görselleştirme", "Retention stratejileri"],
+                "en": ["User segmentation", "K-Means clustering", "Data visualization", "Retention strategies"]
+            },
+            "github": "https://github.com/fatmabetularslan/Mobile-App-User-Behavior-Analysis_Segmentation"
         },
         {
             "name": "Customer Churn Prediction",
             "technology": "PySpark, SMOTE, Random Forest, XGBoost",
-            "description": "Predicted churn on imbalanced data using ensemble models and sampling techniques."
+            "description": {
+                "tr": "Dengesiz veri üzerinde ensemble modeller ve sampling teknikleri kullanarak müşteri kaybını tahmin ettim.",
+                "en": "Predicted churn on imbalanced data using ensemble models and sampling techniques."
+            },
+            "features": {
+                "tr": ["Ensemble model yaklaşımı", "SMOTE ile veri dengesizliği çözümü", "Feature engineering", "Model performans analizi"],
+                "en": ["Ensemble model approach", "SMOTE for data imbalance", "Feature engineering", "Model performance analysis"]
+            },
+            "github": "https://github.com/fatmabetularslan/Capstone-tt-akadem-"
         },
         {
             "name": "Movie Recommendation System",
             "technology": "DuckDB, Collaborative Filtering, Content-Based Filtering",
-            "description": "Processed 150M+ records efficiently for personalized recommendations."
+            "description": "Processed 150M+ records efficiently for personalized recommendations.",
+            "features": ["150M+ kayıt işleme", "Hybrid recommendation sistemi", "Yüksek performans optimizasyonu", "Real-time öneriler"],
+            "github": "https://github.com/fatmabetularslan/tt-bootcamp/commit/8114130cd34af5d272c55d06aa8d0a69ab4e2152"
         },
         {
             "name": "Natural Language to SQL Query Tool",
             "technology": "LangChain · OpenAI API · SQLite · Python",
-            "description": "This project enables users to query a SQLite database using natural language (in English). Through LangChain, user prompts are translated into SQL queries, which are executed on the underlying database. The system infers the table structure and returns accurate results without requiring SQL knowledge."
-          },
+            "description": "This project enables users to query a SQLite database using natural language (in English). Through LangChain, user prompts are translated into SQL queries, which are executed on the underlying database.",
+            "features": ["Natural language processing", "SQL query generation", "Table structure inference", "User-friendly interface"],
+            "github": "https://github.com/fatmabetularslan/sql"
+        },
           
         {
             "name": "Smart Home Energy Management Application",
             "technology": "REST API, Docker, Pytest",
-            "description": "Built scalable energy prediction API and documented workflows."
+            "description": "Built scalable energy prediction API and documented workflows.",
+            "features": ["RESTful API", "Docker containerization", "Test automation", "Scalable architecture"],
+            "github": "https://github.com/fatmabetularslan/Enerji-Tuketimi-Tahmin-Uygulamasi"
         },
         {
             "name": "Credit Score Prediction",
             "technology": "Python, pandas, scikit-learn, TensorFlow, Tkinter",
-            "description": "Neural network for credit scoring with GUI and feature analysis."
+            "description": "Neural network for credit scoring with GUI and feature analysis.",
+            "features": ["Neural network model", "GUI interface", "Feature analysis", "Credit scoring"],
+            "github": "https://github.com/fatmabetularslan/kredi_risk_analizi"
         },
         {
             "name": "Energy Consumption Prediction API",
             "technology": "Python · FastAPI · XGBoost · Scikit-learn · Docker",
-            "description": "A RESTful API designed to predict energy consumption over 24 time intervals using the Appliances Energy Prediction dataset. The system accepts 43 environmental input features, scales them with MinMaxScaler, and performs predictions using an XGBoost model. Built with FastAPI and packaged using Docker, the project offers a scalable and efficient backend for energy optimization solutions."
-          },
+            "description": "A RESTful API designed to predict energy consumption over 24 time intervals using the Appliances Energy Prediction dataset. The system accepts 43 environmental input features, scales them with MinMaxScaler, and performs predictions using an XGBoost model. Built with FastAPI and packaged using Docker, the project offers a scalable and efficient backend for energy optimization solutions.",
+            "features": ["FastAPI backend", "XGBoost model", "Docker containerization", "43 feature input"],
+            "github": "https://github.com/fatmabetularslan/energy-consumption-api"
+        },
           
         {
             "name": "AdventureWorks Sales Dashboard",
             "technology": "Power BI",
-            "description": "Interactive dashboard for sales optimization and insights."
+            "description": "Interactive dashboard for sales optimization and insights.",
+            "features": ["Interactive dashboard", "Sales analytics", "Data visualization", "Business insights"],
+            "github": "https://github.com/fatmabetularslan/AdventureWorks-DB-SQL-and-PowerBi"
         },
         {
             "name": "Real-Time Face Recognition App",
             "technology": "Streamlit · OpenCV · Face Recognition · dlib · Python",
-            "description": "This application performs real-time face recognition using webcam input, based on user-uploaded ID photos. Recognized faces are marked with a green box and label, while unrecognized ones are shown with a red box and 'Unknown' tag. The app offers an intuitive Streamlit-based interface for uploading photos and starting the live camera stream with automatic face matching."
-          },
+            "description": "This application performs real-time face recognition using webcam input, based on user-uploaded ID photos. Recognized faces are marked with a green box and label, while unrecognized ones are shown with a red box and 'Unknown' tag. The app offers an intuitive Streamlit-based interface for uploading photos and starting the live camera stream with automatic face matching.",
+            "features": ["Real-time recognition", "Webcam integration", "Streamlit interface", "Face detection"],
+            "github": "https://github.com/fatmabetularslan/face_recognation"
+        },
           {
             "name": "Safe Area Detection",
             "technology": "Python, OpenCV, NumPy",
-            "description": "Kamera görüntüsü üzerinde kullanıcı tarafından çizilen alan güvenli bölge olarak tanımlanır. Gerçek zamanlı izleme yapılır ve bu alana bir nesne girdiğinde sistem 'DANGEROUS' uyarısı verir. Güvenlik ve otomasyon sistemleri için prototip oluşturur."
+            "description": "Kamera görüntüsü üzerinde kullanıcı tarafından çizilen alan güvenli bölge olarak tanımlanır. Gerçek zamanlı izleme yapılır ve bu alana bir nesne girdiğinde sistem 'DANGEROUS' uyarısı verir. Güvenlik ve otomasyon sistemleri için prototip oluşturur.",
+            "features": ["Real-time monitoring", "Area detection", "Security alerts", "Computer vision"],
+            "github": "https://github.com/fatmabetularslan/safe_area"
           }
 ,          
         {
             "name": "Market Prices Automation",
             "technology": "Python, SQL, Apache Airflow",
-            "description": "Automated fruit/vegetable market price tracking and reporting."
+            "description": "Automated fruit/vegetable market price tracking and reporting.",
+            "features": ["Automated tracking", "Data collection", "Price monitoring", "Reporting system"],
+            "github": "https://github.com/fatmabetularslan/Market-Prices-Automation"
         },
         {
             "name": "Simple E-Commerce System with Python",
             "technology": "Python · SQL Server · pyodbc",
-            "description": "A console-based e-commerce system built with Python and SQL Server. The application supports core functionalities such as customer and product management, adding items to cart, processing payments, and tracking orders. It connects to a SQL Server database using the pyodbc library, offering a modular and extendable backend logic for basic retail operations."
-          }
+            "description": "A console-based e-commerce system built with Python and SQL Server. The application supports core functionalities such as customer and product management, adding items to cart, processing payments, and tracking orders. It connects to a SQL Server database using the pyodbc library, offering a modular and extendable backend logic for basic retail operations.",
+            "features": ["Customer management", "Product catalog", "Shopping cart", "Order tracking"],
+            "github": "https://github.com/fatmabetularslan/e-ticaret-sistem"
+        }
           
     ],
     "awards": [
