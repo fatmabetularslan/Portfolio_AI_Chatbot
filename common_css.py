@@ -1,5 +1,5 @@
 LIGHT_CSS = """
-/* (İsteğe bağlı) light override – veya hiç gerek yok */
+
 """
 
 
