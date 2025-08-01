@@ -660,8 +660,7 @@ def run(*, tool_def, rag, cv_json):
                     )
             elif section == "projeler":
                 st.session_state.show_projects = True
-                st.session_state.chat_history.append({"role": "user", "content": "Projeler"})
-
+                # Chat geçmişine ekleme - sadece projeleri göster
                 st.rerun()
             elif section == "ödüller":
                 for award in cv_json.get("awards", []):
@@ -1121,16 +1120,19 @@ def run(*, tool_def, rag, cv_json):
     if user_msg and (not st.session_state.get("last_user_msg") or st.session_state.last_user_msg != user_msg):
         st.session_state.chat_history.append({"role": "user", "content": user_msg})
         st.session_state.last_user_msg = user_msg
+        
+        # Son 3 mesajı al (çok uzun geçmiş olmasın)
+        recent_history = st.session_state.chat_history[-6:] if len(st.session_state.chat_history) > 6 else st.session_state.chat_history
         history_text = "\n".join([
-                f"{m['role']}: {m['content']}" for m in st.session_state.chat_history if isinstance(m, dict)
+                f"{m['role']}: {m['content']}" for m in recent_history if isinstance(m, dict)
             ])
         
         # Dil seçimine göre prompt oluştur
         current_lang = st.session_state.get("lang", "tr")
         if current_lang == "tr":
-            language_prompt = "Sen Fatma Betül'ün AI portföy asistanısın. Sadece Türkçe cevap ver. İngilizce çeviri yapma."
+            language_prompt = "Sen Fatma Betül'ün AI portföy asistanısın. Sadece Türkçe cevap ver. İngilizce çeviri yapma. Kullanıcının mesajına odaklan, önceki konulardan bağımsız olarak yanıtla."
         else:
-            language_prompt = "You are Fatma Betül's AI portfolio assistant. Answer only in English. Do not provide Turkish translations."
+            language_prompt = "You are Fatma Betül's AI portfolio assistant. Answer only in English. Do not provide Turkish translations. Focus on the user's message, respond independently of previous topics."
         
         full_prompt = f"{language_prompt}\n\n{history_text}"
         assistant_reply = ask_gemini(full_prompt)
