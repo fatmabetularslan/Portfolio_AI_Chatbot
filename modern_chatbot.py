@@ -660,7 +660,10 @@ def run(*, tool_def, rag, cv_json):
                     )
             elif section == "projeler":
                 st.session_state.show_projects = True
-                # Chat geçmişine ekleme - sadece projeleri göster
+                # Projeler bilgilerini chat geçmişine ekle
+                projects_info = "🚀 Projeler bölümü açıldı. Aşağıdaki projeleri inceleyebilirsiniz."
+                st.session_state.chat_history.append({"role": "user", "content": "Projeler"})
+                st.session_state.chat_history.append({"role": "assistant", "content": projects_info})
                 st.rerun()
             elif section == "ödüller":
                 for award in cv_json.get("awards", []):
@@ -675,9 +678,11 @@ def run(*, tool_def, rag, cv_json):
                     lines.append(f"<b>📞 {name}</b> <br><i>{title}</i> <span style='color:#888'>({org})</span>")
             if not lines:
                 lines.append("Bilgi bulunamadı.")
+            
+            # Bilgileri chat geçmişine ekle
             st.markdown("""
             <style>
-            .chat-block {
+            .cv-info-block {
               margin: 12px 0;
               padding: 12px 16px;
               border-radius: 14px;
@@ -687,28 +692,15 @@ def run(*, tool_def, rag, cv_json):
             }
             </style>
             """, unsafe_allow_html=True)
-            response = "".join(f"<div class='chat-block'>{line}</div>" for line in lines)
+            response = "".join(f"<div class='cv-info-block'>{line}</div>" for line in lines)
             st.session_state.chat_history.append({"role": "user", "content": section.capitalize()})
             st.session_state.chat_history.append({"role": "assistant", "content": response})
-            st.session_state.page = "chat"
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
         
     # --- Eski, büyük, yatay butonlar ve ilgili kodlar tamamen kaldırıldı ---
 
     # ---------- Chat geçmişi ----------
-    # --- 2) Ekrana mevcut geçmişi bas ---
-    for m in st.session_state.chat_history:
-        if isinstance(m, dict):
-            role = m.get("role", "assistant")
-            content = m.get("content", "")
-        elif isinstance(m, tuple) and len(m) == 2:
-            role, content = m
-        else:
-            continue  # Beklenmeyen tipte veri varsa atla
-        with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
-            st.markdown(content, unsafe_allow_html=True)
-
     # ---------- Projeler Accordion ----------
     if st.session_state.get("show_projects", False):
         st.markdown("""
@@ -1109,6 +1101,19 @@ def run(*, tool_def, rag, cv_json):
         st.session_state.chat_history = []
 
     # --- 1) Girdiyi anında yakala ---
+    # ---------- Chat geçmişi ----------
+    # --- 2) Ekrana mevcut geçmişi bas ---
+    for m in st.session_state.chat_history:
+        if isinstance(m, dict):
+            role = m.get("role", "assistant")
+            content = m.get("content", "")
+        elif isinstance(m, tuple) and len(m) == 2:
+            role, content = m
+        else:
+            continue  # Beklenmeyen tipte veri varsa atla
+        with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
+            st.markdown(content, unsafe_allow_html=True)
+
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
 
     # Kullanıcı 'cover letter yaz', 'ön yazı', 'cover letter', veya 'ön yazı yaz' derse formu aç
