@@ -12,7 +12,7 @@ from rag_system import load_cv_index
 from pathlib import Path
 PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
 
-# --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
+# --- Modern Language Toggle Bar  ---
 def language_and_theme_toggle():
     lang = st.session_state.get("lang", "tr")
     dark = st.session_state.get("dark_mode", False)
@@ -95,8 +95,8 @@ st.markdown(f"<style>{DARK_CSS if st.session_state.dark_mode else LIGHT_CSS}</st
 st.markdown("""
 <style>
 div.stButton > button {
-    width: 420px !important;
-    min-width: 320px;
+    width: 720px !important;
+    min-width: 600px;
     font-size: 1.45em;
     padding: 22px 0;
     border-radius: 18px;
@@ -158,13 +158,13 @@ if st.session_state.page == "chat":
 TEXT = {
     "tr": {
         "header": "👋 Merhaba! Ben Fatma Betül'ün AI Portföy Asistanıyım",
-        "sub"   : "CV, projeler, sosyal medya içerikleri ve iş başvurularında size yardımcı olurum.",
+        "sub"   : "Fatma Betül'ün özgeçmişi, projeleri ve deneyimlerine hızlıca göz atmak ister misin? İster CV'sini görüntüle, ister asistanıyla birebir sohbet etmeye başla.",
         "cv"    : "📂 CV'yi Gör",
         "chat"  : "Sohbete Başla",
     },
     "en": {
-        "header": "👋 Hi! I'm Fatma Betül's AI Portfolio Assistant",
-        "sub"   : "I can help you with CV, projects, social media and job applications.",
+        "header": "👋 Hello!",
+        "sub"   : "Would you like to quickly browse Fatma Betül's resume, projects and experiences? Either view her CV or start a one-on-one chat with her assistant.",
         "cv"    : "📂 View CV",
         "chat"  : "Start Chat",
     },
@@ -176,8 +176,198 @@ lang_text = TEXT[ st.session_state.lang ]
 # 1. Toggle bar (dil/tema)
 language_and_theme_toggle()
 
-# 2. Header
-st.markdown(f'<div class="big-header">{lang_text["header"]}</div>', unsafe_allow_html=True)
+# 2. Modern arka plan şekilleri ve blob'lar
+st.markdown("""
+<style>
+.background-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob-1 {
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.15;
+    animation: float 6s ease-in-out infinite;
+}
+
+.blob-2 {
+    position: absolute;
+    bottom: -15%;
+    left: -15%;
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.12;
+    animation: float 8s ease-in-out infinite reverse;
+}
+
+.wave-shape {
+    position: absolute;
+    top: 20%;
+    right: 5%;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    filter: blur(40px);
+    opacity: 0.1;
+    animation: morph 10s ease-in-out infinite;
+}
+
+.bottom-wave {
+    position: absolute;
+    bottom: -5%;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    opacity: 0.08;
+    clip-path: polygon(0 100%, 100% 100%, 100% 60%, 80% 40%, 60% 60%, 40% 40%, 20% 60%, 0 40%);
+    animation: wave-float 12s ease-in-out infinite;
+}
+
+.bottom-blob {
+    position: absolute;
+    bottom: -10%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.06;
+    animation: blob-float 15s ease-in-out infinite;
+}
+
+@keyframes wave-float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-15px) scale(1.02); }
+}
+
+@keyframes blob-float {
+    0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+    33% { transform: translateY(-10px) rotate(120deg) scale(1.05); }
+    66% { transform: translateY(-5px) rotate(240deg) scale(0.95); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes morph {
+    0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+    50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+    75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+}
+
+/* Ana içeriği arka plan şekillerinin üstünde tut */
+.main-content {
+    position: relative;
+    z-index: 1;
+}
+</style>
+
+<div class="background-shapes">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+    <div class="wave-shape"></div>
+    <div class="bottom-wave"></div>
+    <div class="bottom-blob"></div>
+</div>
+""", unsafe_allow_html=True)
+
+# 3. Header ve AI Avatar
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
+
+# AI Avatar CSS
+st.markdown("""
+<style>
+.header-with-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.ai-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5em;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+    position: relative;
+}
+
+.ai-avatar::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.3;
+    animation: pulse-ring 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.1; }
+    100% { transform: scale(1); opacity: 0.3; }
+}
+
+@media (max-width: 768px) {
+    .header-with-avatar {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .ai-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 2em;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Header ve AI Avatar birlikte
+st.markdown(f"""
+<div class="header-with-avatar">
+    <div class="ai-avatar">🤖</div>
+    <div class="big-header">{lang_text["header"]}</div>
+</div>
+""", unsafe_allow_html=True)
 
 # 3. Subheader
 st.markdown(f'<div class="big-subheader">{lang_text["sub"]}</div>', unsafe_allow_html=True)
@@ -208,30 +398,74 @@ st.markdown("""
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
-  margin-top: 18px;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 24px;
+  width: 100%;
+  text-align: center;
+}
+
+.animated-btns-wrap div.stButton {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
 }
 div.stButton > button {
   background: linear-gradient(90deg, #1D3557, #2563eb) !important;
   color: white !important;
-  padding: 22px 48px;
-  font-weight: bold;
+  padding: 24px 44px;
+  font-weight: 600;
   border: none;
   border-radius: 16px;
-  font-size: 1.5em;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
-  gap: 16px;
-  transition: all 0.3s ease;
-  min-width: 340px;
-  max-width: 440px;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 600px;
+  max-width: 800px;
   justify-content: center;
-  box-shadow: 0 4px 16px #1d355733;
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.25);
+  position: relative;
+  overflow: hidden;
+  min-height: 60px;
+  margin: 0 auto !important;
+  float: none !important;
+}
+div.stButton > button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+div.stButton > button:hover::before {
+  left: 100%;
 }
 div.stButton > button:hover {
   cursor: pointer;
-  filter: brightness(1.08);
+  transform: scale(1.02) translateY(-2px);
+  box-shadow: 0 12px 35px rgba(37, 99, 235, 0.35);
   background: linear-gradient(90deg, #274472, #2563eb) !important;
+}
+div.stButton > button:active {
+  transform: scale(0.98) translateY(0px);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+div.stButton > button:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.5);
+  outline-offset: 2px;
+}
+div.stButton > button:last-child {
+  background: linear-gradient(90deg, #3A86FF, #219EBC) !important;
+  box-shadow: 0 8px 25px rgba(58, 134, 255, 0.25);
+}
+div.stButton > button:last-child:hover {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8) !important;
+  box-shadow: 0 12px 35px rgba(58, 134, 255, 0.35);
 }
 @media (max-width: 600px) {
   .animated-btns-wrap {
@@ -239,12 +473,13 @@ div.stButton > button:hover {
     margin-top: 8px;
   }
   div.stButton > button {
-    font-size: 1.05em !important;
-    padding: 14px 8px !important;
+    font-size: 1.1rem !important;
+    padding: 20px 16px !important;
     min-width: 90vw !important;
     max-width: 98vw !important;
     border-radius: 12px !important;
     gap: 8px !important;
+    min-height: 56px !important;
   }
   .big-header { font-size: 1.5em !important; }
   .big-subheader { font-size: 1em !important; }
@@ -259,22 +494,20 @@ div.stButton > button:hover {
 
 st.markdown('<div class="animated-btns-wrap">', unsafe_allow_html=True)
 if st.session_state.get('page') != 'chat':
-    left, center, right = st.columns([1, 2, 1])
-    with center:
-        if st.button("📁  CV'yi Gör", key="cv_btn_home", use_container_width=True):
-            with open(PDF_PATH, "rb") as f:
-                pdf_bytes = f.read()
-            st.download_button(
-                label="📥 PDF'i İndir",
-                data=pdf_bytes,
-                file_name="Fatma_Betul_Arslan_CV.pdf",
-                mime="application/pdf",
-                use_container_width=True,
-                key="cv_download_btn_direct"
-            )
-        if st.button("🤖  Sohbete Başla", key="chat_btn_home", use_container_width=True):
-            st.session_state['page'] = 'chat'
-            st.rerun()
+    if st.button("📁  CV'yi Gör", key="cv_btn_home", use_container_width=False):
+        with open(PDF_PATH, "rb") as f:
+            pdf_bytes = f.read()
+        st.download_button(
+            label="📥 PDF'i İndir",
+            data=pdf_bytes,
+            file_name="Fatma_Betul_Arslan_CV.pdf",
+            mime="application/pdf",
+            use_container_width=False,
+            key="cv_download_btn_direct"
+        )
+    if st.button("🤖  Sohbete Başla", key="chat_btn_home", use_container_width=False):
+        st.session_state['page'] = 'chat'
+        st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --- CV ile ilgili butonlar için özel CSS ---
@@ -300,7 +533,7 @@ button[data-testid="cv_preview_btn"]:hover, button[data-testid="cv_download_btn"
 </style>
 """, unsafe_allow_html=True)
 
-# --- PDF İndir butonu için özel CSS ---
+# --- PDF İndir butonu 
 st.markdown("""
 <style>
 div.stButton > button[data-baseweb="button"][id*="cv_download_btn"] {
@@ -319,4 +552,5 @@ div.stButton > button[data-baseweb="button"][id*="cv_download_btn"]:hover {
 </style>
 """, unsafe_allow_html=True)
 
-
+# Ana içeriği kapat
+st.markdown('</div>', unsafe_allow_html=True)
