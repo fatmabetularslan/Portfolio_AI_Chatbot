@@ -273,7 +273,7 @@ class ToolDefinitions:
             # 5. Bilinmeyen tool ---------------------------------------------------
         return {"success": False, "message": f"Unknown tool: {tool_name}"}
 
-    # --------- Opsiyonel: Çift dilli rapor ----------
+    # --------- Çift dilli rapor ----------
     
     def generate_bilingual_job_report(self, job_description, company_name="Unknown Company"):
         """
