@@ -37,7 +37,6 @@ class RAGSystem:
             
         else:
             # Fallback: Eski yöntem (API kullanarak)
-            st.warning("⚠️ Pre-computed embedding bulunamadı, API kullanılıyor...")
             self.cv_json = json.load(open(cv_path, encoding="utf-8"))
             self.chunks = self._build_chunks(self.cv_json)
             
