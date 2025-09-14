@@ -27,7 +27,6 @@ class RAGSystem:
         
         if os.path.exists(embedding_file):
             # Pre-computed embedding'leri yükle
-            st.info("🚀 Pre-computed embedding'ler yükleniyor...")
             with open(embedding_file, 'rb') as f:
                 data = pickle.load(f)
             
@@ -35,8 +34,6 @@ class RAGSystem:
             self.chunks = data['chunks']
             self.index = data['embeddings']
             self.alias = data['alias']
-            
-            st.success("✅ Pre-computed embedding'ler yüklendi! (API limiti yok)")
             
         else:
             # Fallback: Eski yöntem (API kullanarak)
