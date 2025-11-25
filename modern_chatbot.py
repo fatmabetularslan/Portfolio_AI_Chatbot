@@ -1018,6 +1018,13 @@ def run(*, tool_def, rag, cv_json):
         .project-entry:last-child {
             margin-bottom: 0 !important;
         }
+        /* Streamlit accordion'ları için margin ayarı */
+        .project-entry .streamlit-expander {
+            margin-bottom: 6px !important;
+        }
+        .project-entry:last-child .streamlit-expander {
+            margin-bottom: 0 !important;
+        }
         
         /* Accordion başlık özeti için */
         .expander-header small {
