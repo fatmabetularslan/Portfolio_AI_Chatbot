@@ -79,8 +79,7 @@
                     "Portfolio simulation, risk metrics and smart alert management",
                     "Financial calendar, quick-access tickers and modular Streamlit UI"
                 ]
-            },
-            "github": "https://github.com/fatmabetularslan/FinTurk"
+            }
         },
           
         {
@@ -209,6 +208,43 @@
         "TEGV - Volunteer",
         "LÖSEV - Volunteer"
     ],
+    "medium_articles": [
+        {
+            "title": "Netflix, Spotify ve Amazon’un Sırrı: Öneri Sistemleri nasıl çalışıyor?",
+            "platform": "Medium",
+            "url": "https://medium.com/@betularsln01/netflix-spotify-ve-amazonun-s%C4%B1rr%C4%B1-%C3%B6neri-sistemleri-nas%C4%B1l-%C3%A7al%C4%B1%C5%9F%C4%B1yor-e03547f3c7ac",
+            "summary_tr": "Öneri sistemlerinin temel yapı taşları olan content-based, collaborative ve hibrit yaklaşımları; bunların Retrieval & Ranking süreçleriyle ilişkisini ve pratik kullanım örneklerini anlattım.",
+            "summary_en": "Explains how content-based, collaborative and hybrid recommenders power modern platforms, detailing the Retrieval & Ranking pipeline with intuitive math and real-life use cases."
+        },
+        {
+            "title": "Hal Fiyatlarını Takip Etmek: Airflow, Docker ve Power BI ile Otomasyon",
+            "platform": "Medium",
+            "url": "https://medium.com/@betularsln01/hal-fiyatlar%C4%B1n%C4%B1-takip-etmek-airflow-docker-ve-power-bi-ile-otomasyon-e6f7b73db0fe",
+            "summary_tr": "Adana, Kocaeli, İzmir ve Mersin hal fiyatlarını BeautifulSoup ile scrape edip PostgreSQL’de sakladım; Airflow + Docker ile iş akışını otomatikleştirip Power BI dashboard’ı üzerinden trendleri görselleştirdim.",
+            "summary_en": "Shows how I built an automated pipeline that scrapes multiple municipalities’ wholesale prices, stores them in PostgreSQL, orchestrates jobs via Airflow/Docker, and visualizes trends in Power BI."
+        },
+        {
+            "title": "Docker: Modern Uygulama Geliştirmenin ve Dağıtımın Temel Rehberi",
+            "platform": "Medium",
+            "url": "https://medium.com/@betularsln01/docker-modern-uygulama-geli%C5%9Ftirmenin-ve-da%C4%9F%C4%B1t%C4%B1m%C4%B1n-temel-rehberi-fc35b7040446",
+            "summary_tr": "Docker konteyner kavramını, Flask örneğiyle image oluşturmayı, Docker Compose ile PostgreSQL entegrasyonunu, VM’lerle farklarını, ağ modellerini ve volume stratejilerini adım adım anlattım.",
+            "summary_en": "Covers what containers are, how to containerize a Flask app, orchestrate multi-service stacks with Compose, key differences vs VMs, advanced networking setups, and persistent volume options."
+        },
+        {
+            "title": "TF-IDF ile Metin Analizine Giriş",
+            "platform": "Medium",
+            "url": "https://medium.com/@betularsln01/tf-idf-ile-metin-analizine-giri%C5%9F-d1c4d2480713",
+            "summary_tr": "TF ve IDF kavramlarını, örnek belgeler ve Python scikit-learn koduyla anlattım; TF-IDF’nin arama motorları, e-ticaret anahtar kelimeleri ve akademik makale keşfinde nasıl kullanıldığını paylaştım.",
+            "summary_en": "Walks through TF-IDF math, sample document calculations, a scikit-learn implementation, and real-world use cases such as search ranking, e-commerce keyword extraction, and research discovery."
+        },
+        {
+            "title": "Veri Bilimi İstatistik 1: A/B Testi ve Varyans Analizi (ANOVA)",
+            "platform": "Medium",
+            "url": "https://medium.com/@betularsln01/veri-bilimi-i%CC%87statistik-1-a-b-testi-ve-varyans-analizi-anova-b911dcd8681d",
+            "summary_tr": "A/B testinin hipotez kurma, t-istatistiği ve Python örnekleriyle hesaplanışını; ANOVA türlerini, F-istatistiği matematiğini ve gerçek hayattaki kullanım senaryolarını anlattım.",
+            "summary_en": "Introduces the stats series by detailing A/B tests (hypotheses, t-stat) and ANOVA (one/two-way, repeated measures) with equations, numerical examples, and scipy implementations."
+        }
+    ],
     "references": [
         {
             "name": "Furkan Alaybeg",
@@ -218,5 +254,4 @@
         }
     ]
 }
-
 
