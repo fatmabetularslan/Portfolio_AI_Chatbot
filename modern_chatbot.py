@@ -943,7 +943,7 @@ def run(*, tool_def, rag, cv_json):
 
     # ---------- Chat geçmişi ----------
     # ---------- Projeler Accordion ----------
-    if st.session_state.get("show_projects", False):
+    if False and st.session_state.get("show_projects", False):
         st.markdown("""
         <style>
         .project-accordion {
