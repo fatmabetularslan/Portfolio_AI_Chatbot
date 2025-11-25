@@ -326,8 +326,8 @@ st.markdown("""
 }
 
 .ai-avatar {
-    width: 125px;
-    height: 125px;
+    width: 155px;
+    height: 155px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 58% 42% 60% 40% / 45% 55% 45% 55%;
     display: flex;
@@ -344,7 +344,7 @@ st.markdown("""
 .ai-avatar::after {
     content: '';
     position: absolute;
-    inset: -16px;
+    inset: -20px;
     border-radius: inherit;
     background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), transparent 60%);
     filter: blur(10px);
@@ -405,8 +405,8 @@ st.markdown("""
         gap: 15px;
     }
     .ai-avatar {
-        width: 95px;
-        height: 95px;
+        width: 115px;
+        height: 115px;
         font-size: 2em;
     }
 }
