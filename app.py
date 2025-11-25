@@ -6,14 +6,14 @@ st.set_page_config(page_title="Fatma Betül Arslan", page_icon="🤖", layout="c
 
 import json
 from tools.tool_definitions import ToolDefinitions
-import modern_chatbot
+from modern_chatbot import run as modern_chatbot_run
 from common_css import LIGHT_CSS, DARK_CSS
 from rag_system import load_cv_index
 from pathlib import Path
-PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
+PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv-2025.pdf"
 PROFILE_IMG_PATH = Path("assets/vesika.jpg")
 
-# --- Modern Language Toggle Bar  ---
+# --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
 def language_and_theme_toggle():
     lang = st.session_state.get("lang", "tr")
     dark = st.session_state.get("dark_mode", False)
@@ -139,7 +139,16 @@ st.markdown("""
 
 # --- Sayfa yönlendirme ---
 tag = 'betül-cv.json'
-rag = load_cv_index(tag)
+
+# RAG sistemini güvenli şekilde yükle
+try:
+    with st.spinner("CV verileri yükleniyor ve embedding'ler hesaplanıyor..."):
+        rag = load_cv_index(tag)
+    st.success("✅ CV verileri başarıyla yüklendi!")
+except Exception as e:
+    st.error(f"❌ CV verileri yüklenirken hata oluştu: {str(e)}")
+    st.info("Lütfen sayfayı yenileyin veya daha sonra tekrar deneyin.")
+    st.stop()
 
 if st.session_state.page == "chat":
     tool_def_obj = ToolDefinitions()
@@ -148,7 +157,7 @@ if st.session_state.page == "chat":
         cv_data=json.load(open(tag, encoding="utf-8")),
         rag_system=rag
     )
-    modern_chatbot.run(
+    modern_chatbot_run(
         tool_def = tool_def_obj,
         rag     = rag,
         cv_json = json.load(open(tag, encoding="utf-8"))
@@ -323,6 +332,13 @@ st.markdown("""
     position: relative;
 }
 
+.ai-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .ai-avatar::before {
     content: '';
     position: absolute;
@@ -363,9 +379,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header ve AI Avatar birlikte
+avatar_html = "🤖"
+if PROFILE_IMG_PATH.exists():
+    avatar_bytes = PROFILE_IMG_PATH.read_bytes()
+    avatar_b64 = base64.b64encode(avatar_bytes).decode("utf-8")
+    avatar_html = f'<img src="data:image/jpeg;base64,{avatar_b64}" alt="Fatma Betül Arslan" />'
+
 st.markdown(f"""
 <div class="header-with-avatar">
-    <div class="ai-avatar">🤖</div>
+    <div class="ai-avatar">{avatar_html}</div>
     <div class="big-header">{lang_text["header"]}</div>
 </div>
 """, unsafe_allow_html=True)
@@ -495,7 +517,7 @@ div.stButton > button:last-child:hover {
 
 st.markdown('<div class="animated-btns-wrap">', unsafe_allow_html=True)
 if st.session_state.get('page') != 'chat':
-    if st.button("📁  CV'yi Gör", key="cv_btn_home", use_container_width=False):
+    if st.button("📁  CV'yi Gör", key="cv_btn_home_main", use_container_width=False):
         with open(PDF_PATH, "rb") as f:
             pdf_bytes = f.read()
         st.download_button(
@@ -506,7 +528,7 @@ if st.session_state.get('page') != 'chat':
             use_container_width=False,
             key="cv_download_btn_direct"
         )
-    if st.button("🤖  Sohbete Başla", key="chat_btn_home", use_container_width=False):
+    if st.button("🤖  Sohbete Başla", key="chat_btn_home_main", use_container_width=False):
         st.session_state['page'] = 'chat'
         st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
@@ -534,7 +556,7 @@ button[data-testid="cv_preview_btn"]:hover, button[data-testid="cv_download_btn"
 </style>
 """, unsafe_allow_html=True)
 
-# --- PDF İndir butonu 
+# --- PDF İndir butonu için özel CSS ---
 st.markdown("""
 <style>
 div.stButton > button[data-baseweb="button"][id*="cv_download_btn"] {
