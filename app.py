@@ -127,7 +127,7 @@ div.stButton > button:last-child {
 st.markdown("""
 <style>
 .big-header {
-    font-size: 2.7em !important;
+    font-size: 2.3em !important;
     font-weight: 800 !important;
     text-align: center !important;
     margin-bottom: 0.2em !important;
