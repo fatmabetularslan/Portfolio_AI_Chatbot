@@ -912,26 +912,23 @@ def run(*, tool_def, rag, cv_json):
                     title = ref.get("title", "")
                     org = ref.get("organization", "")
                     lines.append(f"<b>📞 {name}</b> <br><i>{title}</i> <span style='color:#888'>({org})</span>")
-            if not lines:
-                lines.append("Bilgi bulunamadı.")
-            
-            # Bilgileri chat geçmişine ekle
-            st.markdown("""
-            <style>
-            .cv-info-block {
-              margin: 12px 0;
-              padding: 12px 16px;
-              border-radius: 14px;
-              background: #f3f4f8;
-              color: #333;
-              box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-            }
-            </style>
-            """, unsafe_allow_html=True)
-            response = "".join(f"<div class='cv-info-block'>{line}</div>" for line in lines)
-            st.session_state.chat_history.append({"role": "user", "content": section.capitalize()})
-            st.session_state.chat_history.append({"role": "assistant", "content": response})
-            st.rerun()
+            if lines:
+                st.markdown("""
+                <style>
+                .cv-info-block {
+                  margin: 12px 0;
+                  padding: 12px 16px;
+                  border-radius: 14px;
+                  background: #f3f4f8;
+                  color: #333;
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+                }
+                </style>
+                """, unsafe_allow_html=True)
+                response = "".join(f"<div class='cv-info-block'>{line}</div>" for line in lines)
+                st.session_state.chat_history.append({"role": "user", "content": section.capitalize()})
+                st.session_state.chat_history.append({"role": "assistant", "content": response})
+                st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
         
     # --- Eski, büyük, yatay butonlar ve ilgili kodlar tamamen kaldırıldı ---
@@ -1454,27 +1451,6 @@ def run(*, tool_def, rag, cv_json):
         with projects_placeholder:
             _render_projects_section(cv_json)
 
-    # Medium yazıları butonu
-    if st.button("📝 Medium Yazıları", key="medium_articles_btn"):
-        articles = cv_json.get("medium_articles", [])
-        if not articles:
-            st.session_state.chat_history.append({
-                "role": "assistant",
-                "content": "Henüz Medium yazısı eklenmedi."
-            })
-        else:
-            entries = []
-            for art in articles:
-                title = art.get("title", "Başlık")
-                url = art.get("url", "#")
-                summary = art.get("summary_tr") or art.get("summary_en") or ""
-                entries.append(
-                    f"<div class='cv-info-block'><b>📝 <a href='{url}' target='_blank'>{title}</a></b><br>{summary}</div>"
-                )
-            response = "".join(entries)
-            st.session_state.chat_history.append({"role": "user", "content": "Medium Yazıları"})
-            st.session_state.chat_history.append({"role": "assistant", "content": response})
-            st.rerun()
 
 
 
@@ -1566,4 +1542,3 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Remove main page buttons at the end ---
