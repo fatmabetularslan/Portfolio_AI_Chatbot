@@ -6,12 +6,16 @@ st.set_page_config(page_title="Fatma Betül Arslan", page_icon="🤖", layout="c
 
 import json
 from tools.tool_definitions import ToolDefinitions
-from modern_chatbot import run as modern_chatbot_run
+try:
+    from modern_chatbot import run as modern_chatbot_run
+except ImportError:
+    import modern_chatbot  # type: ignore
+    modern_chatbot_run = getattr(modern_chatbot, "run", None)
 from common_css import LIGHT_CSS, DARK_CSS
 from rag_system import load_cv_index
 from pathlib import Path
 PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv-2025.pdf"
-PROFILE_IMG_PATH = Path("assets/vesika.jpg")
+PROFILE_IMG_PATH = Path("assets/profile.jpg")
 
 # --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
 def language_and_theme_toggle():
@@ -151,6 +155,9 @@ except Exception as e:
     st.stop()
 
 if st.session_state.page == "chat":
+    if modern_chatbot_run is None:
+        st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
+        st.stop()
     tool_def_obj = ToolDefinitions()
     tool_def_obj.initialize_job_analyzer(
         client=None,
@@ -319,24 +326,52 @@ st.markdown("""
 }
 
 .ai-avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 50%;
+    border-radius: 58% 42% 60% 40% / 45% 55% 45% 55%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2.5em;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 12px 30px rgba(86, 99, 255, 0.3);
     animation: pulse 2s ease-in-out infinite;
     position: relative;
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255,255,255,0.4);
+}
+
+.ai-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: inherit;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), transparent 60%);
+    filter: blur(10px);
+    opacity: 0.6;
+    z-index: -2;
+}
+
+.ai-avatar::before {
+    content: '';
+    position: absolute;
+    top: -14px;
+    left: -14px;
+    right: -14px;
+    bottom: -14px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25));
+    z-index: -1;
+    opacity: 0.8;
+    filter: blur(8px);
 }
 
 .ai-avatar img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
+    width: 94%;
+    height: 94%;
+    border-radius: 55% 45% 50% 50% / 48% 52% 42% 58%;
     object-fit: cover;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.15);
 }
 
 .ai-avatar::before {
@@ -370,8 +405,8 @@ st.markdown("""
         gap: 15px;
     }
     .ai-avatar {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
         font-size: 2em;
     }
 }
