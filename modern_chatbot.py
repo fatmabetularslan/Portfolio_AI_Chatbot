@@ -901,11 +901,6 @@ def run(*, tool_def, rag, cv_json):
                     )
             elif section == "projeler":
                 st.session_state.show_projects = True
-                # Projeler bilgilerini chat geçmişine ekle
-                projects_info = "🚀 Projeler bölümü açıldı. Aşağıdaki projeleri inceleyebilirsiniz."
-                st.session_state.chat_history.append({"role": "user", "content": "Projeler"})
-                st.session_state.chat_history.append({"role": "assistant", "content": projects_info})
-                st.rerun()
             elif section == "ödüller":
                 for award in cv_json.get("awards", []):
                     name = award.get("name", "")
@@ -1016,6 +1011,12 @@ def run(*, tool_def, rag, cv_json):
         .project-link:hover {
             background: #5a67d8;
             transform: translateY(-1px);
+        }
+        .project-entry {
+            margin-bottom: 12px !important;
+        }
+        .project-entry:last-child {
+            margin-bottom: 0 !important;
         }
         
         /* Accordion başlık özeti için */
@@ -1178,7 +1179,7 @@ def run(*, tool_def, rag, cv_json):
                 st.markdown(tooltip_css, unsafe_allow_html=True)
                 
                 # Accordion'u tooltip ile sar
-                st.markdown(f'<div class="accordion-tooltip-{i}">', unsafe_allow_html=True)
+                st.markdown(f'<div class="accordion-tooltip-{i} project-entry">', unsafe_allow_html=True)
                 with st.expander(expander_title, expanded=False):
                     # Teknolojiler bölümü
                     st.markdown("**🛠️ Teknolojiler:**")
@@ -1247,6 +1248,7 @@ def run(*, tool_def, rag, cv_json):
                             st.markdown(f"[{text}]({url})")
                 st.markdown('</div>', unsafe_allow_html=True)
             else:
+                st.markdown('<div class="project-entry">', unsafe_allow_html=True)
                 with st.expander(expander_title, expanded=False):
                     # Teknolojiler bölümü
                     st.markdown("**🛠️ Teknolojiler:**")
@@ -1313,6 +1315,7 @@ def run(*, tool_def, rag, cv_json):
                                 url = link
                                 text = "Proje Linki"
                             st.markdown(f"[{text}]({url})")
+                st.markdown('</div>', unsafe_allow_html=True)
 
     # --- Cover letter PDF indir butonu ---
     if "cover_pdf_bytes" in st.session_state:
@@ -1356,6 +1359,7 @@ def run(*, tool_def, rag, cv_json):
             st.markdown(content, unsafe_allow_html=True)
 
     projects_placeholder = st.container()
+    articles_placeholder = st.container()
 
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
 
@@ -1449,6 +1453,28 @@ def run(*, tool_def, rag, cv_json):
     if st.session_state.get("show_projects", False):
         with projects_placeholder:
             _render_projects_section(cv_json)
+
+    # Medium yazıları butonu
+    if st.button("📝 Medium Yazıları", key="medium_articles_btn"):
+        articles = cv_json.get("medium_articles", [])
+        if not articles:
+            st.session_state.chat_history.append({
+                "role": "assistant",
+                "content": "Henüz Medium yazısı eklenmedi."
+            })
+        else:
+            entries = []
+            for art in articles:
+                title = art.get("title", "Başlık")
+                url = art.get("url", "#")
+                summary = art.get("summary_tr") or art.get("summary_en") or ""
+                entries.append(
+                    f"<div class='cv-info-block'><b>📝 <a href='{url}' target='_blank'>{title}</a></b><br>{summary}</div>"
+                )
+            response = "".join(entries)
+            st.session_state.chat_history.append({"role": "user", "content": "Medium Yazıları"})
+            st.session_state.chat_history.append({"role": "assistant", "content": response})
+            st.rerun()
 
 
 
