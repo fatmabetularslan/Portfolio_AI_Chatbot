@@ -1355,6 +1355,8 @@ def run(*, tool_def, rag, cv_json):
         with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
             st.markdown(content, unsafe_allow_html=True)
 
+    projects_placeholder = st.container()
+
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
 
     # Kullanıcı 'cover letter yaz', 'ön yazı', 'cover letter', veya 'ön yazı yaz' derse formu aç
@@ -1443,6 +1445,10 @@ def run(*, tool_def, rag, cv_json):
         assistant_reply = ask_gemini(full_prompt)
         st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
         st.rerun()
+
+    if st.session_state.get("show_projects", False):
+        with projects_placeholder:
+            _render_projects_section(cv_json)
 
 
 
