@@ -4,7 +4,41 @@ import json, numpy as np
 import streamlit as st
 import pickle
 import os
+from pathlib import Path
 from sklearn.metrics.pairwise import cosine_similarity
+
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:  # pragma: no cover
+    import tomli as tomllib  # type: ignore[import]
+
+
+def _ensure_gemini_key():
+    key = (
+        os.getenv("GOOGLE_API_KEY")
+        or os.getenv("GEMINI_API_KEY")
+        or st.secrets.get("GEMINI_API_KEY")
+        or st.secrets.get("GOOGLE_API_KEY")
+    )
+    if not key:
+        secrets_path = Path(__file__).resolve().parent / ".streamlit" / "secrets.toml"
+        if secrets_path.exists():
+            try:
+                with open(secrets_path, "rb") as f:
+                    secrets = tomllib.load(f)
+                key = secrets.get("GEMINI_API_KEY") or secrets.get("GOOGLE_API_KEY")
+            except Exception as exc:  # pragma: no cover
+                st.warning(f"GEMINI API anahtarı okunamadı: {exc}")
+    if not key:
+        st.warning("⚠️ Gemini API anahtarı bulunamadı. RAG sonuçları tutarsız olabilir.")
+        return None
+    os.environ["GOOGLE_API_KEY"] = key.strip()
+    os.environ.setdefault("GEMINI_API_KEY", key.strip())
+    return key.strip()
+
+
+_ensure_gemini_key()
+
 from google.generativeai.embedding import embed_content
 
 @st.cache_resource(show_spinner=False)
