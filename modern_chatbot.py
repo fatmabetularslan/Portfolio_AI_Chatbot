@@ -1134,7 +1134,44 @@ def run(*, tool_def, rag, cv_json):
         
         # RAG sonuçlarını çıkar
         retrieved_chunks = rag.search_similar_chunks(user_msg, top_k=5)
-        context_text = "\n---\n".join(retrieved_chunks)
+
+        # Kullanıcının sorusunda proje adı geçiyorsa ilgili projeyi doğrudan bağlama ekle
+        project_context_blocks = []
+        projects = cv_json.get("projects", [])
+        msg_lower = user_msg.lower()
+        for proj in projects:
+            name = proj.get("name", "")
+            if not name:
+                continue
+            name_tokens = [tok for tok in re.split(r"[^a-z0-9]+", name.lower()) if len(tok) > 2]
+            if not name_tokens:
+                continue
+            match_count = sum(1 for tok in name_tokens if tok in msg_lower)
+            if name.lower() in msg_lower or match_count >= max(1, len(name_tokens) // 2):
+                tech = proj.get("technology", "")
+                desc = proj.get("description", "")
+                features = proj.get("features", "")
+                formatted = (
+                    f"Proje Adı: {name}\n"
+                    f"Teknolojiler: {tech}\n"
+                    f"Açıklama: {desc}\n"
+                    f"Özellikler: {features}"
+                )
+                project_context_blocks.append(formatted)
+
+        context_chunks = list(retrieved_chunks)
+        if project_context_blocks:
+            context_chunks.append("Eşleşen Projeler:\n" + "\n\n".join(project_context_blocks))
+        elif projects:
+            # RAG başarısız olursa en azından ilk birkaç projeyi ver
+            fallback_projects = []
+            for proj in projects[:5]:
+                fallback_projects.append(
+                    f"Proje Adı: {proj.get('name','')}\nTeknolojiler: {proj.get('technology','')}\nAçıklama: {proj.get('description','')}"
+                )
+            context_chunks.append("Örnek Projeler:\n" + "\n\n".join(fallback_projects))
+
+        context_text = "\n---\n".join(context_chunks)
         
         # Dil seçimine göre prompt oluştur
         current_lang = st.session_state.get("lang", "tr")
@@ -1223,7 +1260,7 @@ def _job_compatibility_flow(tool_def, LTXT):
     reply = (
         result["data"]["report_text"]
         if result.get("success")
-        else "Analiz oluşturulamadı "
+        else "Analiz oluşturulamadı 😕"
     )
     st.session_state.chat_history.append({"role": "bot", "content": reply})
 
