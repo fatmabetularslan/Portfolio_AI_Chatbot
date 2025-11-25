@@ -59,6 +59,28 @@
             },
             "github": "https://github.com/fatmabetularslan/Portfolio_AI_Chatbot"
           },
+        {
+            "name": "FinTurk Finansal Asistan",
+            "technology": "Streamlit · Gemini AI · XGBoost · yfinance · Plotly · SQLite · RAG",
+            "description": {
+                "tr": "BIST hisseleri için sohbet tabanlı analiz, fiyat tahmini ve portföy yönetimi sunan yapay zekâ destekli finans asistanı.",
+                "en": "AI-powered assistant that delivers chat-based BIST stock insights, price forecasts, and portfolio management in one Streamlit app."
+            },
+            "features": {
+                "tr": [
+                    "Gemini destekli Türkçe finans chatbot ve eğitim modu",
+                    "XGBoost ile fiyat tahmini, teknik analiz ve haber sentiment entegrasyonu",
+                    "Portföy simülasyonu, risk metriği hesaplama ve akıllı alarm sistemi",
+                    "Finansal takvim, popüler hisse kısayolları ve modüler Streamlit arayüzü"
+                ],
+                "en": [
+                    "Gemini-powered finance chatbot with Turkish NLP and education tips",
+                    "XGBoost price forecasting, technical indicators and news sentiment fusion",
+                    "Portfolio simulation, risk metrics and smart alert management",
+                    "Financial calendar, quick-access tickers and modular Streamlit UI"
+                ]
+            }
+        },
           
         {
             "name": "Mobile App User Behavior Analysis & Segmentation",
