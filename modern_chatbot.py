@@ -1014,15 +1014,23 @@ def run(*, tool_def, rag, cv_json):
         }
         .project-entry {
             margin: 0 0 6px 0 !important;
+            display: block !important;
         }
         .project-entry:last-child {
             margin-bottom: 0 !important;
         }
         /* Streamlit accordion'ları için margin ayarı */
-        .project-entry .streamlit-expander {
+        .project-entry [data-testid="stExpander"] {
             margin-bottom: 6px !important;
         }
-        .project-entry:last-child .streamlit-expander {
+        .project-entry:last-child [data-testid="stExpander"] {
+            margin-bottom: 0 !important;
+        }
+        /* Accordion wrapper için */
+        .project-entry > div {
+            margin-bottom: 6px !important;
+        }
+        .project-entry:last-child > div {
             margin-bottom: 0 !important;
         }
         
