@@ -1132,14 +1132,36 @@ def run(*, tool_def, rag, cv_json):
                 f"{m['role']}: {m['content']}" for m in recent_history if isinstance(m, dict)
             ])
         
+        # RAG sonuçlarını çıkar
+        retrieved_chunks = rag.search_similar_chunks(user_msg, top_k=5)
+        context_text = "\n---\n".join(retrieved_chunks)
+        
         # Dil seçimine göre prompt oluştur
         current_lang = st.session_state.get("lang", "tr")
         if current_lang == "tr":
-            language_prompt = "Sen Fatma Betül'ün AI portföy asistanısın. Sadece Türkçe cevap ver. İngilizce çeviri yapma. Kullanıcının mesajına odaklan, önceki konulardan bağımsız olarak yanıtla."
+            language_prompt = (
+                "Sen Fatma Betül'ün AI portföy asistanısın. "
+                "Sadece Türkçe cevap ver. İngilizce çeviri yapma. "
+                "Kullanıcının sorusuna yanıt verirken aşağıdaki CV bağlamını kullan. "
+                "Bağlamda bilgi yoksa bunu açıkça belirt ve uydurma."
+            )
+            question_label = "Kullanıcı Sorusu"
+            context_label = "CV Bağlamı"
         else:
-            language_prompt = "You are Fatma Betül's AI portfolio assistant. Answer only in English. Do not provide Turkish translations. Focus on the user's message, respond independently of previous topics."
+            language_prompt = (
+                "You are Fatma Betül's AI portfolio assistant. "
+                "Answer only in English. Do not provide Turkish translations. "
+                "Use the CV context below. If the context lacks the answer, say so."
+            )
+            question_label = "User Question"
+            context_label = "CV Context"
         
-        full_prompt = f"{language_prompt}\n\n{history_text}"
+        full_prompt = (
+            f"{language_prompt}\n\n"
+            f"{context_label}:\n{context_text}\n\n"
+            f"{question_label}:\n{user_msg}\n\n"
+            f"Son sohbet geçmişi (referans için):\n{history_text}"
+        )
         assistant_reply = ask_gemini(full_prompt)
         st.session_state.chat_history.append({"role": "assistant", "content": assistant_reply})
         st.rerun()
@@ -1201,7 +1223,7 @@ def _job_compatibility_flow(tool_def, LTXT):
     reply = (
         result["data"]["report_text"]
         if result.get("success")
-        else "Analiz oluşturulamadı 😕"
+        else "Analiz oluşturulamadı "
     )
     st.session_state.chat_history.append({"role": "bot", "content": reply})
 
