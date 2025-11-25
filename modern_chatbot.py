@@ -1448,10 +1448,7 @@ def run(*, tool_def, rag, cv_json):
         st.rerun()
 
     if st.session_state.get("show_projects", False):
-        st.session_state.chat_history.append({
-            "role": "assistant",
-            "content": _render_projects_section(cv_json)
-        })
+        _render_projects_section(cv_json)
 
 
 
