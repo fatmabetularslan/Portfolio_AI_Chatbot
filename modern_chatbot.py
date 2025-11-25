@@ -1023,17 +1023,29 @@ def run(*, tool_def, rag, cv_json):
         div[class*="project-entry-wrapper-"]:last-child {
             margin-bottom: 0 !important;
         }
-        /* Tüm wrapper'lar için tutarlı margin */
+        /* Tüm wrapper'lar için tutarlı margin - daha agresif */
         div[class*="project-entry-wrapper-"] {
+            margin: 0 !important;
             margin-bottom: 6px !important;
+            display: block !important;
         }
         div[class*="project-entry-wrapper-"]:last-child {
             margin-bottom: 0 !important;
         }
         /* Streamlit accordion'ları için margin sıfırla */
         .project-entry [data-testid="stExpander"],
-        div[class*="project-entry-wrapper-"] [data-testid="stExpander"] {
+        div[class*="project-entry-wrapper-"] [data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"] > [data-testid="stExpander"] {
             margin: 0 !important;
+            margin-bottom: 0 !important;
+        }
+        /* Accordion'un parent div'leri için de margin kontrolü */
+        div[class*="project-entry-wrapper-"] > div {
+            margin-bottom: 0 !important;
+        }
+        /* Streamlit'in kendi margin'lerini override et */
+        div[class*="project-entry-wrapper-"] + div[class*="project-entry-wrapper-"] {
+            margin-top: 0 !important;
         }
         
         /* Accordion başlık özeti için */
