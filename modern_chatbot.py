@@ -1012,43 +1012,28 @@ def run(*, tool_def, rag, cv_json):
             background: #5a67d8;
             transform: translateY(-1px);
         }
-        /* Proje entry'leri için tutarlı boşluk */
+        /* Proje entry'leri için tutarlı boşluk - tüm wrapper'lar */
         .project-entry {
             margin: 0 !important;
             margin-bottom: 6px !important;
             display: block !important;
         }
-        .project-entry:last-child {
+        /* Son proje için margin sıfırla */
+        .project-entry:last-child,
+        div[class*="project-entry-wrapper-"]:last-child {
             margin-bottom: 0 !important;
         }
-        /* Streamlit accordion'ları için margin ayarı - tüm olası selector'lar */
+        /* Tüm wrapper'lar için tutarlı margin */
+        div[class*="project-entry-wrapper-"] {
+            margin-bottom: 6px !important;
+        }
+        div[class*="project-entry-wrapper-"]:last-child {
+            margin-bottom: 0 !important;
+        }
+        /* Streamlit accordion'ları için margin sıfırla */
         .project-entry [data-testid="stExpander"],
-        .project-entry .streamlit-expander,
-        .project-entry > div[data-testid="stExpander"],
-        .project-entry > div > div[data-testid="stExpander"] {
+        div[class*="project-entry-wrapper-"] [data-testid="stExpander"] {
             margin: 0 !important;
-            margin-bottom: 6px !important;
-        }
-        .project-entry:last-child [data-testid="stExpander"],
-        .project-entry:last-child .streamlit-expander,
-        .project-entry:last-child > div[data-testid="stExpander"],
-        .project-entry:last-child > div > div[data-testid="stExpander"] {
-            margin-bottom: 0 !important;
-        }
-        /* Accordion wrapper için - tüm olası div'ler */
-        .project-entry > div {
-            margin: 0 !important;
-            margin-bottom: 6px !important;
-        }
-        .project-entry:last-child > div {
-            margin-bottom: 0 !important;
-        }
-        /* Streamlit'in kendi margin'lerini sıfırla */
-        .project-entry * {
-            margin-top: 0 !important;
-        }
-        .project-entry [data-testid="stExpander"] * {
-            margin-bottom: 0 !important;
         }
         
         /* Accordion başlık özeti için */
@@ -1167,19 +1152,23 @@ def run(*, tool_def, rag, cv_json):
             # Accordion başlığı
             expander_title = f"{icon} {name}"
             
-            # Accordion başlığına tooltip ekle
+            # Tüm projeleri aynı wrapper ile sar
+            wrapper_class = f"project-entry-wrapper-{i}"
             if short_summary:
                 tooltip_css = f"""
                 <style>
-                .accordion-tooltip-{i} {{
+                .{wrapper_class} {{
                     position: relative;
+                    margin-bottom: 6px !important;
+                }}
+                .{wrapper_class}:last-child {{
                     margin-bottom: 0 !important;
                 }}
-                .accordion-tooltip-{i} .streamlit-expanderHeader {{
+                .{wrapper_class} .streamlit-expanderHeader {{
                     margin-bottom: 0 !important;
                     padding-bottom: 8px !important;
                 }}
-                .accordion-tooltip-{i}:hover::after {{
+                .{wrapper_class}:hover::after {{
                     content: "{short_summary}";
                     position: absolute;
                     bottom: 130%;
@@ -1196,7 +1185,7 @@ def run(*, tool_def, rag, cv_json):
                     word-wrap: break-word;
                     white-space: normal;
                 }}
-                .accordion-tooltip-{i}:hover::before {{
+                .{wrapper_class}:hover::before {{
                     content: "";
                     position: absolute;
                     bottom: 125%;
@@ -1209,145 +1198,89 @@ def run(*, tool_def, rag, cv_json):
                 </style>
                 """
                 st.markdown(tooltip_css, unsafe_allow_html=True)
-                
-                # Accordion'u tooltip ile sar
-                st.markdown(f'<div class="accordion-tooltip-{i} project-entry">', unsafe_allow_html=True)
-                with st.expander(expander_title, expanded=False):
-                    # Teknolojiler bölümü
-                    st.markdown("**🛠️ Teknolojiler:**")
-                    st.markdown(tech)
-                    
-                    # Açıklama bölümü
-                    st.markdown("**📝 Açıklama:**")
-                    # Dil desteği için açıklamayı kontrol et
-                    if isinstance(desc, dict):
-                        # Çoklu dil desteği varsa
-                        current_lang = st.session_state.get("lang", "tr")
-                        description = desc.get(current_lang, desc.get("en", desc.get("tr", str(desc))))
-                    else:
-                        # Tek dil (string) ise
-                        description = desc
-                    st.markdown(description)
-                    
-                    # Özellikler bölümü
-                    features = proj.get("features", "")
-                    features_list = []
-
-                    # Dil desteği için özellikleri kontrol et
-                    if isinstance(features, dict):
-                        # Çoklu dil desteği varsa
-                        current_lang = st.session_state.get("lang", "tr")
-                        features = features.get(current_lang, features.get("en", features.get("tr", [])))
-
-                    if isinstance(features, list):
-                        features_list = features
-                    elif isinstance(features, str):
-                        features_clean = features.replace("<br>", "\n").replace("•", "")
-                        features_list = [f.strip() for f in features_clean.split("\n") if f.strip()]
-
-                    if features_list:
-                        features_html = """
-                        <div class="project-section">
-                            <div class="section-title">✨ <strong>Özellikler</strong></div>
-                            <div class="section-content">
-                        """
-                        for feature in features_list:
-                            features_html += f"<div>• {feature}</div>"
-
-                        features_html += """
-                            </div>
-                        </div>
-                        """  # 🔐 Kapanışlar burada net
-
-                        st.markdown(features_html, unsafe_allow_html=True)
-                    
-                    # GitHub linki
-                    github_url = proj.get("github", "")
-                    if github_url:
-                        st.markdown("**🔗 GitHub:**")
-                        st.markdown(f"[📂 Projeyi İncele]({github_url})")
-                    
-                    # Diğer linkler
-                    if links:
-                        st.markdown("**🔗 Diğer Linkler:**")
-                        for link in links:
-                            if isinstance(link, dict):
-                                url = link.get("url", "")
-                                text = link.get("text", "Link")
-                            else:
-                                url = link
-                                text = "Proje Linki"
-                            st.markdown(f"[{text}]({url})")
-                st.markdown('</div>', unsafe_allow_html=True)
             else:
-                st.markdown('<div class="project-entry">', unsafe_allow_html=True)
-                with st.expander(expander_title, expanded=False):
-                    # Teknolojiler bölümü
-                    st.markdown("**🛠️ Teknolojiler:**")
-                    st.markdown(tech)
-                    
-                    # Açıklama bölümü
-                    st.markdown("**📝 Açıklama:**")
-                    # Dil desteği için açıklamayı kontrol et
-                    if isinstance(desc, dict):
-                        # Çoklu dil desteği varsa
-                        current_lang = st.session_state.get("lang", "tr")
-                        description = desc.get(current_lang, desc.get("en", desc.get("tr", str(desc))))
-                    else:
-                        # Tek dil (string) ise
-                        description = desc
-                    st.markdown(description)
-                    
-                    # Özellikler bölümü
-                    features = proj.get("features", "")
-                    features_list = []
+                # Tooltip olmayan projeler için de aynı margin
+                no_tooltip_css = f"""
+                <style>
+                .{wrapper_class} {{
+                    margin-bottom: 6px !important;
+                }}
+                .{wrapper_class}:last-child {{
+                    margin-bottom: 0 !important;
+                }}
+                </style>
+                """
+                st.markdown(no_tooltip_css, unsafe_allow_html=True)
+            
+            # Accordion'u wrapper ile sar
+            st.markdown(f'<div class="{wrapper_class} project-entry">', unsafe_allow_html=True)
+            with st.expander(expander_title, expanded=False):
+                # Teknolojiler bölümü
+                st.markdown("**🛠️ Teknolojiler:**")
+                st.markdown(tech)
+                
+                # Açıklama bölümü
+                st.markdown("**📝 Açıklama:**")
+                # Dil desteği için açıklamayı kontrol et
+                if isinstance(desc, dict):
+                    # Çoklu dil desteği varsa
+                    current_lang = st.session_state.get("lang", "tr")
+                    description = desc.get(current_lang, desc.get("en", desc.get("tr", str(desc))))
+                else:
+                    # Tek dil (string) ise
+                    description = desc
+                st.markdown(description)
+                
+                # Özellikler bölümü
+                features = proj.get("features", "")
+                features_list = []
 
-                    # Dil desteği için özellikleri kontrol et
-                    if isinstance(features, dict):
-                        # Çoklu dil desteği varsa
-                        current_lang = st.session_state.get("lang", "tr")
-                        features = features.get(current_lang, features.get("en", features.get("tr", [])))
+                # Dil desteği için özellikleri kontrol et
+                if isinstance(features, dict):
+                    # Çoklu dil desteği varsa
+                    current_lang = st.session_state.get("lang", "tr")
+                    features = features.get(current_lang, features.get("en", features.get("tr", [])))
 
-                    if isinstance(features, list):
-                        features_list = features
-                    elif isinstance(features, str):
-                        features_clean = features.replace("<br>", "\n").replace("•", "")
-                        features_list = [f.strip() for f in features_clean.split("\n") if f.strip()]
+                if isinstance(features, list):
+                    features_list = features
+                elif isinstance(features, str):
+                    features_clean = features.replace("<br>", "\n").replace("•", "")
+                    features_list = [f.strip() for f in features_clean.split("\n") if f.strip()]
 
-                    if features_list:
-                        features_html = """
-                        <div class="project-section">
-                            <div class="section-title">✨ <strong>Özellikler</strong></div>
-                            <div class="section-content">
-                        """
-                        for feature in features_list:
-                            features_html += f"<div>• {feature}</div>"
+                if features_list:
+                    features_html = """
+                    <div class="project-section">
+                        <div class="section-title">✨ <strong>Özellikler</strong></div>
+                        <div class="section-content">
+                    """
+                    for feature in features_list:
+                        features_html += f"<div>• {feature}</div>"
 
-                        features_html += """
-                            </div>
+                    features_html += """
                         </div>
-                        """  # 🔐 Kapanışlar burada net
+                    </div>
+                    """  # 🔐 Kapanışlar burada net
 
-                        st.markdown(features_html, unsafe_allow_html=True)
-                    
-                    # GitHub linki
-                    github_url = proj.get("github", "")
-                    if github_url:
-                        st.markdown("**🔗 GitHub:**")
-                        st.markdown(f"[📂 Projeyi İncele]({github_url})")
-                    
-                    # Diğer linkler
-                    if links:
-                        st.markdown("**🔗 Diğer Linkler:**")
-                        for link in links:
-                            if isinstance(link, dict):
-                                url = link.get("url", "")
-                                text = link.get("text", "Link")
-                            else:
-                                url = link
-                                text = "Proje Linki"
-                            st.markdown(f"[{text}]({url})")
-                st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown(features_html, unsafe_allow_html=True)
+                
+                # GitHub linki
+                github_url = proj.get("github", "")
+                if github_url:
+                    st.markdown("**🔗 GitHub:**")
+                    st.markdown(f"[📂 Projeyi İncele]({github_url})")
+                
+                # Diğer linkler
+                if links:
+                    st.markdown("**🔗 Diğer Linkler:**")
+                    for link in links:
+                        if isinstance(link, dict):
+                            url = link.get("url", "")
+                            text = link.get("text", "Link")
+                        else:
+                            url = link
+                            text = "Proje Linki"
+                        st.markdown(f"[{text}]({url})")
+            st.markdown('</div>', unsafe_allow_html=True)
 
     # --- Cover letter PDF indir butonu ---
     if "cover_pdf_bytes" in st.session_state:
@@ -1539,7 +1472,7 @@ def _job_compatibility_flow(tool_def, LTXT):
     reply = (
         result["data"]["report_text"]
         if result.get("success")
-        else "Analiz oluşturulamadı 😕"
+        else "Analiz oluşturulamadı "
     )
     st.session_state.chat_history.append({"role": "bot", "content": reply})
 
