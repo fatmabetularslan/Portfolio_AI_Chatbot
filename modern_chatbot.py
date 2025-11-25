@@ -1012,25 +1012,42 @@ def run(*, tool_def, rag, cv_json):
             background: #5a67d8;
             transform: translateY(-1px);
         }
+        /* Proje entry'leri için tutarlı boşluk */
         .project-entry {
-            margin: 0 0 6px 0 !important;
+            margin: 0 !important;
+            margin-bottom: 6px !important;
             display: block !important;
         }
         .project-entry:last-child {
             margin-bottom: 0 !important;
         }
-        /* Streamlit accordion'ları için margin ayarı */
-        .project-entry [data-testid="stExpander"] {
+        /* Streamlit accordion'ları için margin ayarı - tüm olası selector'lar */
+        .project-entry [data-testid="stExpander"],
+        .project-entry .streamlit-expander,
+        .project-entry > div[data-testid="stExpander"],
+        .project-entry > div > div[data-testid="stExpander"] {
+            margin: 0 !important;
             margin-bottom: 6px !important;
         }
-        .project-entry:last-child [data-testid="stExpander"] {
+        .project-entry:last-child [data-testid="stExpander"],
+        .project-entry:last-child .streamlit-expander,
+        .project-entry:last-child > div[data-testid="stExpander"],
+        .project-entry:last-child > div > div[data-testid="stExpander"] {
             margin-bottom: 0 !important;
         }
-        /* Accordion wrapper için */
+        /* Accordion wrapper için - tüm olası div'ler */
         .project-entry > div {
+            margin: 0 !important;
             margin-bottom: 6px !important;
         }
         .project-entry:last-child > div {
+            margin-bottom: 0 !important;
+        }
+        /* Streamlit'in kendi margin'lerini sıfırla */
+        .project-entry * {
+            margin-top: 0 !important;
+        }
+        .project-entry [data-testid="stExpander"] * {
             margin-bottom: 0 !important;
         }
         
