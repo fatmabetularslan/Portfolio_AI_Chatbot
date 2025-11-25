@@ -938,7 +938,7 @@ def run(*, tool_def, rag, cv_json):
 
     # ---------- Chat geçmişi ----------
     # ---------- Projeler Accordion ----------
-    if st.session_state.get("show_projects", False):
+    if False and st.session_state.get("show_projects", False):
         st.markdown("""
         <style>
         .project-accordion {
@@ -1507,7 +1507,7 @@ def _job_compatibility_flow(tool_def, LTXT):
     reply = (
         result["data"]["report_text"]
         if result.get("success")
-        else "Analiz oluşturulamadı "
+        else "Analiz oluşturulamadı 😕"
     )
     st.session_state.chat_history.append({"role": "bot", "content": reply})
 
