@@ -7,7 +7,7 @@ from common_css import LIGHT_CSS, DARK_CSS
 import ast
 import re
 # ------------------------------------------------------------------ #
-# (İstersen bu uzun CSS'i ayrı bir dosyaya da taşıyabilirsin)
+
 CSS = """
 <style>
 /* —— KISA NOT —— 
