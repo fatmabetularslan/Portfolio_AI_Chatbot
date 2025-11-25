@@ -870,6 +870,9 @@ def run(*, tool_def, rag, cv_json):
     </style>
     """, unsafe_allow_html=True)
     
+    projects_placeholder = st.container()
+    articles_placeholder = st.container()
+
     icon_map = {
         "eğitim": "🎓",
         "deneyim": "💼",
@@ -1011,10 +1014,7 @@ def run(*, tool_def, rag, cv_json):
             transform: translateY(-1px);
         }
         .project-entry {
-            margin-bottom: 12px !important;
-        }
-        .project-entry + .project-entry {
-            margin-top: 12px !important;
+            margin: 0 0 12px 0 !important;
         }
         .project-entry:last-child {
             margin-bottom: 0 !important;
@@ -1358,9 +1358,6 @@ def run(*, tool_def, rag, cv_json):
             continue  # Beklenmeyen tipte veri varsa atla
         with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
             st.markdown(content, unsafe_allow_html=True)
-
-    projects_placeholder = st.container()
-    articles_placeholder = st.container()
 
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
 
