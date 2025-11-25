@@ -1023,7 +1023,7 @@ def run(*, tool_def, rag, cv_json):
         div[class*="project-entry-wrapper-"]:last-child {
             margin-bottom: 0 !important;
         }
-        /* Tüm wrapper'lar için tutarlı margin - daha agresif */
+        /* Tüm wrapper'lar için tutarlı margin - hem wrapper hem accordion */
         div[class*="project-entry-wrapper-"] {
             margin: 0 !important;
             margin-bottom: 6px !important;
@@ -1032,18 +1032,37 @@ def run(*, tool_def, rag, cv_json):
         div[class*="project-entry-wrapper-"]:last-child {
             margin-bottom: 0 !important;
         }
-        /* Streamlit accordion'ları için margin sıfırla */
-        .project-entry [data-testid="stExpander"],
+        /* Accordion'dan sonra boşluk için - her accordion'un altına 6px */
         div[class*="project-entry-wrapper-"] [data-testid="stExpander"],
-        div[class*="project-entry-wrapper-"] > [data-testid="stExpander"] {
+        div[class*="project-entry-wrapper-"] > div[data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"] > div > div[data-testid="stExpander"] {
             margin: 0 !important;
+            margin-bottom: 6px !important;
+            margin-top: 0 !important;
+        }
+        div[class*="project-entry-wrapper-"]:last-child [data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"]:last-child > div[data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"]:last-child > div > div[data-testid="stExpander"] {
+            margin-bottom: 0 !important;
+        }
+        /* Streamlit accordion'ları için margin - her accordion'un altına 6px - çok spesifik */
+        div[class*="project-entry-wrapper-"] [data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"] > div[data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"] > div > div[data-testid="stExpander"] {
+            margin: 0 !important;
+            margin-bottom: 6px !important;
+            margin-top: 0 !important;
+        }
+        div[class*="project-entry-wrapper-"]:last-child [data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"]:last-child > div[data-testid="stExpander"],
+        div[class*="project-entry-wrapper-"]:last-child > div > div[data-testid="stExpander"] {
             margin-bottom: 0 !important;
         }
         /* Accordion'un parent div'leri için de margin kontrolü */
         div[class*="project-entry-wrapper-"] > div {
             margin-bottom: 0 !important;
         }
-        /* Streamlit'in kendi margin'lerini override et */
+        /* Streamlit'in kendi margin'lerini override et - wrapper'lar arası */
         div[class*="project-entry-wrapper-"] + div[class*="project-entry-wrapper-"] {
             margin-top: 0 !important;
         }
