@@ -390,7 +390,7 @@ def run(*, tool_def, rag, cv_json):
             <div class="ai-brain-icon">🧠</div>
             <div class="ai-message">
                 <div class="ai-message-title">AI Asistan Hazır!</div>
-                <div class="ai-message-subtitle">Fatma Betül’ün CV’si, projeleri ve deneyimleri hakkında merak ettiğin her şeyi anında öğrenebilirsin. Aşağıdan bir konu seçebilir veya bana doğrudan soru sorabilirsin..</div>
+                <div class="ai-message-subtitle">Hakkımda merak ettiklerini bir tıkla öğrenebilirsin.</div>
             </div>
         </div>
     </div>
@@ -502,12 +502,12 @@ def run(*, tool_def, rag, cv_json):
             welcome_text = {
                 "tr": {
                     "title": "👋 Merhaba!",
-                    "message": "Ben Fatma Betül'ün AI destekli portföy asistanıyım. CV'sini, projelerini, deneyimlerini ve sosyal medya içeriklerini seninle paylaşabilirim.",
+                    "message": "Ben Fatma Betül’ün AI destekli portföy asistanıyım. CV’sini, projelerini ve deneyimlerini senin için hızlıca özetleyebilirim. Başlamak için aşağıdaki başlıklardan birini seçebilir veya bana doğrudan bir soru yazabilirsin.",
                     "question": "Ne hakkında bilgi almak istersin?"
                 },
                 "en": {
                     "title": "👋 Hello!",
-                    "message": "I'm Fatma Betül’s AI-powered portfolio assistant. I can share her CV, projects, experiences, and social media content with you.",
+                    "message": "I'm Fatma Betül’s AI-powered portfolio assistant. I can quickly summarize her CV, projects, and professional experience for you. To begin, you can select one of the sections below or simply ask me a question directly.",
                     "question": "What would you like to learn more about"
                 }
             }
