@@ -1359,7 +1359,12 @@ def run(*, tool_def, rag, cv_json):
         with st.chat_message("🧑‍💼" if role == "user" else "🤖"):
             st.markdown(content, unsafe_allow_html=True)
 
+    projects_placeholder = st.container()
+    articles_placeholder = st.container()
+
     user_msg = st.chat_input(LANG_TEXTS[st.session_state.lang]["input_placeholder"])
+    if user_msg and ("projeler" in user_msg.lower() or user_msg.strip().lower() == "projeler"):
+        st.session_state.show_projects = True
 
     # Kullanıcı 'cover letter yaz', 'ön yazı', 'cover letter', veya 'ön yazı yaz' derse formu aç
     trigger_phrases = ["cover letter yaz", "ön yazı", "cover letter", "ön yazı yaz"]
