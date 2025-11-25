@@ -9,8 +9,8 @@ api_key = st.secrets["GEMINI_API_KEY"]
 # Genel amaçlı Gemini API fonksiyonu
 # -----------------------------------
 def ask_gemini(prompt: str) -> str:
-    model = "gemini-2.5-flash-001"
-    url = f"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent"
+    model = "gemini-2.5-flash"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     headers = {"Content-Type": "application/json"}
     data = {
         "contents": [{"parts": [{"text": prompt}]}]
@@ -74,7 +74,7 @@ CV Details:
 """
 
     # -- Gemini Flash API
-    url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-001:generateContent"
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
     api_key = st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
 
     payload = {
