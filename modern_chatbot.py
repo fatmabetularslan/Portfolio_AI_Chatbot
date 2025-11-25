@@ -135,6 +135,247 @@ def language_and_theme_toggle():
         qp.clear()
         st.rerun()
 
+def _render_projects_section(cv_json):
+    st.markdown("""
+    <style>
+    .project-accordion {
+        margin: 16px 0;
+    }
+    .project-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        font-size: 1.1em;
+    }
+    .project-header:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    .project-content {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 8px;
+        margin-left: 20px;
+    }
+    .project-section {
+        margin-bottom: 16px;
+        padding: 12px;
+        background: #f8fafc;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+    .section-title {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 1.1em;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .section-content {
+        color: #374151;
+        line-height: 1.6;
+        padding-left: 8px;
+    }
+    .project-links {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #e5e7eb;
+    }
+    .project-link {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9em;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        transition: all 0.2s ease;
+    }
+    .project-link:hover {
+        background: #5a67d8;
+        transform: translateY(-1px);
+    }
+    .project-summary {
+        background: #f0f2f6;
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        border-left: 3px solid #667eea;
+    }
+    .stApp[data-theme="dark"] .project-content {
+        background: #1e293b !important;
+        border-color: #475569 !important;
+    }
+    .stApp[data-theme="dark"] .project-section {
+        background: #334155 !important;
+        border-left-color: #8b5cf6 !important;
+    }
+    .stApp[data-theme="dark"] .section-title {
+        color: #8b5cf6 !important;
+    }
+    .stApp[data-theme="dark"] .section-content {
+        color: #e2e8f0 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### 🚀 Projeler")
+
+    project_icons = {
+        "AI-Powered Portfolio Chatbot": "🚀",
+        "Mobile App User Behavior Analysis": "📊",
+        "Customer Churn Prediction": "🎯",
+        "Movie Recommendation System": "🎬",
+        "Natural Language to SQL Query Tool": "💬",
+        "Smart Home Energy Management Application": "🏠",
+        "Credit Score Prediction": "💰",
+        "Energy Consumption Prediction API": "⚡",
+        "AdventureWorks Sales Dashboard": "📈",
+        "Real-Time Face Recognition App": "👤",
+        "Safe Area Detection": "🛡️",
+        "Market Prices Automation": "🛒",
+        "Simple E-Commerce System with Python": "🛍️"
+    }
+
+    for i, proj in enumerate(cv_json.get("projects", [])):
+        name = proj.get("name", "")
+        tech = proj.get("technology", "")
+        desc = proj.get("description", "")
+        links = proj.get("links", [])
+
+        icon = project_icons.get(name, "🚀")
+        current_lang = st.session_state.get("lang", "tr")
+        short_summary = ""
+
+        summaries = {
+            "AI-Powered Portfolio Chatbot": ("💬 AI destekli CV tabanlı asistan, job-fit & cover letter üretir",
+                                             "💬 AI-powered CV assistant"),
+            "Mobile App User Behavior Analysis": ("📱 Kullanıcı davranış analizi ve segmentasyon",
+                                                  "📱 User behavior analysis and segmentation"),
+            "Customer Churn Prediction": ("📉 Müşteri kaybı tahmin modeli",
+                                          "📉 Customer churn prediction model"),
+            "Movie Recommendation System": ("🎭 150M+ kayıt ile kişiselleştirilmiş film önerileri",
+                                             "🎭 Personalized movie recommendations"),
+            "Natural Language to SQL Query Tool": ("🗣️ Doğal dil ile SQL sorguları",
+                                                    "🗣️ Natural language to SQL queries"),
+            "Smart Home Energy Management Application": ("🏠 Akıllı ev enerji yönetimi",
+                                                         "🏠 Smart home energy management"),
+            "Credit Score Prediction": ("💳 Kredi skoru tahmin sistemi",
+                                        "💳 Credit score prediction"),
+            "Energy Consumption Prediction API": ("⚡ Enerji tüketimi tahmin API'si",
+                                                  "⚡ Energy consumption prediction API"),
+            "AdventureWorks Sales Dashboard": ("📊 Satış optimizasyonu dashboard'u",
+                                               "📊 Sales optimization dashboard"),
+            "Real-Time Face Recognition App": ("👤 Gerçek zamanlı yüz tanıma uygulaması",
+                                               "👤 Real-time face recognition app"),
+            "Safe Area Detection": ("🛡️ Güvenli alan tespit sistemi",
+                                    "🛡️ Safe area detection system"),
+            "Market Prices Automation": ("🛒 Pazar fiyatları otomasyonu",
+                                         "🛒 Market prices automation"),
+            "Simple E-Commerce System with Python": ("🛍️ Basit e-ticaret sistemi",
+                                                     "🛍️ Simple e-commerce system"),
+        }
+
+        if name in summaries:
+            tr, en = summaries[name]
+            short_summary = tr if current_lang == "tr" else en
+
+        expander_title = f"{icon} {name}"
+
+        if short_summary:
+            tooltip_css = f"""
+            <style>
+            .accordion-tooltip-{i} {{
+                position: relative;
+                margin-bottom: 0 !important;
+            }}
+            .accordion-tooltip-{i}:hover::after {{
+                content: "{short_summary}";
+                position: absolute;
+                bottom: 130%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #333;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 1000;
+                max-width: 300px;
+                word-wrap: break-word;
+                white-space: normal;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            }}
+            </style>
+            """
+            st.markdown(tooltip_css, unsafe_allow_html=True)
+            st.markdown(f'<div class="accordion-tooltip-{i}">', unsafe_allow_html=True)
+
+        with st.expander(expander_title, expanded=False):
+            st.markdown("**🛠️ Teknolojiler:**")
+            st.markdown(tech)
+
+            st.markdown("**📝 Açıklama:**")
+            if isinstance(desc, dict):
+                description = desc.get(current_lang, desc.get("en", desc.get("tr", str(desc))))
+            else:
+                description = desc
+            st.markdown(description)
+
+            features = proj.get("features", "")
+            if isinstance(features, dict):
+                features = features.get(current_lang, features.get("en", features.get("tr", [])))
+            if isinstance(features, str):
+                features = [
+                    f.strip()
+                    for f in features.replace("<br>", "\n").replace("•", "").split("\n")
+                    if f.strip()
+                ]
+
+            if isinstance(features, list) and features:
+                st.markdown("""
+                <div class="project-section">
+                    <div class="section-title">✨ <strong>Özellikler</strong></div>
+                    <div class="section-content">
+                """, unsafe_allow_html=True)
+                for feature in features:
+                    st.markdown(f"<div>• {feature}</div>", unsafe_allow_html=True)
+                st.markdown("</div></div>", unsafe_allow_html=True)
+
+            github_url = proj.get("github", "")
+            if github_url:
+                st.markdown("**🔗 GitHub:**")
+                st.markdown(f"[📂 Projeyi İncele]({github_url})")
+
+            if links:
+                st.markdown("**🔗 Diğer Linkler:**")
+                for link in links:
+                    if isinstance(link, dict):
+                        url = link.get("url", "")
+                        text = link.get("text", "Link")
+                    else:
+                        url = link
+                        text = "Proje Linki"
+                    st.markdown(f"[{text}]({url})")
+
+        if short_summary:
+            st.markdown("</div>", unsafe_allow_html=True)
+
+
 def run(*, tool_def, rag, cv_json):
     # Accordion boşluklarını kaldıran CSS
     st.markdown("""
