@@ -15,7 +15,7 @@ from common_css import LIGHT_CSS, DARK_CSS
 from rag_system import load_cv_index
 from pathlib import Path
 PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv-2025.pdf"
-PROFILE_IMG_PATH = Path("assets/profile.jpg")
+PROFILE_IMG_PATH = Path("assets/vesika.jpg")
 
 # --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
 def language_and_theme_toggle():
