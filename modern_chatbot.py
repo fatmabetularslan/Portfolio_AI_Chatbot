@@ -1013,7 +1013,7 @@ def run(*, tool_def, rag, cv_json):
             transform: translateY(-1px);
         }
         .project-entry {
-            margin: 0 0 12px 0 !important;
+            margin: 0 0 6px 0 !important;
         }
         .project-entry:last-child {
             margin-bottom: 0 !important;
