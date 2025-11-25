@@ -1510,7 +1510,7 @@ def _job_compatibility_flow(tool_def, LTXT):
     reply = (
         result["data"]["report_text"]
         if result.get("success")
-        else "Analiz oluşturulamadı 😕"
+        else "Analiz oluşturulamadı "
     )
     st.session_state.chat_history.append({"role": "bot", "content": reply})
 
