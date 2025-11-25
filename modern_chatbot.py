@@ -390,7 +390,7 @@ def run(*, tool_def, rag, cv_json):
             <div class="ai-brain-icon">🧠</div>
             <div class="ai-message">
                 <div class="ai-message-title">AI Asistan Hazır!</div>
-                <div class="ai-message-subtitle">Hakkımda merak ettiklerini bir tıkla öğrenebilirsin.</div>
+                <div class="ai-message-subtitle">Fatma Betül’ün CV’si, projeleri ve deneyimleri hakkında merak ettiğin her şeyi anında öğrenebilirsin. Aşağıdan bir konu seçebilir veya bana doğrudan soru sorabilirsin..</div>
             </div>
         </div>
     </div>
