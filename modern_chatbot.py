@@ -7,7 +7,7 @@ from common_css import LIGHT_CSS, DARK_CSS
 import ast
 import re
 # ------------------------------------------------------------------ #
-
+# (İstersen bu uzun CSS'i ayrı bir dosyaya da taşıyabilirsin)
 CSS = """
 <style>
 /* —— KISA NOT —— 
@@ -926,9 +926,10 @@ def run(*, tool_def, rag, cv_json):
                 </style>
                 """, unsafe_allow_html=True)
                 response = "".join(f"<div class='cv-info-block'>{line}</div>" for line in lines)
-                st.session_state.chat_history.append({"role": "user", "content": section.capitalize()})
-                st.session_state.chat_history.append({"role": "assistant", "content": response})
-                st.rerun()
+                with articles_placeholder:
+                    st.session_state.chat_history.append({"role": "user", "content": section.capitalize()})
+                    st.session_state.chat_history.append({"role": "assistant", "content": response})
+                    st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
         
     # --- Eski, büyük, yatay butonlar ve ilgili kodlar tamamen kaldırıldı ---
@@ -1011,6 +1012,9 @@ def run(*, tool_def, rag, cv_json):
         }
         .project-entry {
             margin-bottom: 12px !important;
+        }
+        .project-entry + .project-entry {
+            margin-top: 12px !important;
         }
         .project-entry:last-child {
             margin-bottom: 0 !important;
@@ -1542,3 +1546,4 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# --- Remove main page buttons at the end ---
