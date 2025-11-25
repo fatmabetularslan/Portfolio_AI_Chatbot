@@ -146,9 +146,7 @@ tag = 'betül-cv.json'
 
 # RAG sistemini güvenli şekilde yükle
 try:
-    with st.spinner("CV verileri yükleniyor ve embedding'ler hesaplanıyor..."):
-        rag = load_cv_index(tag)
-    st.success("✅ CV verileri başarıyla yüklendi!")
+    rag = load_cv_index(tag)
 except Exception as e:
     st.error(f"❌ CV verileri yüklenirken hata oluştu: {str(e)}")
     st.info("Lütfen sayfayı yenileyin veya daha sonra tekrar deneyin.")
