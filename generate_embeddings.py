@@ -8,9 +8,49 @@ Deploy sırasında API limiti olmayacak çünkü embedding'ler önceden hesaplan
 import json
 import numpy as np
 import pickle
-from google.generativeai.embedding import embed_content
 import os
 from pathlib import Path
+
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:  # pragma: no cover - fallback for <3.11
+    import tomli as tomllib  # type: ignore[import]
+
+
+def _load_gemini_key():
+    """
+    Tries to find the Gemini API key from environment variables or
+    .streamlit/secrets.toml so that embedding generation works outside Streamlit.
+    """
+    key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+    if key:
+        return key.strip()
+
+    secrets_path = Path(__file__).resolve().parent / ".streamlit" / "secrets.toml"
+    if secrets_path.exists():
+        try:
+            with open(secrets_path, "rb") as f:
+                secrets = tomllib.load(f)
+            key = secrets.get("GEMINI_API_KEY") or secrets.get("GOOGLE_API_KEY")
+            if key:
+                return str(key).strip()
+        except Exception as exc:  # pragma: no cover - strictly best-effort
+            print(f"⚠️ secrets.toml okunurken hata: {exc}")
+    return None
+
+
+GEMINI_KEY = _load_gemini_key()
+if not GEMINI_KEY:
+    raise RuntimeError(
+        "Gemini API anahtarı bulunamadı. Lütfen GOOGLE_API_KEY veya GEMINI_API_KEY "
+        "ortam değişkenini ayarlayın ya da .streamlit/secrets.toml içinde tanımlayın."
+    )
+
+# google.generativeai kütüphanesi embed_content çağrılarında GOOGLE_API_KEY değişkenini arıyor.
+os.environ["GOOGLE_API_KEY"] = GEMINI_KEY
+os.environ.setdefault("GEMINI_API_KEY", GEMINI_KEY)
+
+from google.generativeai.embedding import embed_content
 
 def build_chunks(cv_json):
     """CV verilerini chunk'lara böler"""
