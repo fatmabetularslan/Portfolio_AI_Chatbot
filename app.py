@@ -1718,36 +1718,45 @@ setTimeout(initChatbot, 2000);
 </script>
 """, unsafe_allow_html=True)
 
-# Chat modülünü modal içinde göster - SADECE chatbot container'ını gizle
-# Ana sayfa içeriği etkilenmemeli
+# Chat modülünü modal içinde göster - Chatbot'u ana sayfadan TAMAMEN kaldır
 st.markdown("""
 <style>
-/* SADECE chatbot container'ını gizle - başka hiçbir şeyi etkilemez */
-#chatbot-content-container {
+/* Chatbot container'ını ve içindeki TÜM içeriği TAMAMEN gizle */
+#chatbot-content-container,
+#chatbot-content-container * {
     display: none !important;
     visibility: hidden !important;
+    opacity: 0 !important;
     height: 0 !important;
     width: 0 !important;
     overflow: hidden !important;
     position: absolute !important;
-    top: -9999px !important;
-    left: -9999px !important;
+    top: -99999px !important;
+    left: -99999px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none !important;
+    z-index: -9999 !important;
+}
+
+/* Chatbot container'ını içeren Streamlit block'unu da gizle */
+div[data-testid="stVerticalBlock"]:has(#chatbot-content-container),
+div[data-testid="stVerticalBlock"]:has(> #chatbot-content-container) {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
 }
 
 /* Ana sayfa içeriğinin görünür olduğundan emin ol */
-.main-content {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.portfolio-section {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.hero-section {
+.main-content,
+.main-content *,
+.portfolio-section,
+.portfolio-section *,
+.hero-section,
+.hero-section * {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
