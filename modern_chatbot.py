@@ -539,332 +539,148 @@ def run(*, tool_def, rag, cv_json):
         qp.clear()
         st.rerun()
 
-    # --- Geri butonu (sol üstte, sabit) ---
-    st.markdown('''
-    <style>
-    .back-btn-fixed {
-        position: fixed !important;
-        left: 32px !important;
-        top: 64px !important;
-        z-index: 1001 !important;
-        display: flex !important;
-        align-items: center !important;
-        height: 54px !important;
-    }
-    @media (max-width: 600px) {
-        .back-btn-fixed { left: 8px !important; top: 32px !important; }
-    }
-    </style>
-    ''', unsafe_allow_html=True)
-    back_btn_placeholder = st.empty()
-    with back_btn_placeholder.container():
-        st.markdown('<div class="back-btn-fixed">', unsafe_allow_html=True)
-        if st.button('⬅️ Geri', key='back_to_home_btn', help='Ana sayfaya dön'):
-            st.session_state['page'] = 'home'
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+    # Geri butonu kaldırıldı - artık ayrı sayfa değil, scroll ile erişiliyor
 
-    # --- AI Asistan Hazır Mesajı ---
+    # --- AI Asistan Başlık (Küçültülmüş) ---
     st.markdown("""
     <style>
-    .ai-assistant-card {
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 24px;
-        margin: 20px 0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        position: relative;
-    }
-
-    .ai-assistant-content {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .ai-brain-icon {
-        font-size: 1.5em;
-        color: #ec4899;
-    }
-    .ai-message {
-        flex: 1;
-    }
-    .ai-message-title {
+    .ai-assistant-header {
+        font-size: 1.4em;
         font-weight: 600;
         color: #1e293b;
-        margin-bottom: 4px;
-        font-size: 1.1em;
+        margin-bottom: 8px;
+        text-align: center;
     }
-    .ai-message-subtitle {
-        color: #64748b;
+    .ai-assistant-subtitle {
         font-size: 0.95em;
+        color: #64748b;
+        text-align: center;
+        margin-bottom: 20px;
         line-height: 1.4;
     }
     
     /* Dark mode için */
-    [data-testid="stAppViewContainer"] [data-testid="stSidebar"] .ai-assistant-card,
-    .stApp[data-theme="dark"] .ai-assistant-card {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
-        border: 1px solid #475569 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-    }
-    .stApp[data-theme="dark"] .ai-assistant-title,
-    .stApp[data-theme="dark"] .ai-action-btn {
-        color: #94a3b8 !important;
-    }
-    .stApp[data-theme="dark"] .ai-message-title {
+    .stApp[data-theme="dark"] .ai-assistant-header {
         color: #f1f5f9 !important;
     }
-    .stApp[data-theme="dark"] .ai-message-subtitle {
+    .stApp[data-theme="dark"] .ai-assistant-subtitle {
         color: #cbd5e1 !important;
-    }
-    .stApp[data-theme="dark"] .ai-action-btn:hover {
-        background: rgba(102, 126, 234, 0.2) !important;
-        color: #a5b4fc !important;
     }
     </style>
     """, unsafe_allow_html=True)
     
-    st.markdown("""
-    <div class="ai-assistant-card">
-        <div class="ai-assistant-content">
-            <div class="ai-brain-icon">🧠</div>
-            <div class="ai-message">
-                <div class="ai-message-title">AI Asistan Hazır!</div>
-                <div class="ai-message-subtitle">Hakkımda merak ettiklerini bir tıkla öğrenebilirsin.</div>
-            </div>
-        </div>
-    </div>
+    current_lang = st.session_state.get("lang", "tr")
+    header_text = "🤖 AI Asistan" if current_lang == "tr" else "🤖 AI Assistant"
+    subtitle_text = (
+        "Ben Fatma Betül'ün AI portföy asistanıyım. CV, deneyim ve projeleri hakkında özet bilgi verebilirim. Aşağıdan bir başlık seç veya doğrudan soru sor."
+        if current_lang == "tr"
+        else "I'm Fatma Betül's AI portfolio assistant. I can provide summary information about her CV, experience, and projects. Select a topic below or ask a question directly."
+    )
+    
+    st.markdown(f"""
+    <div class="ai-assistant-header">{header_text}</div>
+    <div class="ai-assistant-subtitle">{subtitle_text}</div>
     """, unsafe_allow_html=True)
 
-    # --- Animasyonlu Chat Başlangıcı ---
+    # --- Welcome Mesajı (Hemen görünür, animasyon yok) ---
     if not st.session_state.get("welcome_message_shown", False):
-        st.markdown("""
-        <style>
-        .typing-animation {
-            display: inline-block;
-            animation: blink 1.4s infinite;
-        }
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        .welcome-message {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 24px;
-            border-radius: 18px;
-            margin: 20px 0;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
-            position: relative;
-            overflow: hidden;
-        }
-        .welcome-message::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            animation: shimmer 2s infinite;
-        }
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        .welcome-message-content {
-            position: relative;
-            z-index: 1;
-        }
-        .welcome-message-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .welcome-message-text {
-            font-size: 1em;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-        .welcome-message-question {
-            font-size: 1.1em;
-            font-weight: 500;
-            color: rgba(255,255,255,0.9);
-        }
-        .typing-indicator {
-            display: inline-block;
-            margin-left: 8px;
-        }
-        .typing-dots {
-            display: inline-block;
-            animation: typing 1.4s infinite;
-        }
-        .typing-dots::after {
-            content: '...';
-            animation: dots 1.4s infinite;
-        }
-        @keyframes typing {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
-        }
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
-        }
-        
-        /* Dark mode için */
-        .stApp[data-theme="dark"] .welcome-message {
-            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%) !important;
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3) !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        # Önce typing animasyonu göster
-        if not st.session_state.get("typing_animation", False):
-            with st.chat_message("🤖"):
-                st.markdown("""
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.1em;">typing</span>
-                    <div class="typing-dots"></div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            # 2 saniye beklet
-            import time
-            time.sleep(2)
-            st.session_state["typing_animation"] = True
-            st.rerun()
-        else:
-            # Karşılama mesajını göster
-            welcome_text = {
-                "tr": {
-                    "title": "👋 Merhaba!",
-                    "message": "Ben Fatma Betül’ün AI destekli portföy asistanıyım. CV’sini, projelerini ve deneyimlerini senin için hızlıca özetleyebilirim. Başlamak için aşağıdaki başlıklardan birini seçebilir veya bana doğrudan bir soru yazabilirsin.",
-                    "question": "Ne hakkında bilgi almak istersin?"
-                },
-                "en": {
-                    "title": "👋 Hello!",
-                    "message": "I'm Fatma Betül’s AI-powered portfolio assistant. I can quickly summarize her CV, projects, and professional experience for you. To begin, you can select one of the sections below or simply ask me a question directly.",
-                    "question": "What would you like to learn more about"
-                }
+        welcome_text = {
+            "tr": {
+                "title": "👋 Merhaba!",
+                "message": "Ben Fatma Betül'ün AI destekli portföy asistanıyım. CV'sini, projelerini ve deneyimlerini senin için hızlıca özetleyebilirim. Başlamak için aşağıdaki başlıklardan birini seçebilir veya bana doğrudan bir soru yazabilirsin.",
+                "question": "Ne hakkında bilgi almak istersin?"
+            },
+            "en": {
+                "title": "👋 Hello!",
+                "message": "I'm Fatma Betül's AI-powered portfolio assistant. I can quickly summarize her CV, projects, and professional experience for you. To begin, you can select one of the sections below or simply ask me a question directly.",
+                "question": "What would you like to learn more about?"
             }
-            
-            current_lang = st.session_state.get("lang", "tr")
-            text = welcome_text[current_lang]
-            
-            with st.chat_message("🤖"):
-                st.markdown(f"""
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; border-radius: 16px; margin: 8px 0;">
-                    <div style="font-size: 1.2em; font-weight: 600; margin-bottom: 8px;">{text['title']}</div>
-                    <div style="font-size: 1em; line-height: 1.5; margin-bottom: 12px;">{text['message']}</div>
-                    <div style="font-size: 1.1em; font-weight: 500; color: rgba(255,255,255,0.9);">{text['question']}</div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            # Mesajı chat history'e ekleme - duplicate olmaması için
-            # st.session_state.chat_history.append({
-            #     "role": "assistant", 
-            #     "content": f"{text['title']}<br><br>{text['message']}<br><br><strong>{text['question']}</strong>"
-            # })
-            
-            st.session_state["welcome_message_shown"] = True
+        }
+        
+        current_lang = st.session_state.get("lang", "tr")
+        text = welcome_text[current_lang]
+        
+        with st.chat_message("🤖"):
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 18px; border-radius: 12px; margin: 8px 0;">
+                <div style="font-size: 1.1em; font-weight: 600; margin-bottom: 6px;">{text['title']}</div>
+                <div style="font-size: 0.95em; line-height: 1.4; margin-bottom: 8px;">{text['message']}</div>
+                <div style="font-size: 1em; font-weight: 500; color: rgba(255,255,255,0.9);">{text['question']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.session_state["welcome_message_shown"] = True
 
-    # --- Modern, ikonlu, dikey butonlar ---
+    # --- Küçük Chip Tarzı Butonlar (İki Sütunlu) ---
     st.markdown("""
     <style>
-    /* CV Butonları için Hover Efektleri */
-    .cv-button-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        margin: 20px 0;
+    .cv-chip-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin: 16px 0 24px 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
     }
     
-    /* Streamlit butonlarını hedefle */
-    .cv-button-container div.stButton > button {
-        background: linear-gradient(90deg, #1D3557, #2563eb) !important;
+    .cv-chip-container div.stButton {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .cv-chip-container div.stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         color: white !important;
         border: none !important;
-        border-radius: 16px !important;
-        padding: 24px 44px !important;
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.25) !important;
-        position: relative !important;
-        overflow: hidden !important;
-        min-width: 600px !important;
-        max-width: 800px !important;
-        min-height: 60px !important;
+        border-radius: 12px !important;
+        padding: 12px 20px !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2) !important;
+        width: 100% !important;
+        min-width: auto !important;
+        max-width: 100% !important;
+        min-height: 44px !important;
         display: flex !important;
         align-items: center !important;
-        gap: 12px !important;
         justify-content: center !important;
+        gap: 8px !important;
     }
     
-    /* Hover efektleri */
-    .cv-button-container div.stButton > button:hover {
+    .cv-chip-container div.stButton > button:hover {
         cursor: pointer !important;
-        transform: scale(1.02) translateY(-2px) !important;
-        box-shadow: 0 12px 35px rgba(37, 99, 235, 0.35) !important;
-        background: linear-gradient(90deg, #274472, #2563eb) !important;
-        color: white !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
     }
     
-    /* Active (tıklama) efekti */
-    .cv-button-container div.stButton > button:active {
-        transform: scale(0.98) translateY(0px) !important;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
-    }
-    
-    /* Focus efekti */
-    .cv-button-container div.stButton > button:focus {
-        outline: 2px solid rgba(102, 126, 234, 0.5) !important;
-        outline-offset: 2px !important;
-    }
-    
-    /* Shimmer efekti */
-    .cv-button-container div.stButton > button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.5s;
-    }
-    
-    .cv-button-container div.stButton > button:hover::before {
-        left: 100%;
+    .cv-chip-container div.stButton > button:active {
+        transform: translateY(0px) !important;
     }
     
     /* Dark mode için */
-    .stApp[data-theme="dark"] .cv-button-container div.stButton > button {
+    .stApp[data-theme="dark"] .cv-chip-container div.stButton > button {
         background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%) !important;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3) !important;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3) !important;
     }
     
-    .stApp[data-theme="dark"] .cv-button-container div.stButton > button:hover {
+    .stApp[data-theme="dark"] .cv-chip-container div.stButton > button:hover {
         background: linear-gradient(135deg, #5b21b6 0%, #8b5cf6 100%) !important;
-        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4) !important;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4) !important;
     }
     
     /* Mobil responsive */
     @media (max-width: 600px) {
-        .cv-button-container div.stButton > button {
-            font-size: 1.1rem !important;
-            padding: 20px 16px !important;
-            min-width: 90vw !important;
-            max-width: 98vw !important;
-            border-radius: 12px !important;
-            gap: 8px !important;
-            min-height: 56px !important;
+        .cv-chip-container {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        .cv-chip-container div.stButton > button {
+            font-size: 0.9rem !important;
+            padding: 10px 16px !important;
+            min-height: 40px !important;
         }
     }
     </style>
@@ -879,10 +695,31 @@ def run(*, tool_def, rag, cv_json):
         "ödüller": "🏆",
         "referanslar": "📞"
     }
+    
+    # Dil desteği için section isimleri
+    section_names = {
+        "tr": {
+            "eğitim": "Eğitim",
+            "deneyim": "Deneyim",
+            "projeler": "Projeler",
+            "ödüller": "Ödüller",
+            "referanslar": "Referanslar"
+        },
+        "en": {
+            "eğitim": "Education",
+            "deneyim": "Experience",
+            "projeler": "Projects",
+            "ödüller": "Awards",
+            "referanslar": "References"
+        }
+    }
+    
+    current_lang = st.session_state.get("lang", "tr")
     cv_sections = ["eğitim", "deneyim", "projeler", "ödüller", "referanslar"]
-    st.markdown('<div class="cv-button-container">', unsafe_allow_html=True)
+    st.markdown('<div class="cv-chip-container">', unsafe_allow_html=True)
     for section in cv_sections:
-        if st.button(f"{icon_map[section]} {section.capitalize()}", key=f"cv_section_{section}_modern"):
+        section_display = section_names[current_lang].get(section, section.capitalize())
+        if st.button(f"{icon_map[section]} {section_display}", key=f"cv_section_{section}_modern"):
             lines = []
             if section == "eğitim":
                 for edu in cv_json.get("education", []):
@@ -1503,37 +1340,6 @@ def _job_compatibility_flow(tool_def, LTXT):
     reply = (
         result["data"]["report_text"]
         if result.get("success")
-        else "Analiz oluşturulamadı "
+        else "Analiz oluşturulamadı 😕"
     )
     st.session_state.chat_history.append({"role": "bot", "content": reply})
-
-st.markdown("""
-<style>
-.big-action-btn {
-    width: 720px !important;
-    min-width: 600px;
-    font-size: 1.45em;
-    padding: 22px 0;
-    border-radius: 18px;
-    margin-bottom: 32px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: linear-gradient(90deg, #1D3557, #457B9D);
-    color: #fff !important;
-    border: none;
-    box-shadow: 0 4px 16px #2563eb33;
-    transition: all 0.2s;
-}
-.big-action-btn.chat {
-    background: linear-gradient(90deg, #3A86FF, #219EBC);
-}
-.big-action-btn span {
-    display: inline-block;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# --- Remove main page buttons at the end ---
