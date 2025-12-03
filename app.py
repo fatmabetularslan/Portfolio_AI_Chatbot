@@ -183,33 +183,48 @@ st.markdown("""
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     z-index: 1000;
-    padding: 12px 0;
+    padding: 16px 0;
     border-bottom: 1px solid #e2e8f0;
 }
 
 .nav-menu-content {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
+    padding: 0 40px;
     flex-wrap: wrap;
 }
 
+.nav-menu-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.nav-menu-toggles {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .nav-link {
-    color: #475569;
+    color: #1e293b;
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.95em;
-    transition: color 0.2s;
-    padding: 6px 12px;
+    font-size: 0.98em;
+    transition: color 0.2s, background 0.2s;
+    padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -306,24 +321,100 @@ nav_menu_texts = {
 }
 
 nav_texts = nav_menu_texts[current_lang]
+home_text = "Ana Sayfa" if current_lang == "tr" else "Home"
+
+# Toggle'ları navigasyon menüsüne entegre et
+lang = st.session_state.get("lang", "tr")
+dark = st.session_state.get("dark_mode", False)
+
 st.markdown(f"""
 <div class="nav-menu">
     <div class="nav-menu-content">
-        <a href="#about" class="nav-link">{nav_texts['about']}</a>
-        <a href="#experience" class="nav-link">{nav_texts['experience']}</a>
-        <a href="#projects" class="nav-link">{nav_texts['projects']}</a>
-        <a href="#skills" class="nav-link">{nav_texts['skills']}</a>
-        <a href="#awards" class="nav-link">{nav_texts['awards']}</a>
-        <a href="#articles" class="nav-link">{nav_texts['articles']}</a>
-        <a href="#references" class="nav-link">{nav_texts['references']}</a>
-        <a href="#contact" class="nav-link">{nav_texts['contact']}</a>
-        <a href="#chat-section" class="nav-link">{nav_texts['chat']}</a>
+        <div class="nav-menu-links">
+            <a href="#" class="nav-link" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}}); return false;">{home_text}</a>
+            <a href="#about" class="nav-link">{nav_texts['about']}</a>
+            <a href="#experience" class="nav-link">{nav_texts['experience']}</a>
+            <a href="#projects" class="nav-link">{nav_texts['projects']}</a>
+            <a href="#skills" class="nav-link">{nav_texts['skills']}</a>
+            <a href="#awards" class="nav-link">{nav_texts['awards']}</a>
+            <a href="#references" class="nav-link">{nav_texts['references']}</a>
+            <a href="#articles" class="nav-link">{nav_texts['articles']}</a>
+            <a href="#contact" class="nav-link">{nav_texts['contact']}</a>
+        </div>
+        <div class="nav-menu-toggles">
+            <form method="GET" style="display: flex; gap: 6px; align-items: center; margin:0;">
+                <button class="nav-toggle-btn{' selected' if lang == 'en' else ''}" name="setlang" value="en" type="submit" title="English">🇬🇧</button>
+                <button class="nav-toggle-btn{' selected' if lang == 'tr' else ''}" name="setlang" value="tr" type="submit" title="Türkçe">🇹🇷</button>
+                <button class="nav-toggle-btn{' selected' if not dark else ''}" name="settheme" value="light" type="submit" title="Light Mode">☀️</button>
+                <button class="nav-toggle-btn{' selected' if dark else ''}" name="settheme" value="dark" type="submit" title="Dark Mode">🌙</button>
+            </form>
+        </div>
     </div>
 </div>
+<style>
+.nav-menu-toggles {{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}}
+.nav-toggle-btn {{
+    width: 40px;
+    height: 40px;
+    font-size: 1.2em;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #475569;
+    margin: 0;
+    padding: 0;
+}}
+.nav-toggle-btn:hover {{
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: scale(1.05);
+}}
+.nav-toggle-btn.selected {{
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    border-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}}
+.stApp[data-theme="dark"] .nav-menu-toggles .nav-toggle-btn {{
+    background: #1e293b;
+    border-color: #475569;
+    color: #cbd5e1;
+}}
+.stApp[data-theme="dark"] .nav-menu-toggles .nav-toggle-btn:hover {{
+    background: #334155;
+    border-color: #64748b;
+}}
+.stApp[data-theme="dark"] .nav-menu-toggles .nav-toggle-btn.selected {{
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-color: #3b82f6;
+    color: #ffffff;
+}}
+</style>
 """, unsafe_allow_html=True)
 
-# 2. Toggle bar (dil/tema)
-language_and_theme_toggle()
+# Query param ile state güncelle (toggle'lar için)
+qp = st.query_params
+rerun_needed = False
+if qp.get("setlang"):
+    st.session_state["lang"] = qp["setlang"]
+    rerun_needed = True
+if qp.get("settheme"):
+    st.session_state["dark_mode"] = qp["settheme"] == "dark"
+    rerun_needed = True
+if rerun_needed:
+    qp.clear()
+    st.rerun()
+
+# Eski toggle bar'ı kaldır - artık menü içinde
 
 # 2. Modern arka plan şekilleri ve blob'lar
 st.markdown("""
