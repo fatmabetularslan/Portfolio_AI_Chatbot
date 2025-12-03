@@ -1719,11 +1719,38 @@ setTimeout(initChatbot, 2000);
 """, unsafe_allow_html=True)
 
 # Chat modülünü modal içinde göster - SADECE chatbot container'ını gizle
+# Ana sayfa içeriği etkilenmemeli
 st.markdown("""
 <style>
 /* SADECE chatbot container'ını gizle - başka hiçbir şeyi etkilemez */
 #chatbot-content-container {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+}
+
+/* Ana sayfa içeriğinin görünür olduğundan emin ol */
+.main-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.portfolio-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.hero-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* Modal açıkken chatbot içeriğini modal body içine taşı */
