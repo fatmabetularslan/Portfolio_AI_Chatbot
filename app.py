@@ -1718,50 +1718,17 @@ setTimeout(initChatbot, 2000);
 </script>
 """, unsafe_allow_html=True)
 
-# Chat modülünü modal içinde göster
+# Chat modülünü modal içinde göster - SADECE chatbot container'ını gizle
 st.markdown("""
 <style>
-/* Chatbot içeriğini sayfanın altında gizle - SADECE chatbot container'ı */
+/* SADECE chatbot container'ını gizle - başka hiçbir şeyi etkilemez */
 #chatbot-content-container {
-    position: fixed !important;
-    top: -99999px !important;
-    left: -99999px !important;
-    width: 1px !important;
-    height: 1px !important;
-    overflow: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    z-index: -9999 !important;
-}
-
-/* SADECE chatbot container'ını içeren Streamlit block'unu gizle - ana sayfa içeriğini etkilemez */
-div[data-testid="stVerticalBlock"]:has(> #chatbot-content-container),
-div[data-testid="stVerticalBlock"]:has(#chatbot-content-container) {
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    min-height: 0 !important;
-}
-
-/* Ana sayfa içeriğinin görünür olduğundan emin ol */
-.main-content,
-.portfolio-section,
-.hero-section {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
+    display: none !important;
 }
 
 /* Modal açıkken chatbot içeriğini modal body içine taşı */
 .chatbot-modal.active #chatbotModalBody {
     position: relative;
-}
-
-/* Streamlit'in chatbot container'ını bul ve modal body'ye taşı */
-.chatbot-modal.active #chatbotModalBody .stApp {
-    padding: 0 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1790,58 +1757,29 @@ if modern_chatbot_run is not None:
         const modalBody = document.getElementById('chatbotModalBody');
         
         if (!container || !modalBody) {
-            console.log('Container or modal body not found');
             return;
         }
+        
+        // Container'ı görünür yap (kopyalama için)
+        container.style.display = 'block';
+        container.style.visibility = 'visible';
+        container.style.position = 'absolute';
+        container.style.top = '-9999px';
+        container.style.left = '-9999px';
         
         // Modal body'yi temizle
         modalBody.innerHTML = '';
         
-        // Container içindeki tüm Streamlit içeriğini bul ve kopyala
-        const streamlitBlocks = container.querySelectorAll('.block-container, [data-testid="stVerticalBlock"]');
-        
-        if (streamlitBlocks.length > 0) {
-            console.log('Found Streamlit blocks:', streamlitBlocks.length);
-            streamlitBlocks.forEach(function(block) {
-                const clone = block.cloneNode(true);
-                // Gizleme stillerini kaldır
-                clone.style.display = '';
-                clone.style.visibility = '';
-                clone.style.opacity = '';
-                clone.style.position = '';
-                clone.style.top = '';
-                clone.style.left = '';
-                clone.style.width = '';
-                clone.style.height = '';
-                clone.style.overflow = '';
-                clone.style.pointerEvents = '';
-                clone.style.zIndex = '';
+        // Container içindeki tüm içeriği modal body'ye kopyala
+        if (container.children.length > 0) {
+            Array.from(container.children).forEach(function(child) {
+                const clone = child.cloneNode(true);
                 modalBody.appendChild(clone);
             });
-        } else {
-            // Eğer Streamlit block'ları yoksa, container'ın tüm içeriğini kopyala
-            if (container.children.length > 0) {
-                console.log('Copying container children');
-                Array.from(container.children).forEach(function(child) {
-                    const clone = child.cloneNode(true);
-                    // Gizleme stillerini kaldır
-                    clone.style.display = '';
-                    clone.style.visibility = '';
-                    clone.style.opacity = '';
-                    clone.style.position = '';
-                    clone.style.top = '';
-                    clone.style.left = '';
-                    clone.style.width = '';
-                    clone.style.height = '';
-                    clone.style.overflow = '';
-                    clone.style.pointerEvents = '';
-                    clone.style.zIndex = '';
-                    modalBody.appendChild(clone);
-                });
-            }
         }
         
-        console.log('Chatbot content moved to modal');
+        // Container'ı tekrar gizle
+        container.style.display = 'none';
     }
     
     // Modal açıldığında chatbot'u taşı
@@ -1860,7 +1798,7 @@ if modern_chatbot_run is not None:
                 mutations.forEach(function(mutation) {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                         if (modal.classList.contains('active')) {
-                            setTimeout(moveChatbotToModal, 100);
+                            setTimeout(moveChatbotToModal, 200);
                         }
                     }
                 });
@@ -1868,9 +1806,6 @@ if modern_chatbot_run is not None:
             observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
         }
     }
-    
-    // Periyodik kontrol
-    setInterval(checkAndMoveChatbot, 500);
     
     // DOM hazır olduğunda çalıştır
     if (document.readyState === 'loading') {
@@ -1882,6 +1817,14 @@ if modern_chatbot_run is not None:
         setupModalObserver();
         setTimeout(checkAndMoveChatbot, 1000);
     }
+    
+    // Periyodik kontrol (sadece modal açıkken)
+    setInterval(function() {
+        const modal = document.getElementById('chatbotModal');
+        if (modal && modal.classList.contains('active')) {
+            checkAndMoveChatbot();
+        }
+    }, 1000);
     </script>
     """, unsafe_allow_html=True)
 else:
