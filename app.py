@@ -404,32 +404,31 @@ location = cv_data.get("location", "İstanbul, Türkiye")
 st.markdown("""
 <style>
 .hero-section {
-    text-align: left;
-    padding: 40px 20px 40px 20px;
-    max-width: 900px;
+    text-align: center;
+    padding: 60px 20px 40px 20px;
+    max-width: 700px;
     margin: 0 auto 40px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Selman vari başlık */
-.hero-intro {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 8px;
-}
-.hero-name-highlight {
-    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+/* İsim */
+.hero-name {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
 }
 
-/* Alt başlık (rol) */
+/* Meslek */
 .hero-title {
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: #4b5563;
-    margin-bottom: 6px;
+    font-size: 1.5em;
+    font-weight: 400;
+    color: #475569;
+    margin-bottom: 30px;
+    line-height: 1.4;
 }
 
 /* Lokasyon */
@@ -441,14 +440,14 @@ st.markdown("""
 
 /* Profil fotoğrafı */
 .hero-profile-img {
-    width: 180px;
-    height: 180px;
+    width: 280px;
+    height: 280px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 0 24px 0;
+    margin: 0 auto 30px auto;
     display: block;
-    border: 4px solid #667eea;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    border: 4px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 .hero-profile-img:hover { transform: scale(1.05); }
@@ -558,17 +557,12 @@ if PROFILE_IMG_PATH.exists():
 else:
     profile_img_html = f'<div class="hero-profile-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;font-weight:700;">{name[0]}</div>'
 
-greeting = "Selam, ben" if current_lang == "tr" else "Hi, I’m"
-
 st.markdown(f"""
 <div class="hero-section">
-  <div class="hero-layout">
-    <div>{profile_img_html}</div>
-    <div>
-      <h1 class="hero-intro">{greeting} <span class="hero-name-highlight">{name}</span></h1>
-      <h2 class="hero-title">{title}</h2>
-      <p class="hero-location">📍 {location}</p>
-      <div class="hero-actions">
+    {profile_img_html}
+    <h1 class="hero-name">{name}</h1>
+    <h2 class="hero-title">{title}</h2>
+    <div class="hero-actions">
 """, unsafe_allow_html=True)
 
 # CV butonu
