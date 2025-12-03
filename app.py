@@ -619,19 +619,19 @@ st.markdown("""
 <style>
 .hero-section {
     text-align: center;
-    padding: 80px 20px 50px;
+    padding: 20px 20px 40px 20px;
     max-width: 900px;
-    margin: 0 auto 60px auto;
+    margin: 0 auto 40px auto;
 }
 
 .hero-profile-img {
-    width: 180px;
-    height: 180px;
+    width: 280px;
+    height: 280px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 30px auto;
+    margin: 0 auto 25px auto;
     display: block;
-    border: 4px solid #667eea;
+    border: 5px solid #667eea;
     box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
     transition: transform 0.3s ease;
 }
@@ -766,8 +766,8 @@ st.markdown("""
 
 @media (max-width: 768px) {
     .hero-profile-img {
-        width: 140px;
-        height: 140px;
+        width: 180px;
+        height: 180px;
     }
     .hero-name {
         font-size: 2.5em;
