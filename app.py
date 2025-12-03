@@ -465,9 +465,17 @@ st.markdown("""
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 6px;
     margin: 0;
     width: 100%;
+}
+
+.download-cv-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .download-cv-btn-wrapper button,
@@ -496,9 +504,10 @@ st.markdown("""
 .social-links {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 18px;
     flex-wrap: wrap;
-    margin-top: 4px;
+    margin-top: 0;
 }
 .social-links a {
     text-decoration: none;
