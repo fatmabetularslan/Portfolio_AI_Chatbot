@@ -1721,14 +1721,43 @@ setTimeout(initChatbot, 2000);
 # Chat modülünü modal içinde göster
 st.markdown("""
 <style>
-/* Chatbot içeriğini sayfanın altında gizle */
+/* Chatbot içeriğini sayfanın altında TAMAMEN gizle - TÜM Streamlit elementlerini kapsar */
 #chatbot-content-container {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: fixed !important;
+    top: -99999px !important;
+    left: -99999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: -9999 !important;
+}
+
+/* Container içindeki TÜM elementleri gizle */
+#chatbot-content-container * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Streamlit'in chatbot container'ını bul ve gizle */
+div[data-testid="stVerticalBlock"]:has(#chatbot-content-container) {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Chatbot container'ından sonra gelen tüm Streamlit elementlerini de kontrol et */
+#chatbot-content-container ~ * {
+    display: none !important;
 }
 
 /* Modal açıkken chatbot içeriğini modal body içine taşı */
@@ -1759,23 +1788,52 @@ if modern_chatbot_run is not None:
     )
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # JavaScript ile chatbot içeriğini modal body'ye taşı
+    # JavaScript ile chatbot içeriğini gizle ve modal body'ye taşı
     st.markdown("""
     <script>
+    function hideChatbotOnPage() {
+        const container = document.getElementById('chatbot-content-container');
+        if (container) {
+            container.style.display = 'none';
+            container.style.visibility = 'hidden';
+            container.style.opacity = '0';
+            container.style.position = 'fixed';
+            container.style.top = '-99999px';
+            container.style.left = '-99999px';
+            container.style.width = '0';
+            container.style.height = '0';
+            container.style.overflow = 'hidden';
+            container.style.pointerEvents = 'none';
+            container.style.margin = '0';
+            container.style.padding = '0';
+            container.style.zIndex = '-9999';
+            
+            // Container içindeki tüm elementleri de gizle
+            const allChildren = container.querySelectorAll('*');
+            allChildren.forEach(function(child) {
+                child.style.display = 'none';
+                child.style.visibility = 'hidden';
+                child.style.opacity = '0';
+            });
+        }
+    }
+    
     function moveChatbotToModal() {
         const container = document.getElementById('chatbot-content-container');
         const modalBody = document.getElementById('chatbotModalBody');
         
         if (!container || !modalBody) {
-            console.log('Container or modal body not found');
             return;
         }
         
         // Container içindeki tüm içeriği modal body'ye taşı
         if (container.children.length > 0) {
-            console.log('Moving chatbot content to modal');
             Array.from(container.children).forEach(function(child) {
                 if (!modalBody.contains(child)) {
+                    // Gizleme stillerini kaldır
+                    child.style.display = '';
+                    child.style.visibility = '';
+                    child.style.opacity = '';
                     modalBody.appendChild(child);
                 }
             });
@@ -1787,8 +1845,13 @@ if modern_chatbot_run is not None:
         const modal = document.getElementById('chatbotModal');
         if (modal && modal.classList.contains('active')) {
             moveChatbotToModal();
+        } else {
+            hideChatbotOnPage();
         }
     }
+    
+    // Sayfa yüklendiğinde chatbot'u gizle
+    hideChatbotOnPage();
     
     // Periyodik kontrol
     setInterval(checkAndMoveChatbot, 500);
@@ -1796,9 +1859,11 @@ if modern_chatbot_run is not None:
     // DOM hazır olduğunda çalıştır
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
+            hideChatbotOnPage();
             setTimeout(checkAndMoveChatbot, 1000);
         });
     } else {
+        hideChatbotOnPage();
         setTimeout(checkAndMoveChatbot, 1000);
     }
     </script>
