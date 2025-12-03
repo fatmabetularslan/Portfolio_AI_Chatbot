@@ -484,167 +484,90 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# 4. Sosyal medya linkleri
+# 4. Download CV Button (Hero section'ın altında)
 st.markdown("""
-<div class="social-links" style="display: flex; justify-content: center; gap: 32px; margin: 18px 0 8px 0; flex-wrap: wrap;">
-  <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn" style="width:22px; height:22px; vertical-align:middle;"> LinkedIn
+<style>
+.download-cv-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0 20px 0;
+}
+.download-cv-container button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 32px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 1.05em !important;
+    cursor: pointer !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+}
+.download-cv-container button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# CV indirme butonu
+st.markdown('<div class="download-cv-container">', unsafe_allow_html=True)
+with open(PDF_PATH, "rb") as f:
+    pdf_bytes = f.read()
+st.download_button(
+    label="📥 Download CV",
+    data=pdf_bytes,
+    file_name="Fatma_Betul_Arslan_CV.pdf",
+    mime="application/pdf",
+    use_container_width=False,
+    key="hero_cv_download_btn"
+)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# 5. Sosyal medya linkleri
+st.markdown("""
+<style>
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin: 20px 0 40px 0;
+    flex-wrap: wrap;
+}
+.social-links a {
+    text-decoration: none;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #667eea;
+    transition: color 0.2s, transform 0.2s;
+}
+.social-links a:hover {
+    color: #764ba2;
+    transform: translateY(-2px);
+}
+.social-links img {
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+}
+</style>
+<div class="social-links">
+  <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"> LinkedIn
   </a>
-  <a href="https://github.com/fatmabetularslan" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style="width:22px; height:22px; vertical-align:middle;"> GitHub
+  <a href="https://github.com/fatmabetularslan" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"> GitHub
   </a>
-  <a href="https://medium.com/@betularsln01" target="_blank" style="text-decoration: none; font-size: 1.15em; display: flex; align-items: center; gap: 6px;">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium" style="width:22px; height:22px; vertical-align:middle;"> Medium
+  <a href="https://medium.com/@betularsln01" target="_blank">
+    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium"> Medium
   </a>
 </div>
 """, unsafe_allow_html=True)
 
-# 6. Modern butonlar (CV görüntüle ve Chat başlat) ---
-# --- Animasyonlu butonlar için özel CSS ---
-st.markdown("""
-<style>
-.animated-btns-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 24px;
-  width: 100%;
-  text-align: center;
-}
-
-.animated-btns-wrap div.stButton {
-  display: flex !important;
-  justify-content: center !important;
-  width: 100% !important;
-}
-div.stButton > button {
-  background: linear-gradient(90deg, #1D3557, #2563eb) !important;
-  color: white !important;
-  padding: 24px 44px;
-  font-weight: 600;
-  border: none;
-  border-radius: 16px;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 600px;
-  max-width: 800px;
-  justify-content: center;
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.25);
-  position: relative;
-  overflow: hidden;
-  min-height: 60px;
-  margin: 0 auto !important;
-  float: none !important;
-}
-div.stButton > button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s;
-}
-div.stButton > button:hover::before {
-  left: 100%;
-}
-div.stButton > button:hover {
-  cursor: pointer;
-  transform: scale(1.02) translateY(-2px);
-  box-shadow: 0 12px 35px rgba(37, 99, 235, 0.35);
-  background: linear-gradient(90deg, #274472, #2563eb) !important;
-}
-div.stButton > button:active {
-  transform: scale(0.98) translateY(0px);
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-}
-div.stButton > button:focus {
-  outline: 2px solid rgba(37, 99, 235, 0.5);
-  outline-offset: 2px;
-}
-div.stButton > button:last-child {
-  background: linear-gradient(90deg, #3A86FF, #219EBC) !important;
-  box-shadow: 0 8px 25px rgba(58, 134, 255, 0.25);
-}
-div.stButton > button:last-child:hover {
-  background: linear-gradient(90deg, #2563eb, #1d4ed8) !important;
-  box-shadow: 0 12px 35px rgba(58, 134, 255, 0.35);
-}
-@media (max-width: 600px) {
-  .animated-btns-wrap {
-    gap: 18px;
-    margin-top: 8px;
-  }
-  div.stButton > button {
-    font-size: 1.1rem !important;
-    padding: 20px 16px !important;
-    min-width: 90vw !important;
-    max-width: 98vw !important;
-    border-radius: 12px !important;
-    gap: 8px !important;
-    min-height: 56px !important;
-  }
-  .big-header { font-size: 1.5em !important; }
-  .big-subheader { font-size: 1em !important; }
-  .social-links {
-    flex-direction: column !important;
-    gap: 10px !important;
-    align-items: center !important;
-  }
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Butonlar kaldırıldı - artık hero section'da Download CV ve sosyal medya linkleri var
-# Chat butonu navigasyon menüsünde
-
-# --- CV ile ilgili butonlar için özel CSS ---
-st.markdown("""
-<style>
-button[data-testid="cv_preview_btn"], button[data-testid="cv_download_btn"] {
-    background: #fff !important;
-    color: #1D3557 !important;
-    border: 2px solid #e3e8f0 !important;
-    border-radius: 16px !important;
-    font-size: 1.25em !important;
-    font-weight: 700 !important;
-    box-shadow: 0 2px 12px #1d355722;
-    margin-bottom: 18px !important;
-    padding: 20px 0 !important;
-    transition: all 0.18s;
-}
-button[data-testid="cv_preview_btn"]:hover, button[data-testid="cv_download_btn"]:hover {
-    background: #f1f5fa !important;
-    color: #274472 !important;
-    border-color: #457B9D !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# --- PDF İndir butonu için özel CSS ---
-st.markdown("""
-<style>
-div.stButton > button[data-baseweb="button"][id*="cv_download_btn"] {
-    background: #fff !important;
-    color: #1D3557 !important;
-    border: 1.5px solid #e3e8f0 !important;
-    box-shadow: 0 2px 8px #1d355722;
-    font-weight: 600;
-    font-size: 1.1em;
-    margin-bottom: 12px;
-}
-div.stButton > button[data-baseweb="button"][id*="cv_download_btn"]:hover {
-    background: #f1f5fa !important;
-    color: #274472 !important;
-}
-</style>
-""", unsafe_allow_html=True)
+# Gereksiz CSS ve buton kodları temizlendi - hero section'da Download CV butonu var
 
 # Ana içeriği kapat
 st.markdown('</div>', unsafe_allow_html=True)
