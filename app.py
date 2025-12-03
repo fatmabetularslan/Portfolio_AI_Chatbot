@@ -462,20 +462,32 @@ st.markdown("""
 
 /* Buton + sosyal medya */
 .hero-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    margin: 0;
-    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    width: 100% !important;
 }
 
 .download-cv-btn-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 0 auto;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.download-cv-btn-wrapper > *,
+.download-cv-btn-wrapper button,
+.download-cv-btn-wrapper div[data-baseweb="button"],
+.download-cv-btn-wrapper .stDownloadButton,
+.download-cv-btn-wrapper .stDownloadButton > button {
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 .download-cv-btn-wrapper button,
@@ -492,6 +504,7 @@ st.markdown("""
     transition: transform 0.2s, box-shadow 0.2s !important;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
     min-width: 150px !important;
+    margin: 0 auto !important;
 }
 .download-cv-btn-wrapper button:hover,
 .download-cv-btn-wrapper div[data-baseweb="button"]:hover,
