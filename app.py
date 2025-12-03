@@ -152,22 +152,8 @@ except Exception as e:
     st.info("Lütfen sayfayı yenileyin veya daha sonra tekrar deneyin.")
     st.stop()
 
-if st.session_state.page == "chat":
-    if modern_chatbot_run is None:
-        st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
-        st.stop()
-    tool_def_obj = ToolDefinitions()
-    tool_def_obj.initialize_job_analyzer(
-        client=None,
-        cv_data=json.load(open(tag, encoding="utf-8")),
-        rag_system=rag
-    )
-    modern_chatbot_run(
-        tool_def = tool_def_obj,
-        rag     = rag,
-        cv_json = json.load(open(tag, encoding="utf-8"))
-    )
-    st.stop()
+# Chat artık ayrı sayfa değil, ana sayfanın altında bir bölüm
+# Sayfa yönlendirmesi kaldırıldı
 
 # --- Ana sayfa metinleri ---
 TEXT = {
@@ -549,21 +535,32 @@ div.stButton > button:last-child:hover {
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="animated-btns-wrap">', unsafe_allow_html=True)
-if st.session_state.get('page') != 'chat':
-    if st.button("📁  CV'yi Gör", key="cv_btn_home_main", use_container_width=False):
-        with open(PDF_PATH, "rb") as f:
-            pdf_bytes = f.read()
-        st.download_button(
-            label="📥 PDF'i İndir",
-            data=pdf_bytes,
-            file_name="Fatma_Betul_Arslan_CV.pdf",
-            mime="application/pdf",
-            use_container_width=False,
-            key="cv_download_btn_direct"
-        )
-    if st.button("🤖  Sohbete Başla", key="chat_btn_home_main", use_container_width=False):
-        st.session_state['page'] = 'chat'
-        st.rerun()
+if st.button("📁  CV'yi Gör", key="cv_btn_home_main", use_container_width=False):
+    with open(PDF_PATH, "rb") as f:
+        pdf_bytes = f.read()
+    st.download_button(
+        label="📥 PDF'i İndir",
+        data=pdf_bytes,
+        file_name="Fatma_Betul_Arslan_CV.pdf",
+        mime="application/pdf",
+        use_container_width=False,
+        key="cv_download_btn_direct"
+    )
+
+if st.button("🤖  Sohbete Başla", key="chat_btn_home_main", use_container_width=False):
+    # JavaScript ile smooth scroll yap
+    st.markdown("""
+    <script>
+    (function() {
+        setTimeout(function() {
+            const chatSection = document.getElementById('chat-section');
+            if (chatSection) {
+                chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    })();
+    </script>
+    """, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --- CV ile ilgili butonlar için özel CSS ---
@@ -610,3 +607,35 @@ div.stButton > button[data-baseweb="button"][id*="cv_download_btn"]:hover {
 
 # Ana içeriği kapat
 st.markdown('</div>', unsafe_allow_html=True)
+
+# --- Chat Bölümü (Ana sayfanın altında) ---
+st.markdown("""
+<style>
+#chat-section {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 2px solid #e2e8f0;
+    scroll-margin-top: 20px;
+}
+.stApp[data-theme="dark"] #chat-section {
+    border-top-color: #475569;
+}
+</style>
+""", unsafe_allow_html=True)
+st.markdown('<div id="chat-section"></div>', unsafe_allow_html=True)
+
+# Chat modülünü yükle ve çalıştır
+if modern_chatbot_run is not None:
+    tool_def_obj = ToolDefinitions()
+    tool_def_obj.initialize_job_analyzer(
+        client=None,
+        cv_data=json.load(open(tag, encoding="utf-8")),
+        rag_system=rag
+    )
+    modern_chatbot_run(
+        tool_def = tool_def_obj,
+        rag     = rag,
+        cv_json = json.load(open(tag, encoding="utf-8"))
+    )
+else:
+    st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
