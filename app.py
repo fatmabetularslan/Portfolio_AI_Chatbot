@@ -586,11 +586,6 @@ st.markdown("""
     font-style: italic;
     font-weight: 400;
 }
-.hero-location {
-    font-size: 1em;
-    color: #64748b;
-    margin-bottom: 30px;
-}
 .hero-actions {
     display: flex;
     flex-direction: column;
@@ -605,17 +600,21 @@ st.markdown("""
 .download-cv-btn-wrapper button,
 .download-cv-btn-wrapper div[data-baseweb="button"],
 .download-cv-btn-wrapper .stDownloadButton button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: linear-gradient(135deg, #667eea 0%, #4facfe 100%) !important;
     color: white !important;
     border: none !important;
-    padding: 14px 32px !important;
-    border-radius: 8px !important;
+    padding: 16px 40px !important;
+    border-radius: 12px !important;
     font-weight: 600 !important;
-    font-size: 1.05em !important;
+    font-size: 1.1em !important;
     cursor: pointer !important;
     transition: transform 0.2s, box-shadow 0.2s !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
-    min-width: 200px !important;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3) !important;
+    min-width: 220px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
 }
 .download-cv-btn-wrapper button:hover,
 .download-cv-btn-wrapper div[data-baseweb="button"]:hover,
@@ -627,73 +626,59 @@ st.markdown("""
 .social-links {
     display: flex;
     justify-content: center;
-    gap: 24px;
+    gap: 20px;
     flex-wrap: wrap;
-    margin-top: 10px;
+    margin-top: 30px;
 }
 .social-links a {
     text-decoration: none;
-    font-size: 1.1em;
     display: flex;
     align-items: center;
-    gap: 8px;
-    color: #667eea;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #475569;
     transition: color 0.2s, transform 0.2s;
-    padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: 50%;
+    background: #f1f5f9;
 }
 .social-links a:hover {
-    color: #764ba2;
+    color: #667eea;
     transform: translateY(-2px);
-    background: rgba(102, 126, 234, 0.1);
+    background: #e2e8f0;
 }
 .social-links img {
     width: 24px;
     height: 24px;
     vertical-align: middle;
 }
-.stApp[data-theme="dark"] .hero-title { color: #cbd5e1 !important; }
-.stApp[data-theme="dark"] .hero-specialization,
-.stApp[data-theme="dark"] .hero-location { color: #94a3b8 !important; }
-.stApp[data-theme="dark"] .hero-profile-img {
-    border-color: #8b5cf6;
-    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+.stApp[data-theme="dark"] .hero-title { color: #f1f5f9 !important; }
+.stApp[data-theme="dark"] .hero-subtitle { color: #cbd5e1 !important; }
+.stApp[data-theme="dark"] .social-links a { 
+    color: #94a3b8 !important; 
+    background: #1e293b !important;
 }
-.stApp[data-theme="dark"] .social-links a { color: #a5b4fc !important; }
 .stApp[data-theme="dark"] .social-links a:hover {
-    color: #c4b5fd !important;
-    background: rgba(102, 126, 234, 0.2) !important;
+    color: #a5b4fc !important;
+    background: #334155 !important;
 }
 @media (max-width: 768px) {
-    .hero-profile-img { width: 180px; height: 180px; }
-    .hero-name { font-size: 2.5em; }
-    .hero-title { font-size: 1.4em; }
-    .hero-specialization { font-size: 1em; }
+    .hero-title { font-size: 2em; }
+    .hero-subtitle { font-size: 1.1em; }
     .social-links { gap: 16px; }
-    .social-links a { font-size: 0.95em; }
 }
 </style>
 """, unsafe_allow_html=True)
 
-# Profil fotoğrafı
-if PROFILE_IMG_PATH.exists():
-    profile_bytes = PROFILE_IMG_PATH.read_bytes()
-    profile_b64 = base64.b64encode(profile_bytes).decode("utf-8")
-    profile_img_html = f'<img src="data:image/jpeg;base64,{profile_b64}" alt="{name}" class="hero-profile-img" />'
-else:
-    profile_img_html = f'<div class="hero-profile-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 4em; font-weight: 700;">{name[0]}</div>'
-
-specialization_tr = "Machine Learning, Data Science ve Veri Analizi"
-specialization_en = "Machine Learning, Data Science and Data Analysis"
-specialization = specialization_tr if current_lang == "tr" else specialization_en
+# Hero section - Görüntüdeki gibi kompakt yerleşim
+subtitle_tr = "Büyük Dil Modelleri ve Bilgisayarlı Görü Uzmanı"
+subtitle_en = "Large Language Models and Computer Vision Specialist"
+subtitle = subtitle_tr if current_lang == "tr" else subtitle_en
 
 st.markdown(f"""
 <div class="hero-section">
-    {profile_img_html}
-    <h1 class="hero-name">{name}</h1>
-    <h2 class="hero-title">{title}</h2>
-    <p class="hero-specialization">{specialization}</p>
-    <p class="hero-location">📍 {location}</p>
+    <h1 class="hero-title">{title}</h1>
+    <p class="hero-subtitle">{subtitle}</p>
     <div class="hero-actions">
 """, unsafe_allow_html=True)
 
@@ -713,16 +698,19 @@ try:
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
-st.markdown("""
+st.markdown(f"""
         <div class="social-links">
-          <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"> LinkedIn
+          <a href="{cv_data['links'].get('github', '#')}" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
           </a>
-          <a href="https://github.com/fatmabetularslan" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"> GitHub
+          <a href="{cv_data['links'].get('linkedin', '#')}" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn">
           </a>
-          <a href="https://medium.com/@betularsln01" target="_blank">
-            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium"> Medium
+          <a href="mailto:{cv_data.get('email', '')}" target="_blank">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </a>
         </div>
     </div>
