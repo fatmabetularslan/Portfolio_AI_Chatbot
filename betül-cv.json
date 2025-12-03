@@ -74,8 +74,8 @@
       "name": "AI-Powered Portfolio Chatbot",
       "technology": "Python · Streamlit · Google Gemini 1.5 API · RAG · ReportLab",
       "description": {
-        "tr": "Portföy sitem için interaktif chatbot. CV'mden veri çekerek soruları yanıtlar, role özel cover letter ve iş uyumluluğu raporları oluşturur (TR/EN) ve PDF olarak dışa aktarır.",
-        "en": "Interactive chatbot for my portfolio site that answers questions by querying my CV with RAG, generates role-specific cover letters and job-fit reports (EN/TR) and exports them as PDF."
+        "tr": "RAG (Retrieval Augmented Generation) teknolojisi kullanarak CV verilerimi akıllıca sorgulayan, kullanıcı sorularına anında yanıt veren ve iş başvuruları için role özel cover letter ile detaylı uyumluluk raporları üreten AI destekli chatbot. Çok dilli destek (TR/EN) ve PDF export özelliği ile profesyonel iş başvuru süreçlerini otomatikleştiriyor.",
+        "en": "AI-powered chatbot leveraging RAG (Retrieval Augmented Generation) technology to intelligently query CV data, provide instant responses to user questions, and generate role-specific cover letters with detailed job-fit reports for applications. Automates professional job application processes with multilingual support (TR/EN) and PDF export capabilities."
       },
       "features": {
         "tr": [
@@ -227,14 +227,14 @@
       "name": "Energy Consumption Prediction API",
       "technology": "Python · FastAPI · XGBoost · Scikit-learn · Docker",
       "description": {
-        "tr": "Appliances Energy Prediction veri setini kullanarak 24 zaman adımı için enerji tüketimini tahmin eden bir FastAPI servisi geliştirdim. 43 çevresel girdiyi MinMaxScaler ile ölçekleyip XGBoost modeliyle tahmin üretiyor; Docker ile konteynerleştirilmiş, ölçeklenebilir bir arka uç sunuyor.",
-        "en": "A RESTful API designed to predict energy consumption over 24 time intervals using the Appliances Energy Prediction dataset. The system accepts 43 environmental input features, scales them with MinMaxScaler, and performs predictions using an XGBoost model. Built with FastAPI and packaged using Docker, the project offers a scalable and efficient backend for energy optimization solutions."
+        "tr": "Akıllı ev cihazlarının enerji tüketimini 24 saatlik periyotlar için tahmin eden RESTful API servisi. Çevresel faktörleri analiz ederek XGBoost makine öğrenmesi modeli ile yüksek doğrulukta tahminler üretiyor. FastAPI ve Docker kullanılarak geliştirilmiş, ölçeklenebilir ve production-ready bir backend çözümü.",
+        "en": "RESTful API service that predicts smart home appliance energy consumption over 24-hour periods. Analyzes environmental factors to generate high-accuracy predictions using an XGBoost machine learning model. Built with FastAPI and Docker, offering a scalable and production-ready backend solution for energy optimization."
       },
       "features": [
         "FastAPI backend",
         "XGBoost modeli",
         "Docker konteynerleştirme",
-        "43 özellikli girdi yapısı"
+        "Ölçeklenebilir mimari"
       ],
       "github": "https://github.com/fatmabetularslan/energy-consumption-api"
     },
