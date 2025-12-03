@@ -232,6 +232,16 @@ st.markdown("""
 
 body {
     padding-top: 60px;
+    scroll-behavior: smooth;
+}
+
+/* Scroll offset için portfolio bölümleri */
+.portfolio-section {
+    scroll-margin-top: 80px;
+}
+
+#chat-section {
+    scroll-margin-top: 80px;
 }
 
 @media (max-width: 768px) {
@@ -254,7 +264,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetId = this.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
             if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const offset = 70; // Navigation menu yüksekliği için offset
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
             }
         });
     });
@@ -405,7 +421,7 @@ name = cv_data.get("name", "Fatma Betül Arslan")
 title = cv_data.get("title", "Data Scientist")
 location = cv_data.get("location", "İstanbul, Turkey")
 
-# Hero section için özel CSS
+# Hero section için özel CSS (Profil fotoğrafı, butonlar ve ikonlar dahil)
 st.markdown("""
 <style>
 .hero-section {
@@ -413,6 +429,22 @@ st.markdown("""
     padding: 80px 20px 50px;
     max-width: 900px;
     margin: 0 auto 60px auto;
+}
+
+.hero-profile-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 30px auto;
+    display: block;
+    border: 4px solid #667eea;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.hero-profile-img:hover {
+    transform: scale(1.05);
 }
 
 .hero-name {
@@ -436,7 +468,7 @@ st.markdown("""
 .hero-specialization {
     font-size: 1.3em;
     color: #64748b;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     font-style: italic;
     font-weight: 400;
 }
@@ -445,6 +477,75 @@ st.markdown("""
     font-size: 1em;
     color: #64748b;
     margin-bottom: 30px;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.download-cv-btn-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.download-cv-btn-wrapper button,
+.download-cv-btn-wrapper div[data-baseweb="button"],
+.download-cv-btn-wrapper .stDownloadButton button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 32px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 1.05em !important;
+    cursor: pointer !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+    min-width: 200px !important;
+}
+
+.download-cv-btn-wrapper button:hover,
+.download-cv-btn-wrapper div[data-baseweb="button"]:hover,
+.download-cv-btn-wrapper .stDownloadButton button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.social-links a {
+    text-decoration: none;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #667eea;
+    transition: color 0.2s, transform 0.2s;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.social-links a:hover {
+    color: #764ba2;
+    transform: translateY(-2px);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.social-links img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
 }
 
 .stApp[data-theme="dark"] .hero-title {
@@ -456,7 +557,25 @@ st.markdown("""
     color: #94a3b8 !important;
 }
 
+.stApp[data-theme="dark"] .hero-profile-img {
+    border-color: #8b5cf6;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+.stApp[data-theme="dark"] .social-links a {
+    color: #a5b4fc !important;
+}
+
+.stApp[data-theme="dark"] .social-links a:hover {
+    color: #c4b5fd !important;
+    background: rgba(102, 126, 234, 0.2) !important;
+}
+
 @media (max-width: 768px) {
+    .hero-profile-img {
+        width: 140px;
+        height: 140px;
+    }
     .hero-name {
         font-size: 2.5em;
     }
@@ -466,9 +585,25 @@ st.markdown("""
     .hero-specialization {
         font-size: 1em;
     }
+    .social-links {
+        gap: 16px;
+    }
+    .social-links a {
+        font-size: 0.95em;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
+
+# Profil fotoğrafını yükle
+profile_img_html = ""
+if PROFILE_IMG_PATH.exists():
+    profile_bytes = PROFILE_IMG_PATH.read_bytes()
+    profile_b64 = base64.b64encode(profile_bytes).decode("utf-8")
+    profile_img_html = f'<img src="data:image/jpeg;base64,{profile_b64}" alt="{name}" class="hero-profile-img" />'
+else:
+    # Fallback: İlk harf avatar
+    profile_img_html = f'<div class="hero-profile-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 4em; font-weight: 700;">{name[0]}</div>'
 
 # Hero content
 specialization_tr = "Machine Learning, Data Science ve Veri Analizi"
@@ -477,48 +612,17 @@ specialization = specialization_tr if current_lang == "tr" else specialization_e
 
 st.markdown(f"""
 <div class="hero-section">
+    {profile_img_html}
     <h1 class="hero-name">{name}</h1>
     <h2 class="hero-title">{title}</h2>
     <p class="hero-specialization">{specialization}</p>
     <p class="hero-location">📍 {location}</p>
-</div>
+    
+    <div class="hero-actions">
+        <div class="download-cv-btn-wrapper">
 """, unsafe_allow_html=True)
 
-# 4. Download CV Button (Hero section'ın altında)
-st.markdown("""
-<style>
-.download-cv-container {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0 20px 0;
-}
-.download-cv-container button,
-.download-cv-container div[data-baseweb="button"],
-.download-cv-container .stDownloadButton button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
-    border: none !important;
-    padding: 14px 32px !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    font-size: 1.05em !important;
-    cursor: pointer !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
-    min-width: 180px !important;
-}
-.download-cv-container button:hover,
-.download-cv-container div[data-baseweb="button"]:hover,
-.download-cv-container .stDownloadButton button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# CV indirme butonu
-st.markdown('<div class="download-cv-container">', unsafe_allow_html=True)
+# Download CV butonu (Hero section içinde)
 try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
@@ -532,48 +636,22 @@ try:
     )
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
-    st.info("Lütfen PDF dosyasının assets klasöründe olduğundan emin olun.")
-st.markdown('</div>', unsafe_allow_html=True)
 
-# 5. Sosyal medya linkleri
+# Sosyal medya linkleri (Hero section içinde)
 st.markdown("""
-<style>
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin: 20px 0 40px 0;
-    flex-wrap: wrap;
-}
-.social-links a {
-    text-decoration: none;
-    font-size: 1.1em;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #667eea;
-    transition: color 0.2s, transform 0.2s;
-}
-.social-links a:hover {
-    color: #764ba2;
-    transform: translateY(-2px);
-}
-.social-links img {
-    width: 22px;
-    height: 22px;
-    vertical-align: middle;
-}
-</style>
-<div class="social-links">
-  <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"> LinkedIn
-  </a>
-  <a href="https://github.com/fatmabetularslan" target="_blank">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"> GitHub
-  </a>
-  <a href="https://medium.com/@betularsln01" target="_blank">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium"> Medium
-  </a>
+        </div>
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"> LinkedIn
+          </a>
+          <a href="https://github.com/fatmabetularslan" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"> GitHub
+          </a>
+          <a href="https://medium.com/@betularsln01" target="_blank">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium"> Medium
+          </a>
+        </div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
