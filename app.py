@@ -492,7 +492,9 @@ st.markdown("""
     justify-content: center;
     margin: 30px 0 20px 0;
 }
-.download-cv-container button {
+.download-cv-container button,
+.download-cv-container div[data-baseweb="button"],
+.download-cv-container .stDownloadButton button {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     color: white !important;
     border: none !important;
@@ -503,10 +505,14 @@ st.markdown("""
     cursor: pointer !important;
     transition: transform 0.2s, box-shadow 0.2s !important;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+    min-width: 180px !important;
 }
-.download-cv-container button:hover {
+.download-cv-container button:hover,
+.download-cv-container div[data-baseweb="button"]:hover,
+.download-cv-container .stDownloadButton button:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
 }
 </style>
 """, unsafe_allow_html=True)
