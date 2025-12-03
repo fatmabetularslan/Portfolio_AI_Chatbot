@@ -541,46 +541,7 @@ def run(*, tool_def, rag, cv_json):
 
     # Geri butonu kaldırıldı - artık ayrı sayfa değil, scroll ile erişiliyor
 
-    # --- AI Asistan Başlık (Küçültülmüş) ---
-    st.markdown("""
-    <style>
-    .ai-assistant-header {
-        font-size: 1.4em;
-        font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 8px;
-        text-align: center;
-    }
-    .ai-assistant-subtitle {
-        font-size: 0.95em;
-        color: #64748b;
-        text-align: center;
-        margin-bottom: 20px;
-        line-height: 1.4;
-    }
-    
-    /* Dark mode için */
-    .stApp[data-theme="dark"] .ai-assistant-header {
-        color: #f1f5f9 !important;
-    }
-    .stApp[data-theme="dark"] .ai-assistant-subtitle {
-        color: #cbd5e1 !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    current_lang = st.session_state.get("lang", "tr")
-    header_text = "🤖 AI Asistan" if current_lang == "tr" else "🤖 AI Assistant"
-    subtitle_text = (
-        "Ben Fatma Betül'ün AI portföy asistanıyım. CV, deneyim ve projeleri hakkında özet bilgi verebilirim. Aşağıdan bir başlık seç veya doğrudan soru sor."
-        if current_lang == "tr"
-        else "I'm Fatma Betül's AI portfolio assistant. I can provide summary information about her CV, experience, and projects. Select a topic below or ask a question directly."
-    )
-    
-    st.markdown(f"""
-    <div class="ai-assistant-header">{header_text}</div>
-    <div class="ai-assistant-subtitle">{subtitle_text}</div>
-    """, unsafe_allow_html=True)
+    # AI Asistan başlığı kaldırıldı - artık modal header'da gösteriliyor
 
     # --- Welcome Mesajı (Hemen görünür, animasyon yok) ---
     if not st.session_state.get("welcome_message_shown", False):
