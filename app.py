@@ -1721,7 +1721,7 @@ setTimeout(initChatbot, 2000);
 # Chat modülünü modal içinde göster
 st.markdown("""
 <style>
-/* Chatbot içeriğini sayfanın altında gizle - display: none yerine position kullan */
+/* Chatbot içeriğini sayfanın altında gizle - SADECE chatbot container'ı */
 #chatbot-content-container {
     position: fixed !important;
     top: -99999px !important;
@@ -1734,12 +1734,24 @@ st.markdown("""
     z-index: -9999 !important;
 }
 
-/* Streamlit'in chatbot container'ını bul ve gizle */
+/* SADECE chatbot container'ını içeren Streamlit block'unu gizle - ana sayfa içeriğini etkilemez */
+div[data-testid="stVerticalBlock"]:has(> #chatbot-content-container),
 div[data-testid="stVerticalBlock"]:has(#chatbot-content-container) {
     height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
+    min-height: 0 !important;
+}
+
+/* Ana sayfa içeriğinin görünür olduğundan emin ol */
+.main-content,
+.portfolio-section,
+.hero-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
 }
 
 /* Modal açıkken chatbot içeriğini modal body içine taşı */
