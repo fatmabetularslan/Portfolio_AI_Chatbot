@@ -464,9 +464,10 @@ st.markdown("""
 .hero-actions {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
+    align-items: center;
+    gap: 20px;
     margin: 0;
+    width: 100%;
 }
 
 .download-cv-btn-wrapper button,
@@ -494,7 +495,7 @@ st.markdown("""
 
 .social-links {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 18px;
     flex-wrap: wrap;
     margin-top: 4px;
