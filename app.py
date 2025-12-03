@@ -1171,7 +1171,19 @@ st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('<div class="portfolio-section" id="projects">', unsafe_allow_html=True)
 st.markdown('<h2 class="section-title">🚀 Featured Projects / Öne Çıkan Projeler</h2>', unsafe_allow_html=True)
 
+# Sadece belirtilen projeleri göster
+allowed_projects = [
+    "AI-Powered Portfolio Chatbot",
+    "FinTurk Finansal Asistan",
+    "Customer Churn Prediction",
+    "Energy Consumption Prediction API"
+]
+
 for proj in cv_data.get("projects", []):
+    name = proj.get("name", "")
+    # Sadece izin verilen projeleri göster
+    if name not in allowed_projects:
+        continue
     name = proj.get("name", "")
     tech = proj.get("technology", "")
     desc = proj.get("description", "")
