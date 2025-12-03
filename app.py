@@ -14,7 +14,7 @@ except ImportError:
 from common_css import LIGHT_CSS, DARK_CSS
 from rag_system import load_cv_index
 from pathlib import Path
-PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv-2025.pdf"
+PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
 PROFILE_IMG_PATH = Path("assets/vesika.jpg")
 
 # --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
@@ -513,16 +513,20 @@ st.markdown("""
 
 # CV indirme butonu
 st.markdown('<div class="download-cv-container">', unsafe_allow_html=True)
-with open(PDF_PATH, "rb") as f:
-    pdf_bytes = f.read()
-st.download_button(
-    label="📥 Download CV",
-    data=pdf_bytes,
-    file_name="Fatma_Betul_Arslan_CV.pdf",
-    mime="application/pdf",
-    use_container_width=False,
-    key="hero_cv_download_btn"
-)
+try:
+    with open(PDF_PATH, "rb") as f:
+        pdf_bytes = f.read()
+    st.download_button(
+        label="📥 Download CV",
+        data=pdf_bytes,
+        file_name="Fatma_Betul_Arslan_CV.pdf",
+        mime="application/pdf",
+        use_container_width=False,
+        key="hero_cv_download_btn"
+    )
+except FileNotFoundError:
+    st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
+    st.info("Lütfen PDF dosyasının assets klasöründe olduğundan emin olun.")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # 5. Sosyal medya linkleri
