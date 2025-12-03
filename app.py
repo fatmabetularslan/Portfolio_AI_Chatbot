@@ -1656,31 +1656,114 @@ st.markdown("""
 </div>
 
 <script>
-function toggleChatbotModal() {
-    const modal = document.getElementById('chatbotModal');
-    modal.classList.toggle('active');
-}
-
-// Modal dışına tıklayınca kapat
-document.getElementById('chatbotModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        toggleChatbotModal();
-    }
-});
-
-// ESC tuşu ile kapat
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
+(function() {
+    function toggleChatbotModal() {
         const modal = document.getElementById('chatbotModal');
-        if (modal.classList.contains('active')) {
-            toggleChatbotModal();
+        if (modal) {
+            modal.classList.toggle('active');
         }
     }
-});
+    
+    // Global function olarak tanımla
+    window.toggleChatbotModal = toggleChatbotModal;
+    
+    // DOM yüklendikten sonra event listener'ları ekle
+    function initChatbot() {
+        const modal = document.getElementById('chatbotModal');
+        const fab = document.getElementById('chatbotFab');
+        const modalBody = document.getElementById('chatbotModalBody');
+        const chatbotContainer = document.getElementById('chatbot-content-container');
+        
+        if (modal && fab) {
+            // FAB'a tıklama
+            fab.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleChatbotModal();
+                
+                // Modal açıldığında chatbot içeriğini modal body'ye taşı
+                if (modal.classList.contains('active') && chatbotContainer && modalBody) {
+                    setTimeout(function() {
+                        // Container içindeki tüm içeriği modal body'ye taşı
+                        while (chatbotContainer.firstChild) {
+                            modalBody.appendChild(chatbotContainer.firstChild);
+                        }
+                    }, 100);
+                }
+            });
+            
+            // Modal dışına tıklayınca kapat
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    toggleChatbotModal();
+                }
+            });
+            
+            // Close butonuna tıklama
+            const closeBtn = modal.querySelector('.chatbot-modal-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleChatbotModal();
+                });
+            }
+            
+            // ESC tuşu ile kapat
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (modal.classList.contains('active')) {
+                        toggleChatbotModal();
+                    }
+                }
+            });
+        }
+    }
+    
+    // DOM hazır olduğunda çalıştır
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initChatbot);
+    } else {
+        initChatbot();
+    }
+    
+    // Streamlit rerun sonrası için de çalıştır
+    setTimeout(initChatbot, 500);
+})();
 </script>
 """, unsafe_allow_html=True)
 
 # Chat modülünü modal içinde göster
+st.markdown("""
+<style>
+/* Chatbot içeriğini sayfanın altında gizle */
+#chatbot-content-container {
+    display: none !important;
+}
+
+/* Modal açıkken chatbot içeriğini göster */
+.chatbot-modal.active ~ * #chatbot-content-container {
+    display: block !important;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
+    z-index: 10001;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.stApp[data-theme="dark"] .chatbot-modal.active ~ * #chatbot-content-container {
+    background: #1e293b;
+}
+</style>
+""", unsafe_allow_html=True)
+
 if modern_chatbot_run is not None:
     tool_def_obj = ToolDefinitions()
     tool_def_obj.initialize_job_analyzer(
@@ -1688,12 +1771,13 @@ if modern_chatbot_run is not None:
         cv_data=json.load(open(tag, encoding="utf-8")),
         rag_system=rag
     )
-    # Chatbot içeriğini modal body'ye yükle
-    with st.container():
-        modern_chatbot_run(
-            tool_def = tool_def_obj,
-            rag     = rag,
-            cv_json = json.load(open(tag, encoding="utf-8"))
-        )
+    # Chatbot içeriğini render et
+    st.markdown('<div id="chatbot-content-container">', unsafe_allow_html=True)
+    modern_chatbot_run(
+        tool_def = tool_def_obj,
+        rag     = rag,
+        cv_json = json.load(open(tag, encoding="utf-8"))
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 else:
     st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
