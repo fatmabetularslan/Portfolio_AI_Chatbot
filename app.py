@@ -1116,7 +1116,8 @@ st.markdown("""
 
 # About Me / Hakkımda
 st.markdown('<div class="portfolio-section" id="about">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📖 About Me / Hakkımda</h2>', unsafe_allow_html=True)
+about_title = "📖 Hakkımda" if current_lang == "tr" else "📖 About Me"
+st.markdown(f'<h2 class="section-title">{about_title}</h2>', unsafe_allow_html=True)
 
 # Education bilgisini About Me'de göster
 education_info = ""
@@ -1135,7 +1136,8 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # Experience & Education
 st.markdown('<div class="portfolio-section" id="experience">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">💼 Experience & Education / Deneyim & Eğitim</h2>', unsafe_allow_html=True)
+experience_title = "💼 Deneyim & Eğitim" if current_lang == "tr" else "💼 Experience & Education"
+st.markdown(f'<h2 class="section-title">{experience_title}</h2>', unsafe_allow_html=True)
 
 # Experience
 for exp in cv_data.get("experience", []):
@@ -1169,7 +1171,8 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # Projects
 st.markdown('<div class="portfolio-section" id="projects">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">🚀 Featured Projects / Öne Çıkan Projeler</h2>', unsafe_allow_html=True)
+projects_title = "🚀 Öne Çıkan Projeler" if current_lang == "tr" else "🚀 Featured Projects"
+st.markdown(f'<h2 class="section-title">{projects_title}</h2>', unsafe_allow_html=True)
 
 # Sadece belirtilen projeleri göster
 allowed_projects = [
@@ -1229,7 +1232,8 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # Skills
 st.markdown('<div class="portfolio-section" id="skills">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">🛠️ Skills / Yetenekler</h2>', unsafe_allow_html=True)
+skills_title = "🛠️ Yetenekler" if current_lang == "tr" else "🛠️ Skills"
+st.markdown(f'<h2 class="section-title">{skills_title}</h2>', unsafe_allow_html=True)
 
 skills = cv_data.get("skills", {})
 st.markdown('<div class="skills-container">', unsafe_allow_html=True)
@@ -1248,7 +1252,8 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # Awards
 st.markdown('<div class="portfolio-section" id="awards">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">🏆 Awards & Achievements / Ödüller</h2>', unsafe_allow_html=True)
+awards_title = "🏆 Ödüller" if current_lang == "tr" else "🏆 Awards & Achievements"
+st.markdown(f'<h2 class="section-title">{awards_title}</h2>', unsafe_allow_html=True)
 
 for award in cv_data.get("awards", []):
     name = award.get("name", "")
@@ -1264,27 +1269,10 @@ for award in cv_data.get("awards", []):
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-# References
-st.markdown('<div class="portfolio-section" id="references">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📞 References / Referanslar</h2>', unsafe_allow_html=True)
-
-for ref in cv_data.get("references", []):
-    name = ref.get("name", "")
-    title = ref.get("title", "")
-    org = ref.get("organization", "")
-    st.markdown(f"""
-    <div class="reference-card">
-        <div class="reference-name">{name}</div>
-        <div class="reference-title">{title}</div>
-        <div class="reference-org">{org}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
-
 # Latest Articles / Son Yazılar (Medium)
 st.markdown('<div class="portfolio-section" id="articles">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📝 Latest Articles / Son Yazılar</h2>', unsafe_allow_html=True)
+articles_title = "📝 Son Yazılar" if current_lang == "tr" else "📝 Latest Articles"
+st.markdown(f'<h2 class="section-title">{articles_title}</h2>', unsafe_allow_html=True)
 
 # Medium yazıları için grid CSS
 st.markdown("""
@@ -1424,13 +1412,34 @@ if medium_articles:
         
         st.markdown("</div>", unsafe_allow_html=True)
 else:
-    st.markdown('<p style="text-align: center; color: #64748b;">No articles available.</p>', unsafe_allow_html=True)
+    no_articles_text = "Yazı bulunamadı." if current_lang == "tr" else "No articles available."
+    st.markdown(f'<p style="text-align: center; color: #64748b;">{no_articles_text}</p>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# References
+st.markdown('<div class="portfolio-section" id="references">', unsafe_allow_html=True)
+references_title = "📞 Referanslar" if current_lang == "tr" else "📞 References"
+st.markdown(f'<h2 class="section-title">{references_title}</h2>', unsafe_allow_html=True)
+
+for ref in cv_data.get("references", []):
+    name = ref.get("name", "")
+    title = ref.get("title", "")
+    org = ref.get("organization", "")
+    st.markdown(f"""
+    <div class="reference-card">
+        <div class="reference-name">{name}</div>
+        <div class="reference-title">{title}</div>
+        <div class="reference-org">{org}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Get In Touch / İletişim
 st.markdown('<div class="portfolio-section" id="contact">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📧 Get In Touch / İletişim</h2>', unsafe_allow_html=True)
+contact_title = "📧 İletişim" if current_lang == "tr" else "📧 Get In Touch"
+st.markdown(f'<h2 class="section-title">{contact_title}</h2>', unsafe_allow_html=True)
 
 contact_text_tr = "Yeni fırsatlar ve işbirlikleri hakkında konuşmak için benimle iletişime geçebilirsiniz. Ayrıca sayfanın altındaki AI Asistanı üzerinden de bana ulaşabilirsiniz."
 contact_text_en = "I'm always interested in hearing about new opportunities and collaborations. You can also reach me via the AI Assistant at the bottom of this page."
