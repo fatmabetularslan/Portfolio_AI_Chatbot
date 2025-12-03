@@ -1721,43 +1721,25 @@ setTimeout(initChatbot, 2000);
 # Chat modülünü modal içinde göster
 st.markdown("""
 <style>
-/* Chatbot içeriğini sayfanın altında TAMAMEN gizle - TÜM Streamlit elementlerini kapsar */
+/* Chatbot içeriğini sayfanın altında gizle - display: none yerine position kullan */
 #chatbot-content-container {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
     position: fixed !important;
     top: -99999px !important;
     left: -99999px !important;
-    width: 0 !important;
-    height: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
     overflow: hidden !important;
-    pointer-events: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    z-index: -9999 !important;
-}
-
-/* Container içindeki TÜM elementleri gizle */
-#chatbot-content-container * {
-    display: none !important;
-    visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
+    z-index: -9999 !important;
 }
 
 /* Streamlit'in chatbot container'ını bul ve gizle */
 div[data-testid="stVerticalBlock"]:has(#chatbot-content-container) {
-    display: none !important;
-    visibility: hidden !important;
     height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-}
-
-/* Chatbot container'ından sonra gelen tüm Streamlit elementlerini de kontrol et */
-#chatbot-content-container ~ * {
-    display: none !important;
+    overflow: hidden !important;
 }
 
 /* Modal açıkken chatbot içeriğini modal body içine taşı */
@@ -1788,56 +1770,66 @@ if modern_chatbot_run is not None:
     )
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # JavaScript ile chatbot içeriğini gizle ve modal body'ye taşı
+    # JavaScript ile chatbot içeriğini modal body'ye taşı
     st.markdown("""
     <script>
-    function hideChatbotOnPage() {
-        const container = document.getElementById('chatbot-content-container');
-        if (container) {
-            container.style.display = 'none';
-            container.style.visibility = 'hidden';
-            container.style.opacity = '0';
-            container.style.position = 'fixed';
-            container.style.top = '-99999px';
-            container.style.left = '-99999px';
-            container.style.width = '0';
-            container.style.height = '0';
-            container.style.overflow = 'hidden';
-            container.style.pointerEvents = 'none';
-            container.style.margin = '0';
-            container.style.padding = '0';
-            container.style.zIndex = '-9999';
-            
-            // Container içindeki tüm elementleri de gizle
-            const allChildren = container.querySelectorAll('*');
-            allChildren.forEach(function(child) {
-                child.style.display = 'none';
-                child.style.visibility = 'hidden';
-                child.style.opacity = '0';
-            });
-        }
-    }
-    
     function moveChatbotToModal() {
         const container = document.getElementById('chatbot-content-container');
         const modalBody = document.getElementById('chatbotModalBody');
         
         if (!container || !modalBody) {
+            console.log('Container or modal body not found');
             return;
         }
         
-        // Container içindeki tüm içeriği modal body'ye taşı
-        if (container.children.length > 0) {
-            Array.from(container.children).forEach(function(child) {
-                if (!modalBody.contains(child)) {
-                    // Gizleme stillerini kaldır
-                    child.style.display = '';
-                    child.style.visibility = '';
-                    child.style.opacity = '';
-                    modalBody.appendChild(child);
-                }
+        // Modal body'yi temizle
+        modalBody.innerHTML = '';
+        
+        // Container içindeki tüm Streamlit içeriğini bul ve kopyala
+        const streamlitBlocks = container.querySelectorAll('.block-container, [data-testid="stVerticalBlock"]');
+        
+        if (streamlitBlocks.length > 0) {
+            console.log('Found Streamlit blocks:', streamlitBlocks.length);
+            streamlitBlocks.forEach(function(block) {
+                const clone = block.cloneNode(true);
+                // Gizleme stillerini kaldır
+                clone.style.display = '';
+                clone.style.visibility = '';
+                clone.style.opacity = '';
+                clone.style.position = '';
+                clone.style.top = '';
+                clone.style.left = '';
+                clone.style.width = '';
+                clone.style.height = '';
+                clone.style.overflow = '';
+                clone.style.pointerEvents = '';
+                clone.style.zIndex = '';
+                modalBody.appendChild(clone);
             });
+        } else {
+            // Eğer Streamlit block'ları yoksa, container'ın tüm içeriğini kopyala
+            if (container.children.length > 0) {
+                console.log('Copying container children');
+                Array.from(container.children).forEach(function(child) {
+                    const clone = child.cloneNode(true);
+                    // Gizleme stillerini kaldır
+                    clone.style.display = '';
+                    clone.style.visibility = '';
+                    clone.style.opacity = '';
+                    clone.style.position = '';
+                    clone.style.top = '';
+                    clone.style.left = '';
+                    clone.style.width = '';
+                    clone.style.height = '';
+                    clone.style.overflow = '';
+                    clone.style.pointerEvents = '';
+                    clone.style.zIndex = '';
+                    modalBody.appendChild(clone);
+                });
+            }
         }
+        
+        console.log('Chatbot content moved to modal');
     }
     
     // Modal açıldığında chatbot'u taşı
@@ -1845,13 +1837,25 @@ if modern_chatbot_run is not None:
         const modal = document.getElementById('chatbotModal');
         if (modal && modal.classList.contains('active')) {
             moveChatbotToModal();
-        } else {
-            hideChatbotOnPage();
         }
     }
     
-    // Sayfa yüklendiğinde chatbot'u gizle
-    hideChatbotOnPage();
+    // Modal class değişikliğini izle
+    function setupModalObserver() {
+        const modal = document.getElementById('chatbotModal');
+        if (modal) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (modal.classList.contains('active')) {
+                            setTimeout(moveChatbotToModal, 100);
+                        }
+                    }
+                });
+            });
+            observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+        }
+    }
     
     // Periyodik kontrol
     setInterval(checkAndMoveChatbot, 500);
@@ -1859,11 +1863,11 @@ if modern_chatbot_run is not None:
     // DOM hazır olduğunda çalıştır
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-            hideChatbotOnPage();
+            setupModalObserver();
             setTimeout(checkAndMoveChatbot, 1000);
         });
     } else {
-        hideChatbotOnPage();
+        setupModalObserver();
         setTimeout(checkAndMoveChatbot, 1000);
     }
     </script>
