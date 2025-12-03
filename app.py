@@ -1638,7 +1638,7 @@ st.markdown("""
 </style>
 
 <!-- Floating Action Button -->
-<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbotModal()">
+<button class="chatbot-fab" id="chatbotFab">
     🤖
 </button>
 
@@ -1647,7 +1647,7 @@ st.markdown("""
     <div class="chatbot-modal-content">
         <div class="chatbot-modal-header">
             <h3 class="chatbot-modal-title">AI Portfolyo Asistanı</h3>
-            <button class="chatbot-modal-close" onclick="toggleChatbotModal()">×</button>
+            <button class="chatbot-modal-close">×</button>
         </div>
         <div class="chatbot-modal-body" id="chatbotModalBody">
             <!-- Chatbot içeriği buraya yüklenecek -->
@@ -1656,80 +1656,65 @@ st.markdown("""
 </div>
 
 <script>
-(function() {
-    function toggleChatbotModal() {
-        const modal = document.getElementById('chatbotModal');
-        if (modal) {
-            modal.classList.toggle('active');
-        }
+window.toggleChatbotModal = function() {
+    const modal = document.getElementById('chatbotModal');
+    if (modal) {
+        modal.classList.toggle('active');
+        console.log('Modal toggled:', modal.classList.contains('active'));
+    }
+};
+
+function initChatbot() {
+    const modal = document.getElementById('chatbotModal');
+    const fab = document.getElementById('chatbotFab');
+    const closeBtn = document.querySelector('.chatbot-modal-close');
+    
+    if (fab) {
+        fab.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.toggleChatbotModal();
+        };
+        console.log('FAB initialized');
     }
     
-    // Global function olarak tanımla
-    window.toggleChatbotModal = toggleChatbotModal;
+    if (closeBtn) {
+        closeBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.toggleChatbotModal();
+        };
+        console.log('Close button initialized');
+    }
     
-    // DOM yüklendikten sonra event listener'ları ekle
-    function initChatbot() {
-        const modal = document.getElementById('chatbotModal');
-        const fab = document.getElementById('chatbotFab');
-        const modalBody = document.getElementById('chatbotModalBody');
-        const chatbotContainer = document.getElementById('chatbot-content-container');
-        
-        if (modal && fab) {
-            // FAB'a tıklama
-            fab.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                toggleChatbotModal();
-                
-                // Modal açıldığında chatbot içeriğini modal body'ye taşı
-                if (modal.classList.contains('active') && chatbotContainer && modalBody) {
-                    setTimeout(function() {
-                        // Container içindeki tüm içeriği modal body'ye taşı
-                        while (chatbotContainer.firstChild) {
-                            modalBody.appendChild(chatbotContainer.firstChild);
-                        }
-                    }, 100);
-                }
-            });
-            
-            // Modal dışına tıklayınca kapat
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    toggleChatbotModal();
-                }
-            });
-            
-            // Close butonuna tıklama
-            const closeBtn = modal.querySelector('.chatbot-modal-close');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleChatbotModal();
-                });
+    if (modal) {
+        modal.onclick = function(e) {
+            if (e.target === this) {
+                window.toggleChatbotModal();
             }
-            
-            // ESC tuşu ile kapat
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    if (modal.classList.contains('active')) {
-                        toggleChatbotModal();
-                    }
-                }
-            });
-        }
+        };
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                window.toggleChatbotModal();
+            }
+        });
+        console.log('Modal initialized');
     }
-    
-    // DOM hazır olduğunda çalıştır
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initChatbot);
-    } else {
-        initChatbot();
-    }
-    
-    // Streamlit rerun sonrası için de çalıştır
-    setTimeout(initChatbot, 500);
-})();
+}
+
+// Multiple initialization attempts
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatbot);
+} else {
+    initChatbot();
+}
+
+// Retry initialization
+setTimeout(initChatbot, 100);
+setTimeout(initChatbot, 500);
+setTimeout(initChatbot, 1000);
+setTimeout(initChatbot, 2000);
 </script>
 """, unsafe_allow_html=True)
 
@@ -1738,28 +1723,22 @@ st.markdown("""
 <style>
 /* Chatbot içeriğini sayfanın altında gizle */
 #chatbot-content-container {
-    display: none !important;
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
 }
 
-/* Modal açıkken chatbot içeriğini göster */
-.chatbot-modal.active ~ * #chatbot-content-container {
-    display: block !important;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 800px;
-    max-height: 85vh;
-    overflow-y: auto;
-    z-index: 10001;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+/* Modal açıkken chatbot içeriğini modal body içine taşı */
+.chatbot-modal.active #chatbotModalBody {
+    position: relative;
 }
 
-.stApp[data-theme="dark"] .chatbot-modal.active ~ * #chatbot-content-container {
-    background: #1e293b;
+/* Streamlit'in chatbot container'ını bul ve modal body'ye taşı */
+.chatbot-modal.active #chatbotModalBody .stApp {
+    padding: 0 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1771,7 +1750,7 @@ if modern_chatbot_run is not None:
         cv_data=json.load(open(tag, encoding="utf-8")),
         rag_system=rag
     )
-    # Chatbot içeriğini render et
+    # Chatbot içeriğini render et (JavaScript ile modal içine taşınacak)
     st.markdown('<div id="chatbot-content-container">', unsafe_allow_html=True)
     modern_chatbot_run(
         tool_def = tool_def_obj,
@@ -1779,5 +1758,50 @@ if modern_chatbot_run is not None:
         cv_json = json.load(open(tag, encoding="utf-8"))
     )
     st.markdown('</div>', unsafe_allow_html=True)
+    
+    # JavaScript ile chatbot içeriğini modal body'ye taşı
+    st.markdown("""
+    <script>
+    function moveChatbotToModal() {
+        const container = document.getElementById('chatbot-content-container');
+        const modalBody = document.getElementById('chatbotModalBody');
+        
+        if (!container || !modalBody) {
+            console.log('Container or modal body not found');
+            return;
+        }
+        
+        // Container içindeki tüm içeriği modal body'ye taşı
+        if (container.children.length > 0) {
+            console.log('Moving chatbot content to modal');
+            Array.from(container.children).forEach(function(child) {
+                if (!modalBody.contains(child)) {
+                    modalBody.appendChild(child);
+                }
+            });
+        }
+    }
+    
+    // Modal açıldığında chatbot'u taşı
+    function checkAndMoveChatbot() {
+        const modal = document.getElementById('chatbotModal');
+        if (modal && modal.classList.contains('active')) {
+            moveChatbotToModal();
+        }
+    }
+    
+    // Periyodik kontrol
+    setInterval(checkAndMoveChatbot, 500);
+    
+    // DOM hazır olduğunda çalıştır
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkAndMoveChatbot, 1000);
+        });
+    } else {
+        setTimeout(checkAndMoveChatbot, 1000);
+    }
+    </script>
+    """, unsafe_allow_html=True)
 else:
     st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
