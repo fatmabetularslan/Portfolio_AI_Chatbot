@@ -395,108 +395,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 3. Header ve AI Avatar
+# 3. Main Content Container
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
-
-# AI Avatar CSS
-st.markdown("""
-<style>
-.header-with-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.ai-avatar {
-    width: 155px;
-    height: 155px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 58% 42% 60% 40% / 45% 55% 45% 55%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5em;
-    box-shadow: 0 12px 30px rgba(86, 99, 255, 0.3);
-    animation: pulse 2s ease-in-out infinite;
-    position: relative;
-    backdrop-filter: blur(8px);
-    border: 2px solid rgba(255,255,255,0.4);
-}
-
-.ai-avatar::after {
-    content: '';
-    position: absolute;
-    inset: -20px;
-    border-radius: inherit;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), transparent 60%);
-    filter: blur(10px);
-    opacity: 0.6;
-    z-index: -2;
-}
-
-.ai-avatar::before {
-    content: '';
-    position: absolute;
-    top: -14px;
-    left: -14px;
-    right: -14px;
-    bottom: -14px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25));
-    z-index: -1;
-    opacity: 0.8;
-    filter: blur(8px);
-}
-
-.ai-avatar img {
-    width: 94%;
-    height: 94%;
-    border-radius: 55% 45% 50% 50% / 48% 52% 42% 58%;
-    object-fit: cover;
-    box-shadow: inset 0 0 12px rgba(0,0,0,0.15);
-}
-
-.ai-avatar::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.3;
-    animation: pulse-ring 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
-
-@keyframes pulse-ring {
-    0% { transform: scale(1); opacity: 0.3; }
-    50% { transform: scale(1.1); opacity: 0.1; }
-    100% { transform: scale(1); opacity: 0.3; }
-}
-
-@media (max-width: 768px) {
-    .header-with-avatar {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .ai-avatar {
-        width: 115px;
-        height: 115px;
-        font-size: 2em;
-    }
-}
-</style>
-""", unsafe_allow_html=True)
 
 # Hero Section (Selman'ın sitesine benzer)
 cv_data = json.load(open(tag, encoding="utf-8"))
@@ -510,33 +410,35 @@ st.markdown("""
 <style>
 .hero-section {
     text-align: center;
-    padding: 60px 20px 40px;
+    padding: 80px 20px 50px;
     max-width: 900px;
-    margin: 0 auto;
+    margin: 0 auto 60px auto;
 }
 
 .hero-name {
-    font-size: 3.5em;
+    font-size: 4em;
     font-weight: 800;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    line-height: 1.2;
 }
 
 .hero-title {
-    font-size: 1.8em;
+    font-size: 2em;
     font-weight: 600;
     color: #475569;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .hero-specialization {
-    font-size: 1.2em;
+    font-size: 1.3em;
     color: #64748b;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     font-style: italic;
+    font-weight: 400;
 }
 
 .hero-location {
@@ -597,10 +499,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 5. Modern butonlar (sadece bir yerde, ortalanmış) ---
-# Üstteki butonları kaldır, sadece alttaki kalsın
-# (Yalnızca bir kez, ana başlık ve sosyal medya linklerinden sonra göster)
-
+# 6. Modern butonlar (CV görüntüle ve Chat başlat) ---
 # --- Animasyonlu butonlar için özel CSS ---
 st.markdown("""
 <style>
@@ -702,34 +601,8 @@ div.stButton > button:last-child:hover {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="animated-btns-wrap">', unsafe_allow_html=True)
-if st.button("📁  CV'yi Gör", key="cv_btn_home_main", use_container_width=False):
-    with open(PDF_PATH, "rb") as f:
-        pdf_bytes = f.read()
-    st.download_button(
-        label="📥 PDF'i İndir",
-        data=pdf_bytes,
-        file_name="Fatma_Betul_Arslan_CV.pdf",
-        mime="application/pdf",
-        use_container_width=False,
-        key="cv_download_btn_direct"
-    )
-
-if st.button("🤖  Sohbete Başla", key="chat_btn_home_main", use_container_width=False):
-    # JavaScript ile smooth scroll yap
-    st.markdown("""
-    <script>
-    (function() {
-        setTimeout(function() {
-            const chatSection = document.getElementById('chat-section');
-            if (chatSection) {
-                chatSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
-    })();
-    </script>
-    """, unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+# Butonlar kaldırıldı - artık hero section'da Download CV ve sosyal medya linkleri var
+# Chat butonu navigasyon menüsünde
 
 # --- CV ile ilgili butonlar için özel CSS ---
 st.markdown("""
@@ -1283,4 +1156,3 @@ if modern_chatbot_run is not None:
     )
 else:
     st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
-        
