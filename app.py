@@ -1484,23 +1484,203 @@ st.markdown(f"""
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Chat Bölümü (Ana sayfanın altında) ---
+# --- Floating Chatbot Button & Modal ---
 st.markdown("""
 <style>
-#chat-section {
-    margin-top: 80px;
-    padding-top: 40px;
-    border-top: 2px solid #e2e8f0;
-    scroll-margin-top: 20px;
+/* Floating Action Button */
+.chatbot-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b5bdb 0%, #5b21b6 100%);
+    border: none;
+    box-shadow: 0 4px 20px rgba(59, 91, 219, 0.4);
+    cursor: pointer;
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 28px;
 }
-.stApp[data-theme="dark"] #chat-section {
-    border-top-color: #475569;
+
+.chatbot-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(59, 91, 219, 0.6);
+}
+
+.chatbot-fab:active {
+    transform: scale(0.95);
+}
+
+/* Chatbot Modal */
+.chatbot-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease;
+}
+
+.chatbot-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chatbot-modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+}
+
+.chatbot-modal-header {
+    background: linear-gradient(135deg, #3b5bdb 0%, #5b21b6 100%);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 20px 20px 0 0;
+}
+
+.chatbot-modal-title {
+    font-size: 1.4em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.chatbot-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.chatbot-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.chatbot-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f8fafc;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.stApp[data-theme="dark"] .chatbot-modal-content {
+    background: #1e293b;
+}
+
+.stApp[data-theme="dark"] .chatbot-modal-body {
+    background: #0f172a;
+}
+
+@media (max-width: 768px) {
+    .chatbot-fab {
+        width: 56px;
+        height: 56px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 24px;
+    }
+    .chatbot-modal-content {
+        width: 95%;
+        max-height: 90vh;
+        border-radius: 16px;
+    }
+    .chatbot-modal-header {
+        padding: 16px 20px;
+        border-radius: 16px 16px 0 0;
+    }
 }
 </style>
-""", unsafe_allow_html=True)
-st.markdown('<div id="chat-section"></div>', unsafe_allow_html=True)
 
-# Chat modülünü yükle ve çalıştır
+<!-- Floating Action Button -->
+<button class="chatbot-fab" id="chatbotFab" onclick="toggleChatbotModal()">
+    🤖
+</button>
+
+<!-- Chatbot Modal -->
+<div class="chatbot-modal" id="chatbotModal">
+    <div class="chatbot-modal-content">
+        <div class="chatbot-modal-header">
+            <h3 class="chatbot-modal-title">AI Portfolyo Asistanı</h3>
+            <button class="chatbot-modal-close" onclick="toggleChatbotModal()">×</button>
+        </div>
+        <div class="chatbot-modal-body" id="chatbotModalBody">
+            <!-- Chatbot içeriği buraya yüklenecek -->
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleChatbotModal() {
+    const modal = document.getElementById('chatbotModal');
+    modal.classList.toggle('active');
+}
+
+// Modal dışına tıklayınca kapat
+document.getElementById('chatbotModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        toggleChatbotModal();
+    }
+});
+
+// ESC tuşu ile kapat
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('chatbotModal');
+        if (modal.classList.contains('active')) {
+            toggleChatbotModal();
+        }
+    }
+});
+</script>
+""", unsafe_allow_html=True)
+
+# Chat modülünü modal içinde göster
 if modern_chatbot_run is not None:
     tool_def_obj = ToolDefinitions()
     tool_def_obj.initialize_job_analyzer(
@@ -1508,10 +1688,12 @@ if modern_chatbot_run is not None:
         cv_data=json.load(open(tag, encoding="utf-8")),
         rag_system=rag
     )
-    modern_chatbot_run(
-        tool_def = tool_def_obj,
-        rag     = rag,
-        cv_json = json.load(open(tag, encoding="utf-8"))
-    )
+    # Chatbot içeriğini modal body'ye yükle
+    with st.container():
+        modern_chatbot_run(
+            tool_def = tool_def_obj,
+            rag     = rag,
+            cv_json = json.load(open(tag, encoding="utf-8"))
+        )
 else:
     st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
