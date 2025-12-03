@@ -1,5 +1,33 @@
 LIGHT_CSS = """
+/* Light Mode - Genel stiller */
+body, .main, .stApp, .block-container {
+    background: #ffffff !important;
+    color: #1e293b !important;
+}
 
+/* Linkler */
+a, a:visited, a:active {
+    color: #667eea !important;
+    text-decoration: none !important;
+}
+a:hover {
+    color: #764ba2 !important;
+}
+
+/* Streamlit bileşenleri */
+.stMarkdown, .stText {
+    color: #1e293b !important;
+}
+
+/* Butonlar */
+button, .stButton button {
+    transition: all 0.2s ease !important;
+}
+
+/* Chat bileşenleri */
+.stChatMessage {
+    background: #f8fafc !important;
+}
 """
 
 
@@ -49,10 +77,22 @@ button, div[data-baseweb="button"], .stButton button, .stDownloadButton button {
     border-radius:8px!important;
     border: 1px solid #6C63FF !important;
     font-weight: 600;
+    transition: all 0.2s ease !important;
 }
 button:hover, div[data-baseweb="button"]:hover, .stButton button:hover, .stDownloadButton button:hover {
     background:#6C63FF!important;
     color:#fff!important;
+    transform: translateY(-1px) !important;
+}
+
+/* Download CV butonu için özel stil (dark mode'da da çalışsın) */
+.download-cv-container button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+.download-cv-container button:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
 }
 /* Selectbox dropdown ve overlay için ultra kapsayıcı dark mode */
 .st-emotion-cache-1n6xq8e-menu,
@@ -244,4 +284,49 @@ body * {
 html, body, .stApp, .main, .block-container, #root, #main-content, .st-emotion-cache-1wrcr25, .st-emotion-cache-uf99v8, .st-emotion-cache-1kyxreq, .st-emotion-cache-13ln4jf, .st-emotion-cache-1v0mbdj {
     background: #181a20 !important;
     color: #f5f6fa !important;
+}
+
+/* Portfolio bölümleri için dark mode */
+.portfolio-section {
+    background: transparent !important;
+}
+
+.hero-section {
+    background: transparent !important;
+}
+
+.hero-name {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.nav-menu {
+    background: rgba(30, 41, 59, 0.95) !important;
+    border-bottom-color: #475569 !important;
+}
+
+.nav-link {
+    color: #cbd5e1 !important;
+}
+
+.nav-link:hover {
+    color: #a5b4fc !important;
+    background: rgba(102, 126, 234, 0.2) !important;
+}
+
+/* Download CV butonu dark mode */
+.download-cv-container button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* Sosyal medya linkleri dark mode */
+.social-links a {
+    color: #a5b4fc !important;
+}
+
+.social-links a:hover {
+    color: #c4b5fd !important;
 }"""
