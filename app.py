@@ -93,6 +93,42 @@ if "page" not in st.session_state:
 
 lang = st.session_state["lang"]
 
+# Streamlit header'ını gizle ve navigasyon menüsünü görünür yap
+st.markdown("""
+<style>
+/* Streamlit header'ını tamamen gizle */
+header[data-testid="stHeader"],
+.stApp > header,
+header {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Main container padding'ini ayarla */
+.main .block-container {
+    padding-top: 0 !important;
+    max-width: 1200px;
+}
+
+/* Body padding'ini ayarla - navigasyon menüsü için yer aç */
+body {
+    padding-top: 70px !important;
+}
+
+/* Main content'i menünün altından başlat */
+.main {
+    padding-top: 0 !important;
+}
+
+.stApp > div:first-child {
+    padding-top: 0 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Tema bazlı ek CSS
 st.markdown(f"<style>{DARK_CSS if st.session_state.dark_mode else LIGHT_CSS}</style>", unsafe_allow_html=True)
 
@@ -178,17 +214,37 @@ current_lang = st.session_state.get("lang", "tr")
 # 1. Navigation Menu (Sabit, üstte)
 st.markdown("""
 <style>
+/* Streamlit header'ını gizle */
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+
+/* Streamlit'in default padding'ini kaldır */
+.stApp > header {
+    display: none !important;
+}
+
+/* Main container'ı üstten başlat */
+.main .block-container {
+    padding-top: 0 !important;
+}
+
+/* Navigation Menu */
 .nav-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    z-index: 1000;
-    padding: 16px 0;
-    border-bottom: 1px solid #e2e8f0;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
+    z-index: 9999 !important;
+    padding: 16px 0 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .nav-menu-content {
@@ -247,8 +303,17 @@ st.markdown("""
 }
 
 body {
-    padding-top: 60px;
+    padding-top: 70px !important;
     scroll-behavior: smooth;
+}
+
+/* Main content'i menünün altından başlat */
+.main {
+    padding-top: 70px !important;
+}
+
+.stApp > div:first-child {
+    padding-top: 0 !important;
 }
 
 /* Scroll offset için portfolio bölümleri */
@@ -327,6 +392,12 @@ home_text = "Ana Sayfa" if current_lang == "tr" else "Home"
 lang = st.session_state.get("lang", "tr")
 dark = st.session_state.get("dark_mode", False)
 
+# Navigasyon menüsü HTML'i
+en_selected = 'selected' if lang == 'en' else ''
+tr_selected = 'selected' if lang == 'tr' else ''
+light_selected = 'selected' if not dark else ''
+dark_selected = 'selected' if dark else ''
+
 st.markdown(f"""
 <div class="nav-menu">
     <div class="nav-menu-content">
@@ -343,10 +414,10 @@ st.markdown(f"""
         </div>
         <div class="nav-menu-toggles">
             <form method="GET" style="display: flex; gap: 6px; align-items: center; margin:0;">
-                <button class="nav-toggle-btn{' selected' if lang == 'en' else ''}" name="setlang" value="en" type="submit" title="English">🇬🇧</button>
-                <button class="nav-toggle-btn{' selected' if lang == 'tr' else ''}" name="setlang" value="tr" type="submit" title="Türkçe">🇹🇷</button>
-                <button class="nav-toggle-btn{' selected' if not dark else ''}" name="settheme" value="light" type="submit" title="Light Mode">☀️</button>
-                <button class="nav-toggle-btn{' selected' if dark else ''}" name="settheme" value="dark" type="submit" title="Dark Mode">🌙</button>
+                <button class="nav-toggle-btn {en_selected}" name="setlang" value="en" type="submit" title="English">🇬🇧</button>
+                <button class="nav-toggle-btn {tr_selected}" name="setlang" value="tr" type="submit" title="Türkçe">🇹🇷</button>
+                <button class="nav-toggle-btn {light_selected}" name="settheme" value="light" type="submit" title="Light Mode">☀️</button>
+                <button class="nav-toggle-btn {dark_selected}" name="settheme" value="dark" type="submit" title="Dark Mode">🌙</button>
             </form>
         </div>
     </div>
