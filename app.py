@@ -547,19 +547,19 @@ st.markdown("""
 <style>
 .hero-section {
     text-align: center;
-    padding: 20px 20px 40px 20px;
-    max-width: 900px;
+    padding: 60px 20px 40px 20px;
+    max-width: 700px;
     margin: 0 auto 40px auto;
 }
 .hero-profile-img {
-    width: 280px;
-    height: 280px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 25px auto;
+    margin: 0 auto 30px auto;
     display: block;
-    border: 5px solid #667eea;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    border: 4px solid #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 .hero-profile-img:hover { transform: scale(1.05); }
@@ -574,10 +574,19 @@ st.markdown("""
     line-height: 1.2;
 }
 .hero-title {
-    font-size: 2em;
-    font-weight: 600;
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.3em;
+    font-weight: 400;
     color: #475569;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
+    line-height: 1.4;
 }
 .hero-specialization {
     font-size: 1.3em;
@@ -675,8 +684,17 @@ subtitle_tr = "Büyük Dil Modelleri ve Bilgisayarlı Görü Uzmanı"
 subtitle_en = "Large Language Models and Computer Vision Specialist"
 subtitle = subtitle_tr if current_lang == "tr" else subtitle_en
 
+# Profil fotoğrafı
+if PROFILE_IMG_PATH.exists():
+    profile_bytes = PROFILE_IMG_PATH.read_bytes()
+    profile_b64 = base64.b64encode(profile_bytes).decode("utf-8")
+    profile_img_html = f'<img src="data:image/jpeg;base64,{profile_b64}" alt="{name}" class="hero-profile-img" />'
+else:
+    profile_img_html = f'<div class="hero-profile-img" style="background: linear-gradient(135deg, #667eea 0%, #4facfe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3em; font-weight: 700;">{name[0]}</div>'
+
 st.markdown(f"""
 <div class="hero-section">
+    {profile_img_html}
     <h1 class="hero-title">{title}</h1>
     <p class="hero-subtitle">{subtitle}</p>
     <div class="hero-actions">
