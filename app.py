@@ -890,7 +890,7 @@ st.markdown("""
 }
 
 .about-content {
-    font-size: 1.1em;
+    font-size: 1.15em;
     line-height: 1.8;
     color: #475569;
     text-align: center;
@@ -914,28 +914,29 @@ st.markdown("""
 }
 
 .experience-title, .education-title {
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: 600;
     color: #1e293b;
     margin-bottom: 8px;
 }
 
 .experience-company, .education-institution {
-    font-size: 1.1em;
+    font-size: 1.2em;
     color: #3b5bdb;
     font-weight: 500;
     margin-bottom: 8px;
 }
 
 .experience-duration, .education-years {
-    font-size: 0.9em;
+    font-size: 1em;
     color: #64748b;
     margin-bottom: 12px;
 }
 
 .experience-description, .education-degree {
     color: #475569;
-    line-height: 1.6;
+    line-height: 1.7;
+    font-size: 1.05em;
 }
 
 .skills-container {
@@ -953,7 +954,7 @@ st.markdown("""
 }
 
 .skill-category-title {
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: 600;
     color: #3b5bdb;
     margin-bottom: 12px;
@@ -963,9 +964,9 @@ st.markdown("""
     display: inline-block;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     color: #475569;
-    padding: 6px 14px;
+    padding: 8px 16px;
     border-radius: 20px;
-    font-size: 0.9em;
+    font-size: 1em;
     margin: 4px 4px 4px 0;
     border: 1px solid #e2e8f0;
 }
@@ -975,7 +976,7 @@ st.markdown("""
 }
 
 .project-name {
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: 600;
     color: #1e293b;
     margin-bottom: 12px;
@@ -983,15 +984,16 @@ st.markdown("""
 
 .project-tech {
     color: #3b5bdb;
-    font-size: 0.95em;
+    font-size: 1.05em;
     margin-bottom: 12px;
     font-weight: 500;
 }
 
 .project-description {
     color: #475569;
-    line-height: 1.6;
+    line-height: 1.7;
     margin-bottom: 12px;
+    font-size: 1.05em;
 }
 
 .project-features {
@@ -1002,7 +1004,7 @@ st.markdown("""
 
 .project-feature {
     color: #64748b;
-    font-size: 0.9em;
+    font-size: 1em;
     margin: 4px 0;
 }
 
@@ -1026,7 +1028,7 @@ st.markdown("""
 }
 
 .award-name {
-    font-size: 1.2em;
+    font-size: 1.35em;
     font-weight: 600;
     color: #1e293b;
     margin-bottom: 6px;
@@ -1040,11 +1042,12 @@ st.markdown("""
 
 .award-description {
     color: #475569;
-    line-height: 1.6;
+    line-height: 1.7;
+    font-size: 1.05em;
 }
 
 .reference-name {
-    font-size: 1.2em;
+    font-size: 1.35em;
     font-weight: 600;
     color: #1e293b;
     margin-bottom: 6px;
@@ -1058,7 +1061,7 @@ st.markdown("""
 
 .reference-org {
     color: #64748b;
-    font-size: 0.9em;
+    font-size: 1em;
 }
 
 /* Dark mode */
@@ -1124,7 +1127,7 @@ education_info = ""
 if cv_data.get("education"):
     edu = cv_data["education"][0]
     institution = edu.get("institution", "")
-    education_info = f'<p style="text-align: center; color: #3b5bdb; font-weight: 500; margin-top: 20px;">🎓 {institution}</p>'
+    education_info = f'<p style="text-align: center; color: #3b5bdb; font-weight: 500; margin-top: 20px; font-size: 1.25em;">🎓 {institution}</p>'
 
 profile_text = cv_data.get("profile", "")
 if profile_text:
@@ -1182,51 +1185,61 @@ allowed_projects = [
     "Energy Consumption Prediction API"
 ]
 
+# İzin verilen projeleri filtrele
+filtered_projects = []
 for proj in cv_data.get("projects", []):
     name = proj.get("name", "")
-    # Sadece izin verilen projeleri göster
-    if name not in allowed_projects:
-        continue
-    name = proj.get("name", "")
-    tech = proj.get("technology", "")
-    desc = proj.get("description", "")
-    features = proj.get("features", [])
-    github = proj.get("github", "")
+    if name in allowed_projects:
+        filtered_projects.append(proj)
+
+# Projeleri 2'şerli yan yana göster
+if filtered_projects:
+    col1, col2 = st.columns(2)
     
-    # Dil desteği için description
-    if isinstance(desc, dict):
-        description = desc.get(current_lang, desc.get("en", desc.get("tr", "")))
-    else:
-        description = desc
-    
-    # Dil desteği için features
-    if isinstance(features, dict):
-        features_list = features.get(current_lang, features.get("en", features.get("tr", [])))
-    elif isinstance(features, list):
-        features_list = features
-    else:
-        features_list = []
-    
-    features_html = ""
-    if features_list:
-        features_html = '<div class="project-features">'
-        for feature in features_list:
-            features_html += f'<div class="project-feature">{feature}</div>'
-        features_html += '</div>'
-    
-    github_link = ""
-    if github:
-        github_link = f'<a href="{github}" target="_blank" class="project-link">🔗 View on GitHub</a>'
-    
-    st.markdown(f"""
-    <div class="project-card">
-        <div class="project-name">{name}</div>
-        <div class="project-tech">{tech}</div>
-        <div class="project-description">{description}</div>
-        {features_html}
-        {github_link}
-    </div>
-    """, unsafe_allow_html=True)
+    for i, proj in enumerate(filtered_projects):
+        name = proj.get("name", "")
+        tech = proj.get("technology", "")
+        desc = proj.get("description", "")
+        features = proj.get("features", [])
+        github = proj.get("github", "")
+        
+        # Dil desteği için description
+        if isinstance(desc, dict):
+            description = desc.get(current_lang, desc.get("en", desc.get("tr", "")))
+        else:
+            description = desc
+        
+        # Dil desteği için features
+        if isinstance(features, dict):
+            features_list = features.get(current_lang, features.get("en", features.get("tr", [])))
+        elif isinstance(features, list):
+            features_list = features
+        else:
+            features_list = []
+        
+        features_html = ""
+        if features_list:
+            features_html = '<div class="project-features">'
+            for feature in features_list:
+                features_html += f'<div class="project-feature">{feature}</div>'
+            features_html += '</div>'
+        
+        github_link = ""
+        if github:
+            github_text = "🔗 GitHub'da Görüntüle" if current_lang == "tr" else "🔗 View on GitHub"
+            github_link = f'<a href="{github}" target="_blank" class="project-link">{github_text}</a>'
+        
+        # 2'şerli yan yana yerleştir
+        with (col1 if i % 2 == 0 else col2):
+            st.markdown(f"""
+            <div class="project-card">
+                <div class="project-name">{name}</div>
+                <div class="project-tech">{tech}</div>
+                <div class="project-description">{description}</div>
+                {features_html}
+                {github_link}
+            </div>
+            """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1301,17 +1314,17 @@ st.markdown("""
 }
 
 .article-title {
-    font-size: 1.2em;
+    font-size: 1.35em;
     font-weight: 600;
     color: #1e293b;
     margin-bottom: 12px;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
 .article-summary {
     color: #64748b;
-    font-size: 0.95em;
-    line-height: 1.6;
+    font-size: 1.05em;
+    line-height: 1.7;
     margin-bottom: 16px;
 }
 
@@ -1451,7 +1464,7 @@ links = cv_data.get("links", {})
 
 st.markdown(f"""
 <div style="text-align: center; max-width: 600px; margin: 0 auto;">
-    <p style="font-size: 1.1em; line-height: 1.8; color: #475569; margin-bottom: 30px;">{contact_text}</p>
+    <p style="font-size: 1.15em; line-height: 1.8; color: #475569; margin-bottom: 30px;">{contact_text}</p>
     <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
         <a href="mailto:{email}" style="display: inline-flex; align-items: center; gap: 8px; color: #3b5bdb; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #3b5bdb; border-radius: 8px; transition: all 0.2s;">
             📧 Mail Me
