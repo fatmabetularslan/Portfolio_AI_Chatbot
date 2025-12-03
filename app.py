@@ -610,35 +610,68 @@ specialization_tr = "Machine Learning, Data Science ve Veri Analizi"
 specialization_en = "Machine Learning, Data Science and Data Analysis"
 specialization = specialization_tr if current_lang == "tr" else specialization_en
 
-st.markdown(f"""
+# Hero section - Tüm içerik HTML içinde
+hero_html = f"""
 <div class="hero-section">
     {profile_img_html}
     <h1 class="hero-name">{name}</h1>
     <h2 class="hero-title">{title}</h2>
     <p class="hero-specialization">{specialization}</p>
     <p class="hero-location">📍 {location}</p>
-    
     <div class="hero-actions">
         <div class="download-cv-btn-wrapper">
-""", unsafe_allow_html=True)
+"""
 
-# Download CV butonu (Hero section içinde)
+# PDF dosyasını oku
+pdf_data_attr = ""
 try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
-    st.download_button(
-        label="📥 Download CV",
-        data=pdf_bytes,
-        file_name="Fatma_Betul_Arslan_CV.pdf",
-        mime="application/pdf",
-        use_container_width=False,
-        key="hero_cv_download_btn"
-    )
+    pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")
+    pdf_data_attr = f'data:application/pdf;base64,{pdf_b64}'
 except FileNotFoundError:
-    st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
+    pass
 
-# Sosyal medya linkleri (Hero section içinde)
-st.markdown("""
+# Download CV butonu için HTML (JavaScript ile indirme)
+if pdf_data_attr:
+    hero_html += f"""
+            <button onclick="downloadCV()" class="cv-download-btn-html">
+                📥 Download CV
+            </button>
+            <script>
+                function downloadCV() {{
+                    const link = document.createElement('a');
+                    link.href = '{pdf_data_attr}';
+                    link.download = 'Fatma_Betul_Arslan_CV.pdf';
+                    link.click();
+                }}
+            </script>
+            <style>
+                .cv-download-btn-html {{
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                    color: white !important;
+                    border: none !important;
+                    padding: 14px 32px !important;
+                    border-radius: 8px !important;
+                    font-weight: 600 !important;
+                    font-size: 1.05em !important;
+                    cursor: pointer !important;
+                    transition: transform 0.2s, box-shadow 0.2s !important;
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+                    min-width: 200px !important;
+                }}
+                .cv-download-btn-html:hover {{
+                    transform: translateY(-2px) !important;
+                    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
+                    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+                }}
+            </style>
+    """
+else:
+    hero_html += '<p style="color: red;">CV dosyası bulunamadı</p>'
+
+# Sosyal medya linkleri
+hero_html += """
         </div>
         <div class="social-links">
           <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank">
@@ -653,7 +686,9 @@ st.markdown("""
         </div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+"""
+
+st.markdown(hero_html, unsafe_allow_html=True)
 
 # Gereksiz CSS ve buton kodları temizlendi - hero section'da Download CV butonu var
 
