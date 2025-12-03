@@ -552,8 +552,8 @@ st.markdown("""
     margin: 0 auto 40px auto;
 }
 .hero-profile-img {
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    height: 280px;
     border-radius: 50%;
     object-fit: cover;
     margin: 0 auto 30px auto;
@@ -597,14 +597,18 @@ st.markdown("""
 }
 .hero-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 20px;
-    margin: 30px 0;
+    justify-content: space-between;
+    gap: 30px;
+    margin: 40px 0 20px 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .download-cv-btn-wrapper {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
 }
 .download-cv-btn-wrapper button,
 .download-cv-btn-wrapper div[data-baseweb="button"],
@@ -634,10 +638,10 @@ st.markdown("""
 }
 .social-links {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 20px;
     flex-wrap: wrap;
-    margin-top: 30px;
+    margin-top: 0;
 }
 .social-links a {
     text-decoration: none;
@@ -698,12 +702,12 @@ st.markdown(f"""
     <h1 class="hero-title">{title}</h1>
     <p class="hero-subtitle">{subtitle}</p>
     <div class="hero-actions">
+        <div class="download-cv-btn-wrapper">
 """, unsafe_allow_html=True)
 
 try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
-    st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
     st.download_button(
         label="📥 Download CV",
         data=pdf_bytes,
@@ -712,11 +716,11 @@ try:
         use_container_width=False,
         key="hero_cv_download_btn"
     )
-    st.markdown("</div>", unsafe_allow_html=True)
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
 st.markdown(f"""
+        </div>
         <div class="social-links">
           <a href="{cv_data['links'].get('github', '#')}" target="_blank">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
