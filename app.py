@@ -1,28 +1,43 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import base64
-
-st.set_page_config(page_title="Fatma Betül Arslan", page_icon="🤖", layout="centered")
-
 import json
+from pathlib import Path
+
 from tools.tool_definitions import ToolDefinitions
+from rag_system import load_cv_index
+from common_css import LIGHT_CSS, DARK_CSS
+
 try:
     from modern_chatbot import run as modern_chatbot_run
 except ImportError:
     import modern_chatbot  # type: ignore
     modern_chatbot_run = getattr(modern_chatbot, "run", None)
-from common_css import LIGHT_CSS, DARK_CSS
-from rag_system import load_cv_index
-from pathlib import Path
+
+# ---------------------------------------------------------
+# Genel ayarlar
+# ---------------------------------------------------------
+st.set_page_config(
+    page_title="Fatma Betül Arslan",
+    page_icon="🤖",
+    layout="wide",
+)
+
 PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
 PROFILE_IMG_PATH = Path("assets/vesika.jpg")
+CV_JSON_PATH = "betül-cv.json"
 
-# --- Modern Language Toggle Bar (flag icons, unified, no columns/buttons) ---
+
+# ---------------------------------------------------------
+# Dil & Tema toggle
+# ---------------------------------------------------------
 def language_and_theme_toggle():
     lang = st.session_state.get("lang", "tr")
     dark = st.session_state.get("dark_mode", False)
     page = st.session_state.get("page", "home")
-    st.markdown("""
+
+    # Toggle bar CSS
+    st.markdown(
+        """
     <style>
     .top-right-toggles {
         position: fixed;
@@ -30,7 +45,7 @@ def language_and_theme_toggle():
         right: 32px;
         display: flex;
         gap: 16px;
-        z-index: 1000;
+        z-index: 1100;
         background: rgba(255,255,255,0.85);
         box-shadow: 0 4px 24px 0 rgba(49,130,206,0.10), 0 0 16px 2px #fff2;
         border-radius: 32px;
@@ -56,10 +71,16 @@ def language_and_theme_toggle():
         background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
         color: #fff;
     }
+    .stApp[data-theme="dark"] .top-right-toggles {
+        background: rgba(15,23,42,0.9);
+    }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-    st.markdown(f'''
+    st.markdown(
+        f"""
     <div class="top-right-toggles">
       <form method="GET" style="display: flex; gap: 8px; align-items: center; margin:0;">
         <button class="toggle-btn{' selected' if lang == 'en' else ''}" name="setlang" value="en" type="submit">EN</button>
@@ -68,22 +89,30 @@ def language_and_theme_toggle():
         <button class="toggle-btn{' selected' if dark else ''}" name="settheme" value="dark" type="submit">🌙</button>
       </form>
     </div>
-    ''', unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     qp = st.query_params
     rerun_needed = False
+
     if qp.get("setlang"):
         st.session_state["lang"] = qp["setlang"]
         rerun_needed = True
+
     if qp.get("settheme"):
         st.session_state["dark_mode"] = qp["settheme"] == "dark"
         rerun_needed = True
+
     if rerun_needed:
-        st.session_state["page"] = page  # Mevcut sayfada kal!
+        st.session_state["page"] = page
         qp.clear()
         st.rerun()
 
-# --- State ve yardımcı fonksiyonlar ---
+
+# ---------------------------------------------------------
+# Session state
+# ---------------------------------------------------------
 if "lang" not in st.session_state:
     st.session_state["lang"] = "tr"
 if "dark_mode" not in st.session_state:
@@ -91,93 +120,65 @@ if "dark_mode" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state["page"] = "home"
 
-lang = st.session_state["lang"]
+current_lang = st.session_state["lang"]
 
-# Tema bazlı ek CSS
-st.markdown(f"<style>{DARK_CSS if st.session_state.dark_mode else LIGHT_CSS}</style>", unsafe_allow_html=True)
+# Tema CSS
+st.markdown(
+    f"<style>{DARK_CSS if st.session_state.dark_mode else LIGHT_CSS}</style>",
+    unsafe_allow_html=True,
+)
 
-# Modern butonlar için CSS
-st.markdown("""
-<style>
-div.stButton > button {
-    width: 720px !important;
-    min-width: 600px;
-    font-size: 1.45em;
-    padding: 22px 0;
-    border-radius: 18px;
-    margin-bottom: 0px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: linear-gradient(90deg, #1D3557, #457B9D);
-    color: #fff !important;
-    border: none;
-    box-shadow: 0 4px 16px #2563eb33;
-    transition: all 0.2s;
-}
-div.stButton > button:last-child {
-    background: linear-gradient(90deg, #3A86FF, #219EBC);
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Header ve subheader için CSS
-st.markdown("""
-<style>
-.big-header {
-    font-size: 2.3em !important;
-    font-weight: 800 !important;
-    text-align: center !important;
-    margin-bottom: 0.2em !important;
-}
-.big-subheader {
-    font-size: 1.35em !important;
-    font-weight: 500 !important;
-    text-align: center !important;
-    margin-bottom: 1.2em !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# --- Sayfa yönlendirme ---
-tag = 'betül-cv.json'
-
-# RAG sistemini güvenli şekilde yükle
+# ---------------------------------------------------------
+# CV JSON & RAG yükleme
+# ---------------------------------------------------------
 try:
-    rag = load_cv_index(tag)
+    with open(CV_JSON_PATH, encoding="utf-8") as f:
+        cv_data = json.load(f)
 except Exception as e:
-    st.error(f"❌ CV verileri yüklenirken hata oluştu: {str(e)}")
+    st.error(f"❌ CV JSON yüklenemedi: {e}")
+    st.stop()
+
+try:
+    rag = load_cv_index(CV_JSON_PATH)
+except Exception as e:
+    st.error(f"❌ CV verileri (RAG) yüklenirken hata oluştu: {str(e)}")
     st.info("Lütfen sayfayı yenileyin veya daha sonra tekrar deneyin.")
     st.stop()
 
-# Chat artık ayrı sayfa değil, ana sayfanın altında bir bölüm
-# Sayfa yönlendirmesi kaldırıldı
 
-# --- Ana sayfa metinleri ---
-TEXT = {
+# ---------------------------------------------------------
+# Navigation bar (fixed, scrollable anchor’lar)
+# ---------------------------------------------------------
+NAV_LABELS = {
     "tr": {
-        "header": "👋 Merhaba! Ben Fatma Betül'ün AI Portföy Asistanıyım",
-        "sub"   : "Fatma Betül'ün özgeçmişi, projeleri ve deneyimlerine hızlıca göz atmak ister misin? İster CV'sini görüntüle, ister asistanıyla birebir sohbet etmeye başla.",
-        "cv"    : "📂 CV'yi Gör",
-        "chat"  : "Sohbete Başla",
+        "about": "Hakkımda",
+        "experience": "Deneyim",
+        "projects": "Projeler",
+        "skills": "Yetenekler",
+        "awards": "Ödüller",
+        "articles": "Yazılar",
+        "references": "Referanslar",
+        "contact": "İletişim",
+        "chat": "Asistan",
     },
     "en": {
-        "header": "👋 Hello!",
-        "sub"   : "Would you like to quickly browse Fatma Betül's resume, projects and experiences? Either view her CV or start a one-on-one chat with her assistant.",
-        "cv"    : "📂 View CV",
-        "chat"  : "Start Chat",
+        "about": "About",
+        "experience": "Experience",
+        "projects": "Projects",
+        "skills": "Skills",
+        "awards": "Awards",
+        "articles": "Articles",
+        "references": "References",
+        "contact": "Contact",
+        "chat": "Chat",
     },
 }
-lang_text = TEXT[ st.session_state.lang ]
+nav = NAV_LABELS[current_lang]
 
-# --- Main content ---
-
-# 1. Navigation Menu (Sabit, üstte)
-st.markdown("""
+st.markdown(
+    f"""
 <style>
-.nav-menu {
+.nav-menu {{
     position: fixed;
     top: 0;
     left: 0;
@@ -188,9 +189,9 @@ st.markdown("""
     z-index: 1000;
     padding: 12px 0;
     border-bottom: 1px solid #e2e8f0;
-}
+}}
 
-.nav-menu-content {
+.nav-menu-content {{
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
@@ -198,9 +199,9 @@ st.markdown("""
     align-items: center;
     gap: 30px;
     flex-wrap: wrap;
-}
+}}
 
-.nav-link {
+.nav-link {{
     color: #475569;
     text-decoration: none;
     font-weight: 500;
@@ -209,93 +210,99 @@ st.markdown("""
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
-}
+}}
 
-.nav-link:hover {
+.nav-link:hover {{
     color: #667eea;
     background: rgba(102, 126, 234, 0.1);
-}
+}}
 
-.stApp[data-theme="dark"] .nav-menu {
+.stApp[data-theme="dark"] .nav-menu {{
     background: rgba(30, 41, 59, 0.95) !important;
     border-bottom-color: #475569 !important;
-}
+}}
 
-.stApp[data-theme="dark"] .nav-link {
+.stApp[data-theme="dark"] .nav-link {{
     color: #cbd5e1 !important;
-}
+}}
 
-.stApp[data-theme="dark"] .nav-link:hover {
+.stApp[data-theme="dark"] .nav-link:hover {{
     color: #a5b4fc !important;
     background: rgba(102, 126, 234, 0.2) !important;
-}
+}}
 
-body {
+body {{
     padding-top: 60px;
     scroll-behavior: smooth;
-}
+}}
 
-/* Scroll offset için portfolio bölümleri */
-.portfolio-section {
+.portfolio-section {{
     scroll-margin-top: 80px;
-}
+}}
 
-#chat-section {
+#chat-section {{
     scroll-margin-top: 80px;
-}
+}}
 
-@media (max-width: 768px) {
-    .nav-menu-content {
+@media (max-width: 768px) {{
+    .nav-menu-content {{
         gap: 15px;
         padding: 0 10px;
-    }
-    .nav-link {
+    }}
+    .nav-link {{
         font-size: 0.85em;
         padding: 4px 8px;
-    }
-}
+    }}
+}}
 </style>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {{
     const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+    navLinks.forEach(link => {{
+        link.addEventListener('click', function(e) {{
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                const offset = 70; // Navigation menu yüksekliği için offset
+            if (targetElement) {{
+                const offset = 70;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - offset;
-                window.scrollTo({
+                window.scrollTo({{
                     top: offsetPosition,
                     behavior: 'smooth'
-                });
-            }
-        });
-    });
-});
+                }});
+            }}
+        }});
+    }});
+}});
 </script>
+
 <div class="nav-menu">
     <div class="nav-menu-content">
-        <a href="#about" class="nav-link">About</a>
-        <a href="#experience" class="nav-link">Experience</a>
-        <a href="#projects" class="nav-link">Projects</a>
-        <a href="#skills" class="nav-link">Skills</a>
-        <a href="#awards" class="nav-link">Awards</a>
-        <a href="#articles" class="nav-link">Articles</a>
-        <a href="#references" class="nav-link">References</a>
-        <a href="#contact" class="nav-link">Contact</a>
-        <a href="#chat-section" class="nav-link">Chat</a>
+        <a href="#about" class="nav-link">{nav['about']}</a>
+        <a href="#experience" class="nav-link">{nav['experience']}</a>
+        <a href="#projects" class="nav-link">{nav['projects']}</a>
+        <a href="#skills" class="nav-link">{nav['skills']}</a>
+        <a href="#awards" class="nav-link">{nav['awards']}</a>
+        <a href="#articles" class="nav-link">{nav['articles']}</a>
+        <a href="#references" class="nav-link">{nav['references']}</a>
+        <a href="#contact" class="nav-link">{nav['contact']}</a>
+        <a href="#chat-section" class="nav-link">{nav['chat']}</a>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# 2. Toggle bar (dil/tema)
+# Dil & tema toggle
 language_and_theme_toggle()
 
-# 2. Modern arka plan şekilleri ve blob'lar
-st.markdown("""
+# ---------------------------------------------------------
+# Background blob’lar
+# ---------------------------------------------------------
+st.markdown(
+    """
 <style>
 .background-shapes {
     position: fixed;
@@ -395,7 +402,6 @@ st.markdown("""
     75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
 }
 
-/* Ana içeriği arka plan şekillerinin üstünde tut */
 .main-content {
     position: relative;
     z-index: 1;
@@ -409,20 +415,17 @@ st.markdown("""
     <div class="bottom-wave"></div>
     <div class="bottom-blob"></div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# 3. Main Content Container
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
-# Hero Section (Selman'ın sitesine benzer)
-cv_data = json.load(open(tag, encoding="utf-8"))
-current_lang = st.session_state.get("lang", "tr")
-name = cv_data.get("name", "Fatma Betül Arslan")
-title = cv_data.get("title", "Data Scientist")
-location = cv_data.get("location", "İstanbul, Turkey")
-
-# Hero section için özel CSS (Profil fotoğrafı, butonlar ve ikonlar dahil)
-st.markdown("""
+# ---------------------------------------------------------
+# HERO SECTION
+# ---------------------------------------------------------
+st.markdown(
+    """
 <style>
 .hero-section {
     text-align: center;
@@ -481,10 +484,10 @@ st.markdown("""
 
 .hero-actions {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    margin: 30px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px 0 10px 0;
 }
 
 .download-cv-btn-wrapper {
@@ -516,12 +519,33 @@ st.markdown("""
     background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
 }
 
+.chat-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 26px;
+    border-radius: 8px;
+    border: 2px solid #667eea;
+    font-weight: 600;
+    font-size: 1.05em;
+    color: #667eea;
+    background: #ffffff;
+    text-decoration: none;
+    transition: all 0.2s;
+    min-width: 200px;
+}
+
+.chat-cta-btn:hover {
+    background: rgba(102, 126, 234, 0.08);
+    transform: translateY(-2px);
+}
+
 .social-links {
     display: flex;
     justify-content: center;
     gap: 24px;
     flex-wrap: wrap;
-    margin-top: 10px;
+    margin-top: 25px;
 }
 
 .social-links a {
@@ -571,6 +595,16 @@ st.markdown("""
     background: rgba(102, 126, 234, 0.2) !important;
 }
 
+.stApp[data-theme="dark"] .chat-cta-btn {
+    background: #020617;
+    border-color: #818cf8;
+    color: #e5e7eb;
+}
+
+.stApp[data-theme="dark"] .chat-cta-btn:hover {
+    background: rgba(129, 140, 248, 0.16);
+}
+
 @media (max-width: 768px) {
     .hero-profile-img {
         width: 140px;
@@ -593,25 +627,36 @@ st.markdown("""
     }
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# Profil fotoğrafını yükle
-profile_img_html = ""
-if PROFILE_IMG_PATH.exists():
-    profile_bytes = PROFILE_IMG_PATH.read_bytes()
-    profile_b64 = base64.b64encode(profile_bytes).decode("utf-8")
-    profile_img_html = f'<img src="data:image/jpeg;base64,{profile_b64}" alt="{name}" class="hero-profile-img" />'
-else:
-    # Fallback: İlk harf avatar
-    profile_img_html = f'<div class="hero-profile-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 4em; font-weight: 700;">{name[0]}</div>'
+name = cv_data.get("name", "Fatma Betül Arslan")
+title = cv_data.get("title", "Data Scientist")
+location = cv_data.get("location", "İstanbul, Turkey")
 
-# Hero content
 specialization_tr = "Machine Learning, Data Science ve Veri Analizi"
 specialization_en = "Machine Learning, Data Science and Data Analysis"
 specialization = specialization_tr if current_lang == "tr" else specialization_en
 
-# Hero section - Profil fotoğrafı, isim, başlık, uzmanlık, lokasyon
-st.markdown(f"""
+# Profil foto
+if PROFILE_IMG_PATH.exists():
+    profile_bytes = PROFILE_IMG_PATH.read_bytes()
+    profile_b64 = base64.b64encode(profile_bytes).decode("utf-8")
+    profile_img_html = (
+        f'<img src="data:image/jpeg;base64,{profile_b64}" '
+        f'alt="{name}" class="hero-profile-img" />'
+    )
+else:
+    profile_img_html = (
+        f'<div class="hero-profile-img" '
+        f'style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); '
+        f'display: flex; align-items: center; justify-content: center; '
+        f'color: white; font-size: 4em; font-weight: 700;">{name[0]}</div>'
+    )
+
+st.markdown(
+    f"""
 <div class="hero-section">
     {profile_img_html}
     <h1 class="hero-name">{name}</h1>
@@ -619,52 +664,58 @@ st.markdown(f"""
     <p class="hero-specialization">{specialization}</p>
     <p class="hero-location">📍 {location}</p>
     <div class="hero-actions">
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# Download CV butonu (Streamlit bileşeni - HTML dışında)
+# CV download butonu
 try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
     st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
     st.download_button(
-        label="📥 Download CV",
+        label="📥 CV'yi İndir" if current_lang == "tr" else "📥 Download CV",
         data=pdf_bytes,
         file_name="Fatma_Betul_Arslan_CV.pdf",
         mime="application/pdf",
         use_container_width=False,
-        key="hero_cv_download_btn"
+        key="hero_cv_download_btn",
     )
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
-# Sosyal medya linkleri
-st.markdown("""
-        <div class="social-links">
-          <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"> LinkedIn
-          </a>
-          <a href="https://github.com/fatmabetularslan" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"> GitHub
-          </a>
-          <a href="https://medium.com/@betularsln01" target="_blank">
-            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium"> Medium
-          </a>
-        </div>
+chat_label = "💬 Sohbete Başla" if current_lang == "tr" else "💬 Start Chat"
+st.markdown(
+    f'<a href="#chat-section" class="chat-cta-btn">{chat_label}</a>',
+    unsafe_allow_html=True,
+)
+
+# Sosyal linkler
+st.markdown(
+    """
+    </div>  <!-- hero-actions -->
+    <div class="social-links">
+      <a href="https://www.linkedin.com/in/fatma-betül-arslan" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"> LinkedIn
+      </a>
+      <a href="https://github.com/fatmabetularslan" target="_blank">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"> GitHub
+      </a>
+      <a href="https://medium.com/@betularsln01" target="_blank">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/medium.svg" alt="Medium"> Medium
+      </a>
     </div>
-</div>
-""", unsafe_allow_html=True)
+</div>  <!-- hero-section -->
+""",
+    unsafe_allow_html=True,
+)
 
-# Gereksiz CSS ve buton kodları temizlendi - hero section'da Download CV butonu var
-
-# Ana içeriği kapat
-st.markdown('</div>', unsafe_allow_html=True)
-
-# --- Portfolio Bölümleri (Scrollable) ---
-# cv_data ve current_lang zaten yukarıda tanımlı
-
-# Portfolio bölümleri için CSS
-st.markdown("""
+# ---------------------------------------------------------
+# PORTFOLIO BÖLÜMLERİ
+# ---------------------------------------------------------
+st.markdown(
+    """
 <style>
 .portfolio-section {
     margin: 60px 0;
@@ -919,204 +970,290 @@ st.markdown("""
     }
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-# About Me / Hakkımda
+# --- About ---
 st.markdown('<div class="portfolio-section" id="about">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📖 About Me / Hakkımda</h2>', unsafe_allow_html=True)
+st.markdown(
+    '<h2 class="section-title">📖 About Me / Hakkımda</h2>',
+    unsafe_allow_html=True,
+)
 
-# Education bilgisini About Me'de göster
 education_info = ""
 if cv_data.get("education"):
-    edu = cv_data["education"][0]
-    institution = edu.get("institution", "")
-    education_info = f'<p style="text-align: center; color: #667eea; font-weight: 500; margin-top: 20px;">🎓 {institution}</p>'
+    edu0 = cv_data["education"][0]
+    institution = edu0.get("institution", "")
+    if institution:
+        education_info = (
+            '<p style="text-align: center; color: #667eea; '
+            f'font-weight: 500; margin-top: 20px;">🎓 {institution}</p>'
+        )
 
 profile_text = cv_data.get("profile", "")
 if profile_text:
-    st.markdown(f'<div class="about-content">{profile_text}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="about-content">{profile_text}</div>',
+        unsafe_allow_html=True,
+    )
     if education_info:
         st.markdown(education_info, unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Experience & Education
-st.markdown('<div class="portfolio-section" id="experience">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">💼 Experience & Education / Deneyim & Eğitim</h2>', unsafe_allow_html=True)
+# --- Experience & Education ---
+st.markdown(
+    '<div class="portfolio-section" id="experience">',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<h2 class="section-title">💼 Experience & Education / Deneyim & Eğitim</h2>',
+    unsafe_allow_html=True,
+)
 
-# Experience
 for exp in cv_data.get("experience", []):
-    title = exp.get("title", "")
+    e_title = exp.get("title", "")
     company = exp.get("company", "")
     duration = exp.get("duration", "")
     description = exp.get("description", "")
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="experience-card">
-        <div class="experience-title">{title}</div>
+        <div class="experience-title">{e_title}</div>
         <div class="experience-company">{company}</div>
         <div class="experience-duration">{duration}</div>
         <div class="experience-description">{description}</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-# Education
 for edu in cv_data.get("education", []):
     institution = edu.get("institution", "")
     degree = edu.get("degree", "")
     years = edu.get("years", "")
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="education-card">
         <div class="education-title">{degree}</div>
         <div class="education-institution">{institution}</div>
         <div class="education-years">{years}</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Projects
-st.markdown('<div class="portfolio-section" id="projects">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">🚀 Featured Projects / Öne Çıkan Projeler</h2>', unsafe_allow_html=True)
+# --- Projects ---
+st.markdown(
+    '<div class="portfolio-section" id="projects">',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<h2 class="section-title">🚀 Featured Projects / Öne Çıkan Projeler</h2>',
+    unsafe_allow_html=True,
+)
 
 for proj in cv_data.get("projects", []):
-    name = proj.get("name", "")
+    p_name = proj.get("name", "")
     tech = proj.get("technology", "")
     desc = proj.get("description", "")
     features = proj.get("features", [])
     github = proj.get("github", "")
-    
-    # Dil desteği için description
+
     if isinstance(desc, dict):
         description = desc.get(current_lang, desc.get("en", desc.get("tr", "")))
     else:
         description = desc
-    
-    # Dil desteği için features
+
     if isinstance(features, dict):
-        features_list = features.get(current_lang, features.get("en", features.get("tr", [])))
+        features_list = features.get(
+            current_lang, features.get("en", features.get("tr", []))
+        )
     elif isinstance(features, list):
         features_list = features
     else:
         features_list = []
-    
+
     features_html = ""
     if features_list:
         features_html = '<div class="project-features">'
-        for feature in features_list:
-            features_html += f'<div class="project-feature">{feature}</div>'
-        features_html += '</div>'
-    
+        for ft in features_list:
+            features_html += f'<div class="project-feature">{ft}</div>'
+        features_html += "</div>"
+
     github_link = ""
     if github:
-        github_link = f'<a href="{github}" target="_blank" class="project-link">🔗 View on GitHub</a>'
-    
-    st.markdown(f"""
+        github_link = (
+            f'<a href="{github}" target="_blank" class="project-link">'
+            "🔗 View on GitHub</a>"
+        )
+
+    st.markdown(
+        f"""
     <div class="project-card">
-        <div class="project-name">{name}</div>
+        <div class="project-name">{p_name}</div>
         <div class="project-tech">{tech}</div>
         <div class="project-description">{description}</div>
         {features_html}
         {github_link}
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Skills
-st.markdown('<div class="portfolio-section" id="skills">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">🛠️ Skills / Yetenekler</h2>', unsafe_allow_html=True)
+# --- Skills ---
+st.markdown(
+    '<div class="portfolio-section" id="skills">',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<h2 class="section-title">🛠️ Skills / Yetenekler</h2>',
+    unsafe_allow_html=True,
+)
 
 skills = cv_data.get("skills", {})
 st.markdown('<div class="skills-container">', unsafe_allow_html=True)
 for category, skill_list in skills.items():
-    skills_html = ""
-    for skill in skill_list:
-        skills_html += f'<span class="skill-tag">{skill}</span>'
-    st.markdown(f"""
+    skills_html = "".join(
+        f'<span class="skill-tag">{sk}</span>' for sk in skill_list
+    )
+    st.markdown(
+        f"""
     <div class="skill-category">
         <div class="skill-category-title">{category}</div>
         <div>{skills_html}</div>
     </div>
-    """, unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Awards
-st.markdown('<div class="portfolio-section" id="awards">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">🏆 Awards & Achievements / Ödüller</h2>', unsafe_allow_html=True)
+# --- Awards ---
+st.markdown(
+    '<div class="portfolio-section" id="awards">',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<h2 class="section-title">🏆 Awards & Achievements / Ödüller</h2>',
+    unsafe_allow_html=True,
+)
 
 for award in cv_data.get("awards", []):
-    name = award.get("name", "")
+    a_name = award.get("name", "")
     org = award.get("organization", "")
     desc = award.get("description", "")
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="award-card">
-        <div class="award-name">{name}</div>
+        <div class="award-name">{a_name}</div>
         <div class="award-org">{org}</div>
         <div class="award-description">{desc}</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# References
-st.markdown('<div class="portfolio-section" id="references">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📞 References / Referanslar</h2>', unsafe_allow_html=True)
+# --- References ---
+st.markdown(
+    '<div class="portfolio-section" id="references">',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<h2 class="section-title">📞 References / Referanslar</h2>',
+    unsafe_allow_html=True,
+)
 
 for ref in cv_data.get("references", []):
-    name = ref.get("name", "")
-    title = ref.get("title", "")
+    r_name = ref.get("name", "")
+    r_title = ref.get("title", "")
     org = ref.get("organization", "")
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="reference-card">
-        <div class="reference-name">{name}</div>
-        <div class="reference-title">{title}</div>
+        <div class="reference-name">{r_name}</div>
+        <div class="reference-title">{r_title}</div>
         <div class="reference-org">{org}</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Latest Articles / Son Yazılar (Medium)
-st.markdown('<div class="portfolio-section" id="articles">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📝 Latest Articles / Son Yazılar</h2>', unsafe_allow_html=True)
+# --- Articles (Medium) ---
+st.markdown(
+    '<div class="portfolio-section" id="articles">',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<h2 class="section-title">📝 Latest Articles / Son Yazılar</h2>',
+    unsafe_allow_html=True,
+)
 
 medium_articles = cv_data.get("medium_articles", [])
 if medium_articles:
-    for article in medium_articles[:5]:  # İlk 5 yazıyı göster
-        title = article.get("title", "")
+    for article in medium_articles[:5]:
+        t = article.get("title", "")
         url = article.get("url", "")
         summary_tr = article.get("summary_tr", "")
         summary_en = article.get("summary_en", "")
-        summary = summary_tr if current_lang == "tr" else summary_en
-        
-        st.markdown(f"""
+        summary = summary_tr if current_lang == "tr" else summary_en or summary_tr
+
+        st.markdown(
+            f"""
         <div class="project-card">
-            <div class="project-name">{title}</div>
+            <div class="project-name">{t}</div>
             <div class="project-description">{summary}</div>
             <a href="{url}" target="_blank" class="project-link">📖 Read on Medium</a>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 else:
-    st.markdown('<p style="text-align: center; color: #64748b;">No articles available.</p>', unsafe_allow_html=True)
+    st.markdown(
+        '<p style="text-align: center; color: #64748b;">No articles available.</p>',
+        unsafe_allow_html=True,
+    )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Get In Touch / İletişim
-st.markdown('<div class="portfolio-section" id="contact">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">📧 Get In Touch / İletişim</h2>', unsafe_allow_html=True)
+# --- Contact ---
+st.markdown(
+    '<div class="portfolio-section" id="contact">',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<h2 class="section-title">📧 Get In Touch / İletişim</h2>',
+    unsafe_allow_html=True,
+)
 
-contact_text_tr = "Yeni fırsatlar ve işbirlikleri hakkında konuşmak için benimle iletişime geçebilirsiniz. Ayrıca sayfanın altındaki AI Asistanı üzerinden de bana ulaşabilirsiniz."
-contact_text_en = "I'm always interested in hearing about new opportunities and collaborations. You can also reach me via the AI Assistant at the bottom of this page."
-
+contact_text_tr = (
+    "Yeni fırsatlar ve işbirlikleri hakkında konuşmak için benimle iletişime "
+    "geçebilirsiniz. Ayrıca sayfanın altındaki AI Asistanı üzerinden de bana ulaşabilirsiniz."
+)
+contact_text_en = (
+    "I'm always interested in hearing about new opportunities and collaborations. "
+    "You can also reach me via the AI Assistant at the bottom of this page."
+)
 contact_text = contact_text_tr if current_lang == "tr" else contact_text_en
 
 email = cv_data.get("email", "")
 links = cv_data.get("links", {})
 
-st.markdown(f"""
+st.markdown(
+    f"""
 <div style="text-align: center; max-width: 600px; margin: 0 auto;">
-    <p style="font-size: 1.1em; line-height: 1.8; color: #475569; margin-bottom: 30px;">{contact_text}</p>
+    <p style="font-size: 1.1em; line-height: 1.8; color: #475569; margin-bottom: 30px;">
+        {contact_text}
+    </p>
     <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
         <a href="mailto:{email}" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
             📧 Mail Me
@@ -1132,38 +1269,47 @@ st.markdown(f"""
         </a>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-# --- Chat Bölümü (Ana sayfanın altında) ---
-st.markdown("""
+# ---------------------------------------------------------
+# CHAT BÖLÜMÜ
+# ---------------------------------------------------------
+st.markdown(
+    """
 <style>
 #chat-section {
     margin-top: 80px;
     padding-top: 40px;
     border-top: 2px solid #e2e8f0;
-    scroll-margin-top: 20px;
 }
 .stApp[data-theme="dark"] #chat-section {
     border-top-color: #475569;
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
+
 st.markdown('<div id="chat-section"></div>', unsafe_allow_html=True)
 
-# Chat modülünü yükle ve çalıştır
 if modern_chatbot_run is not None:
     tool_def_obj = ToolDefinitions()
     tool_def_obj.initialize_job_analyzer(
         client=None,
-        cv_data=json.load(open(tag, encoding="utf-8")),
-        rag_system=rag
+        cv_data=cv_data,
+        rag_system=rag,
     )
     modern_chatbot_run(
-        tool_def = tool_def_obj,
-        rag     = rag,
-        cv_json = json.load(open(tag, encoding="utf-8"))
+        tool_def=tool_def_obj,
+        rag=rag,
+        cv_json=cv_data,
     )
 else:
     st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
+
+# main-content wrapper'ını kapat
+st.markdown("</div>", unsafe_allow_html=True)
