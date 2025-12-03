@@ -507,7 +507,7 @@ st.markdown("""
     right: -10%;
     width: 400px;
     height: 400px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3b5bdb 0%, #5b21b6 100%);
     border-radius: 50%;
     filter: blur(60px);
     opacity: 0.15;
@@ -644,7 +644,7 @@ st.markdown("""
     font-size: 4em;
     font-weight: 800;
     margin-bottom: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3b5bdb 0%, #5b21b6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -885,7 +885,7 @@ st.markdown("""
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(90deg, #3b5bdb 0%, #5b21b6 100%);
     border-radius: 2px;
 }
 
@@ -905,7 +905,7 @@ st.markdown("""
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: transform 0.2s, box-shadow 0.2s;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #3b5bdb;
 }
 
 .experience-card:hover, .education-card:hover, .project-card:hover, .award-card:hover, .reference-card:hover {
@@ -922,7 +922,7 @@ st.markdown("""
 
 .experience-company, .education-institution {
     font-size: 1.1em;
-    color: #667eea;
+    color: #3b5bdb;
     font-weight: 500;
     margin-bottom: 8px;
 }
@@ -955,7 +955,7 @@ st.markdown("""
 .skill-category-title {
     font-size: 1.2em;
     font-weight: 600;
-    color: #667eea;
+    color: #3b5bdb;
     margin-bottom: 12px;
 }
 
@@ -982,7 +982,7 @@ st.markdown("""
 }
 
 .project-tech {
-    color: #667eea;
+    color: #3b5bdb;
     font-size: 0.95em;
     margin-bottom: 12px;
     font-weight: 500;
@@ -1008,14 +1008,14 @@ st.markdown("""
 
 .project-feature::before {
     content: '• ';
-    color: #667eea;
+    color: #3b5bdb;
     font-weight: bold;
 }
 
 .project-link {
     display: inline-block;
     margin-top: 12px;
-    color: #667eea;
+    color: #3b5bdb;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s;
@@ -1033,7 +1033,7 @@ st.markdown("""
 }
 
 .award-org {
-    color: #667eea;
+    color: #3b5bdb;
     font-weight: 500;
     margin-bottom: 8px;
 }
@@ -1051,7 +1051,7 @@ st.markdown("""
 }
 
 .reference-title {
-    color: #667eea;
+    color: #3b5bdb;
     font-weight: 500;
     margin-bottom: 4px;
 }
@@ -1123,7 +1123,7 @@ education_info = ""
 if cv_data.get("education"):
     edu = cv_data["education"][0]
     institution = edu.get("institution", "")
-    education_info = f'<p style="text-align: center; color: #667eea; font-weight: 500; margin-top: 20px;">🎓 {institution}</p>'
+    education_info = f'<p style="text-align: center; color: #3b5bdb; font-weight: 500; margin-top: 20px;">🎓 {institution}</p>'
 
 profile_text = cv_data.get("profile", "")
 if profile_text:
@@ -1286,22 +1286,118 @@ st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('<div class="portfolio-section" id="articles">', unsafe_allow_html=True)
 st.markdown('<h2 class="section-title">📝 Latest Articles / Son Yazılar</h2>', unsafe_allow_html=True)
 
+# Medium yazıları için grid CSS
+st.markdown("""
+<style>
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.article-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(59, 91, 219, 0.15);
+    border-color: #3b5bdb;
+}
+
+.article-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.article-summary {
+    color: #64748b;
+    font-size: 0.95em;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.article-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #3b5bdb 0%, #5b21b6 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.article-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.article-card-center {
+    grid-column: 1 / -1;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.stApp[data-theme="dark"] .article-card {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-color: #475569;
+}
+
+.stApp[data-theme="dark"] .article-title {
+    color: #f1f5f9;
+}
+
+.stApp[data-theme="dark"] .article-summary {
+    color: #cbd5e1;
+}
+
+@media (max-width: 768px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+    .article-card-center {
+        grid-column: 1;
+        max-width: 100%;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 medium_articles = cv_data.get("medium_articles", [])
 if medium_articles:
-    for article in medium_articles[:5]:  # İlk 5 yazıyı göster
+    articles_to_show = medium_articles[:5]  # İlk 5 yazıyı göster
+    
+    st.markdown('<div class="articles-grid">', unsafe_allow_html=True)
+    
+    for i, article in enumerate(articles_to_show):
         title = article.get("title", "")
         url = article.get("url", "")
         summary_tr = article.get("summary_tr", "")
         summary_en = article.get("summary_en", "")
         summary = summary_tr if current_lang == "tr" else summary_en
         
+        # Son yazı (5. yazı) ortada gösterilecek
+        card_class = "article-card article-card-center" if i == 4 else "article-card"
+        
         st.markdown(f"""
-        <div class="project-card">
-            <div class="project-name">{title}</div>
-            <div class="project-description">{summary}</div>
-            <a href="{url}" target="_blank" class="project-link">📖 Read on Medium</a>
+        <div class="{card_class}">
+            <div class="article-title">{title}</div>
+            <div class="article-summary">{summary}</div>
+            <a href="{url}" target="_blank" class="article-link">📖 Read on Medium</a>
         </div>
         """, unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 else:
     st.markdown('<p style="text-align: center; color: #64748b;">No articles available.</p>', unsafe_allow_html=True)
 
@@ -1323,16 +1419,16 @@ st.markdown(f"""
 <div style="text-align: center; max-width: 600px; margin: 0 auto;">
     <p style="font-size: 1.1em; line-height: 1.8; color: #475569; margin-bottom: 30px;">{contact_text}</p>
     <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-        <a href="mailto:{email}" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+        <a href="mailto:{email}" style="display: inline-flex; align-items: center; gap: 8px; color: #3b5bdb; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #3b5bdb; border-radius: 8px; transition: all 0.2s;">
             📧 Mail Me
         </a>
-        <a href="{links.get('linkedin', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+        <a href="{links.get('linkedin', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #3b5bdb; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #3b5bdb; border-radius: 8px; transition: all 0.2s;">
             💼 LinkedIn
         </a>
-        <a href="{links.get('github', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+        <a href="{links.get('github', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #3b5bdb; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #3b5bdb; border-radius: 8px; transition: all 0.2s;">
             🔗 GitHub
         </a>
-        <a href="{links.get('medium', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+        <a href="{links.get('medium', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #3b5bdb; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #3b5bdb; border-radius: 8px; transition: all 0.2s;">
             ✍️ Medium
         </a>
     </div>
