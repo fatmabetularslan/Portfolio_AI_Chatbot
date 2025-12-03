@@ -267,7 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
         <a href="#projects" class="nav-link">Projects</a>
         <a href="#skills" class="nav-link">Skills</a>
         <a href="#awards" class="nav-link">Awards</a>
+        <a href="#articles" class="nav-link">Articles</a>
         <a href="#references" class="nav-link">References</a>
+        <a href="#contact" class="nav-link">Contact</a>
         <a href="#chat-section" class="nav-link">Chat</a>
     </div>
 </div>
@@ -496,22 +498,89 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Header ve AI Avatar birlikte
-avatar_html = "🤖"
-if PROFILE_IMG_PATH.exists():
-    avatar_bytes = PROFILE_IMG_PATH.read_bytes()
-    avatar_b64 = base64.b64encode(avatar_bytes).decode("utf-8")
-    avatar_html = f'<img src="data:image/jpeg;base64,{avatar_b64}" alt="Fatma Betül Arslan" />'
+# Hero Section (Selman'ın sitesine benzer)
+cv_data = json.load(open(tag, encoding="utf-8"))
+current_lang = st.session_state.get("lang", "tr")
+name = cv_data.get("name", "Fatma Betül Arslan")
+title = cv_data.get("title", "Data Scientist")
+location = cv_data.get("location", "İstanbul, Turkey")
 
-st.markdown(f"""
-<div class="header-with-avatar">
-    <div class="ai-avatar">{avatar_html}</div>
-    <div class="big-header">{lang_text["header"]}</div>
-</div>
+# Hero section için özel CSS
+st.markdown("""
+<style>
+.hero-section {
+    text-align: center;
+    padding: 60px 20px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-name {
+    font-size: 3.5em;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-title {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 20px;
+}
+
+.hero-specialization {
+    font-size: 1.2em;
+    color: #64748b;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+.hero-location {
+    font-size: 1em;
+    color: #64748b;
+    margin-bottom: 30px;
+}
+
+.stApp[data-theme="dark"] .hero-title {
+    color: #cbd5e1 !important;
+}
+
+.stApp[data-theme="dark"] .hero-specialization,
+.stApp[data-theme="dark"] .hero-location {
+    color: #94a3b8 !important;
+}
+
+@media (max-width: 768px) {
+    .hero-name {
+        font-size: 2.5em;
+    }
+    .hero-title {
+        font-size: 1.4em;
+    }
+    .hero-specialization {
+        font-size: 1em;
+    }
+}
+</style>
 """, unsafe_allow_html=True)
 
-# 3. Subheader
-st.markdown(f'<div class="big-subheader">{lang_text["sub"]}</div>', unsafe_allow_html=True)
+# Hero content
+specialization_tr = "Machine Learning, Data Science ve Veri Analizi"
+specialization_en = "Machine Learning, Data Science and Data Analysis"
+specialization = specialization_tr if current_lang == "tr" else specialization_en
+
+st.markdown(f"""
+<div class="hero-section">
+    <h1 class="hero-name">{name}</h1>
+    <h2 class="hero-title">{title}</h2>
+    <p class="hero-specialization">{specialization}</p>
+    <p class="hero-location">📍 {location}</p>
+</div>
+""", unsafe_allow_html=True)
 
 # 4. Sosyal medya linkleri
 st.markdown("""
@@ -708,8 +777,7 @@ div.stButton > button[data-baseweb="button"][id*="cv_download_btn"]:hover {
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Portfolio Bölümleri (Scrollable) ---
-cv_data = json.load(open(tag, encoding="utf-8"))
-current_lang = st.session_state.get("lang", "tr")
+# cv_data ve current_lang zaten yukarıda tanımlı
 
 # Portfolio bölümleri için CSS
 st.markdown("""
@@ -972,9 +1040,20 @@ st.markdown("""
 # About Me / Hakkımda
 st.markdown('<div class="portfolio-section" id="about">', unsafe_allow_html=True)
 st.markdown('<h2 class="section-title">📖 About Me / Hakkımda</h2>', unsafe_allow_html=True)
+
+# Education bilgisini About Me'de göster
+education_info = ""
+if cv_data.get("education"):
+    edu = cv_data["education"][0]
+    institution = edu.get("institution", "")
+    education_info = f'<p style="text-align: center; color: #667eea; font-weight: 500; margin-top: 20px;">🎓 {institution}</p>'
+
 profile_text = cv_data.get("profile", "")
 if profile_text:
     st.markdown(f'<div class="about-content">{profile_text}</div>', unsafe_allow_html=True)
+    if education_info:
+        st.markdown(education_info, unsafe_allow_html=True)
+
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Experience & Education
@@ -1013,7 +1092,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # Projects
 st.markdown('<div class="portfolio-section" id="projects">', unsafe_allow_html=True)
-st.markdown('<h2 class="section-title">🚀 Projects / Projeler</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">🚀 Featured Projects / Öne Çıkan Projeler</h2>', unsafe_allow_html=True)
 
 for proj in cv_data.get("projects", []):
     name = proj.get("name", "")
@@ -1114,6 +1193,65 @@ for ref in cv_data.get("references", []):
 
 st.markdown('</div>', unsafe_allow_html=True)
 
+# Latest Articles / Son Yazılar (Medium)
+st.markdown('<div class="portfolio-section" id="articles">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">📝 Latest Articles / Son Yazılar</h2>', unsafe_allow_html=True)
+
+medium_articles = cv_data.get("medium_articles", [])
+if medium_articles:
+    for article in medium_articles[:5]:  # İlk 5 yazıyı göster
+        title = article.get("title", "")
+        url = article.get("url", "")
+        summary_tr = article.get("summary_tr", "")
+        summary_en = article.get("summary_en", "")
+        summary = summary_tr if current_lang == "tr" else summary_en
+        
+        st.markdown(f"""
+        <div class="project-card">
+            <div class="project-name">{title}</div>
+            <div class="project-description">{summary}</div>
+            <a href="{url}" target="_blank" class="project-link">📖 Read on Medium</a>
+        </div>
+        """, unsafe_allow_html=True)
+else:
+    st.markdown('<p style="text-align: center; color: #64748b;">No articles available.</p>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Get In Touch / İletişim
+st.markdown('<div class="portfolio-section" id="contact">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">📧 Get In Touch / İletişim</h2>', unsafe_allow_html=True)
+
+contact_text_tr = "Yeni fırsatlar ve işbirlikleri hakkında konuşmak için benimle iletişime geçebilirsiniz. Ayrıca sayfanın altındaki AI Asistanı üzerinden de bana ulaşabilirsiniz."
+contact_text_en = "I'm always interested in hearing about new opportunities and collaborations. You can also reach me via the AI Assistant at the bottom of this page."
+
+contact_text = contact_text_tr if current_lang == "tr" else contact_text_en
+
+email = cv_data.get("email", "")
+links = cv_data.get("links", {})
+
+st.markdown(f"""
+<div style="text-align: center; max-width: 600px; margin: 0 auto;">
+    <p style="font-size: 1.1em; line-height: 1.8; color: #475569; margin-bottom: 30px;">{contact_text}</p>
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <a href="mailto:{email}" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+            📧 Mail Me
+        </a>
+        <a href="{links.get('linkedin', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+            💼 LinkedIn
+        </a>
+        <a href="{links.get('github', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+            🔗 GitHub
+        </a>
+        <a href="{links.get('medium', '#')}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #667eea; text-decoration: none; font-weight: 500; padding: 10px 20px; border: 2px solid #667eea; border-radius: 8px; transition: all 0.2s;">
+            ✍️ Medium
+        </a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
 # --- Chat Bölümü (Ana sayfanın altında) ---
 st.markdown("""
 <style>
@@ -1145,3 +1283,4 @@ if modern_chatbot_run is not None:
     )
 else:
     st.error("Chat modülünü yüklerken sorun oluştu (modern_chatbot.run bulunamadı).")
+        
