@@ -418,7 +418,7 @@ st.markdown("""
     font-size: 2.5em;
     font-weight: 700;
     color: #1e293b;
-    margin: 0 0 12px 0;
+    margin: 20px 0 8px 0;
     line-height: 1.2;
 }
 
@@ -427,7 +427,7 @@ st.markdown("""
     font-size: 1.5em;
     font-weight: 400;
     color: #475569;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     line-height: 1.4;
 }
 
@@ -444,7 +444,7 @@ st.markdown("""
     height: 280px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 30px auto;
+    margin: 0 auto 20px auto;
     display: block;
     border: 4px solid #e2e8f0;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -465,7 +465,7 @@ st.markdown("""
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     margin: 0;
     width: 100%;
 }
