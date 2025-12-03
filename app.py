@@ -1381,27 +1381,48 @@ medium_articles = cv_data.get("medium_articles", [])
 if medium_articles:
     articles_to_show = medium_articles[:5]  # İlk 5 yazıyı göster
     
-    st.markdown('<div class="articles-grid">', unsafe_allow_html=True)
+    # İlk 4 yazıyı 2'şerli yan yana göster
+    col1, col2 = st.columns(2)
     
-    for i, article in enumerate(articles_to_show):
+    for i, article in enumerate(articles_to_show[:4]):  # İlk 4 yazı
         title = article.get("title", "")
         url = article.get("url", "")
         summary_tr = article.get("summary_tr", "")
         summary_en = article.get("summary_en", "")
         summary = summary_tr if current_lang == "tr" else summary_en
         
-        # Son yazı (5. yazı) ortada gösterilecek
-        card_class = "article-card article-card-center" if i == 4 else "article-card"
+        # 2'şerli yan yana yerleştir
+        with (col1 if i % 2 == 0 else col2):
+            st.markdown(f"""
+            <div class="article-card">
+                <div class="article-title">{title}</div>
+                <div class="article-summary">{summary}</div>
+                <a href="{url}" target="_blank" class="article-link">📖 Read on Medium</a>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # 5. yazıyı ortada göster
+    if len(articles_to_show) > 4:
+        article = articles_to_show[4]
+        title = article.get("title", "")
+        url = article.get("url", "")
+        summary_tr = article.get("summary_tr", "")
+        summary_en = article.get("summary_en", "")
+        summary = summary_tr if current_lang == "tr" else summary_en
+        
+        st.markdown("""
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+        """, unsafe_allow_html=True)
         
         st.markdown(f"""
-        <div class="{card_class}">
+        <div class="article-card" style="max-width: 600px; width: 100%;">
             <div class="article-title">{title}</div>
             <div class="article-summary">{summary}</div>
             <a href="{url}" target="_blank" class="article-link">📖 Read on Medium</a>
         </div>
         """, unsafe_allow_html=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
 else:
     st.markdown('<p style="text-align: center; color: #64748b;">No articles available.</p>', unsafe_allow_html=True)
 
