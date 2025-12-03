@@ -174,7 +174,106 @@ lang_text = TEXT[ st.session_state.lang ]
 
 # --- Main content ---
 
-# 1. Toggle bar (dil/tema)
+# 1. Navigation Menu (Sabit, üstte)
+st.markdown("""
+<style>
+.nav-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.nav-menu-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: #475569;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95em;
+    transition: color 0.2s;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.nav-link:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.stApp[data-theme="dark"] .nav-menu {
+    background: rgba(30, 41, 59, 0.95) !important;
+    border-bottom-color: #475569 !important;
+}
+
+.stApp[data-theme="dark"] .nav-link {
+    color: #cbd5e1 !important;
+}
+
+.stApp[data-theme="dark"] .nav-link:hover {
+    color: #a5b4fc !important;
+    background: rgba(102, 126, 234, 0.2) !important;
+}
+
+body {
+    padding-top: 60px;
+}
+
+@media (max-width: 768px) {
+    .nav-menu-content {
+        gap: 15px;
+        padding: 0 10px;
+    }
+    .nav-link {
+        font-size: 0.85em;
+        padding: 4px 8px;
+    }
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+});
+</script>
+<div class="nav-menu">
+    <div class="nav-menu-content">
+        <a href="#about" class="nav-link">About</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#awards" class="nav-link">Awards</a>
+        <a href="#references" class="nav-link">References</a>
+        <a href="#chat-section" class="nav-link">Chat</a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# 2. Toggle bar (dil/tema)
 language_and_theme_toggle()
 
 # 2. Modern arka plan şekilleri ve blob'lar
@@ -606,6 +705,413 @@ div.stButton > button[data-baseweb="button"][id*="cv_download_btn"]:hover {
 """, unsafe_allow_html=True)
 
 # Ana içeriği kapat
+st.markdown('</div>', unsafe_allow_html=True)
+
+# --- Portfolio Bölümleri (Scrollable) ---
+cv_data = json.load(open(tag, encoding="utf-8"))
+current_lang = st.session_state.get("lang", "tr")
+
+# Portfolio bölümleri için CSS
+st.markdown("""
+<style>
+.portfolio-section {
+    margin: 60px 0;
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-title {
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #1e293b;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+}
+
+.about-content {
+    font-size: 1.1em;
+    line-height: 1.8;
+    color: #475569;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.experience-card, .education-card, .project-card, .award-card, .reference-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #667eea;
+}
+
+.experience-card:hover, .education-card:hover, .project-card:hover, .award-card:hover, .reference-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+}
+
+.experience-title, .education-title {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+.experience-company, .education-institution {
+    font-size: 1.1em;
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.experience-duration, .education-years {
+    font-size: 0.9em;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.experience-description, .education-degree {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.skills-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.skill-category {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.skill-category-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 12px;
+}
+
+.skill-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    color: #475569;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    margin: 4px 4px 4px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.project-card {
+    border-left-color: #764ba2;
+}
+
+.project-name {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+.project-tech {
+    color: #667eea;
+    font-size: 0.95em;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.project-description {
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.project-features {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.project-feature {
+    color: #64748b;
+    font-size: 0.9em;
+    margin: 4px 0;
+}
+
+.project-feature::before {
+    content: '• ';
+    color: #667eea;
+    font-weight: bold;
+}
+
+.project-link {
+    display: inline-block;
+    margin-top: 12px;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.project-link:hover {
+    color: #764ba2;
+}
+
+.award-name {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.award-org {
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.award-description {
+    color: #475569;
+    line-height: 1.6;
+}
+
+.reference-name {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.reference-title {
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.reference-org {
+    color: #64748b;
+    font-size: 0.9em;
+}
+
+/* Dark mode */
+.stApp[data-theme="dark"] .section-title {
+    color: #f1f5f9 !important;
+}
+
+.stApp[data-theme="dark"] .about-content,
+.stApp[data-theme="dark"] .experience-description,
+.stApp[data-theme="dark"] .education-degree,
+.stApp[data-theme="dark"] .project-description,
+.stApp[data-theme="dark"] .award-description {
+    color: #cbd5e1 !important;
+}
+
+.stApp[data-theme="dark"] .experience-card,
+.stApp[data-theme="dark"] .education-card,
+.stApp[data-theme="dark"] .project-card,
+.stApp[data-theme="dark"] .award-card,
+.stApp[data-theme="dark"] .reference-card,
+.stApp[data-theme="dark"] .skill-category {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+.stApp[data-theme="dark"] .experience-title,
+.stApp[data-theme="dark"] .education-title,
+.stApp[data-theme="dark"] .project-name,
+.stApp[data-theme="dark"] .award-name,
+.stApp[data-theme="dark"] .reference-name {
+    color: #f1f5f9 !important;
+}
+
+.stApp[data-theme="dark"] .skill-tag {
+    background: #334155 !important;
+    color: #cbd5e1 !important;
+    border-color: #475569 !important;
+}
+
+@media (max-width: 768px) {
+    .portfolio-section {
+        padding: 30px 15px;
+        margin: 40px 0;
+    }
+    .section-title {
+        font-size: 1.6em;
+    }
+    .skills-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# About Me / Hakkımda
+st.markdown('<div class="portfolio-section" id="about">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">📖 About Me / Hakkımda</h2>', unsafe_allow_html=True)
+profile_text = cv_data.get("profile", "")
+if profile_text:
+    st.markdown(f'<div class="about-content">{profile_text}</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Experience & Education
+st.markdown('<div class="portfolio-section" id="experience">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">💼 Experience & Education / Deneyim & Eğitim</h2>', unsafe_allow_html=True)
+
+# Experience
+for exp in cv_data.get("experience", []):
+    title = exp.get("title", "")
+    company = exp.get("company", "")
+    duration = exp.get("duration", "")
+    description = exp.get("description", "")
+    st.markdown(f"""
+    <div class="experience-card">
+        <div class="experience-title">{title}</div>
+        <div class="experience-company">{company}</div>
+        <div class="experience-duration">{duration}</div>
+        <div class="experience-description">{description}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Education
+for edu in cv_data.get("education", []):
+    institution = edu.get("institution", "")
+    degree = edu.get("degree", "")
+    years = edu.get("years", "")
+    st.markdown(f"""
+    <div class="education-card">
+        <div class="education-title">{degree}</div>
+        <div class="education-institution">{institution}</div>
+        <div class="education-years">{years}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Projects
+st.markdown('<div class="portfolio-section" id="projects">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">🚀 Projects / Projeler</h2>', unsafe_allow_html=True)
+
+for proj in cv_data.get("projects", []):
+    name = proj.get("name", "")
+    tech = proj.get("technology", "")
+    desc = proj.get("description", "")
+    features = proj.get("features", [])
+    github = proj.get("github", "")
+    
+    # Dil desteği için description
+    if isinstance(desc, dict):
+        description = desc.get(current_lang, desc.get("en", desc.get("tr", "")))
+    else:
+        description = desc
+    
+    # Dil desteği için features
+    if isinstance(features, dict):
+        features_list = features.get(current_lang, features.get("en", features.get("tr", [])))
+    elif isinstance(features, list):
+        features_list = features
+    else:
+        features_list = []
+    
+    features_html = ""
+    if features_list:
+        features_html = '<div class="project-features">'
+        for feature in features_list:
+            features_html += f'<div class="project-feature">{feature}</div>'
+        features_html += '</div>'
+    
+    github_link = ""
+    if github:
+        github_link = f'<a href="{github}" target="_blank" class="project-link">🔗 View on GitHub</a>'
+    
+    st.markdown(f"""
+    <div class="project-card">
+        <div class="project-name">{name}</div>
+        <div class="project-tech">{tech}</div>
+        <div class="project-description">{description}</div>
+        {features_html}
+        {github_link}
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Skills
+st.markdown('<div class="portfolio-section" id="skills">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">🛠️ Skills / Yetenekler</h2>', unsafe_allow_html=True)
+
+skills = cv_data.get("skills", {})
+st.markdown('<div class="skills-container">', unsafe_allow_html=True)
+for category, skill_list in skills.items():
+    skills_html = ""
+    for skill in skill_list:
+        skills_html += f'<span class="skill-tag">{skill}</span>'
+    st.markdown(f"""
+    <div class="skill-category">
+        <div class="skill-category-title">{category}</div>
+        <div>{skills_html}</div>
+    </div>
+    """, unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Awards
+st.markdown('<div class="portfolio-section" id="awards">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">🏆 Awards & Achievements / Ödüller</h2>', unsafe_allow_html=True)
+
+for award in cv_data.get("awards", []):
+    name = award.get("name", "")
+    org = award.get("organization", "")
+    desc = award.get("description", "")
+    st.markdown(f"""
+    <div class="award-card">
+        <div class="award-name">{name}</div>
+        <div class="award-org">{org}</div>
+        <div class="award-description">{desc}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# References
+st.markdown('<div class="portfolio-section" id="references">', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">📞 References / Referanslar</h2>', unsafe_allow_html=True)
+
+for ref in cv_data.get("references", []):
+    name = ref.get("name", "")
+    title = ref.get("title", "")
+    org = ref.get("organization", "")
+    st.markdown(f"""
+    <div class="reference-card">
+        <div class="reference-name">{name}</div>
+        <div class="reference-title">{title}</div>
+        <div class="reference-org">{org}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Chat Bölümü (Ana sayfanın altında) ---
