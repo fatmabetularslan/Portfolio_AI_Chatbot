@@ -597,17 +597,19 @@ try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
 
-    # Butonu hero başlığının hemen altına, tam ortaya yerleştir
-    st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
-    st.download_button(
-        label="📥 Download CV",
-        data=pdf_bytes,
-        file_name="Fatma_Betul_Arslan_CV.pdf",
-        mime="application/pdf",
-        use_container_width=False,
-        key="hero_cv_download_btn",
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Butonu gerçekten ortaya almak için 3 sütun kullan
+    left_col, center_col, right_col = st.columns([1, 2, 1])
+    with center_col:
+        st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
+        st.download_button(
+            label="📥 Download CV",
+            data=pdf_bytes,
+            file_name="Fatma_Betul_Arslan_CV.pdf",
+            mime="application/pdf",
+            use_container_width=True,
+            key="hero_cv_download_btn",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
