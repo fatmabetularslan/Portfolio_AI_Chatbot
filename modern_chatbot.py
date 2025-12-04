@@ -109,7 +109,7 @@ def language_and_theme_toggle():
     <div class="toggle-bar-wrap">
       <form method="GET" style="display: flex; gap: 32px; align-items: center;">
         <div class="lang-toggle">
-          <button class="lang-flag-btn{' selected' if lang == 'en' else ' unselected'}" name="setlang" value="en" type="submit">🇬🇧</button>
+          <button class="lang-flag-btn{' selected' if lang == 'en' else ' unselected'}" name="setlang" value="en" type="submit">EN</button>
           <button class="lang-flag-btn{' selected' if lang == 'tr' else ' unselected'}" name="setlang" value="tr" type="submit">🇹🇷</button>
         </div>
         <div class="theme-toggle">
