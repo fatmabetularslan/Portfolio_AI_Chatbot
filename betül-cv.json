@@ -115,7 +115,8 @@
           "Portfolio simulation, risk metrics and smart alert management",
           "Financial calendar, quick-access tickers and modular Streamlit UI"
         ]
-      }
+      }, 
+      "github" : "https://github.com/fatmabetularslan/FinTurk"
     },
     {
       "name": "Mobile App User Behavior Analysis & Segmentation",
@@ -385,3 +386,4 @@
     }
   ]
 }
+
