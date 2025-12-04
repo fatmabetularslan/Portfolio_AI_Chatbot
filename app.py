@@ -427,7 +427,7 @@ st.markdown("""
     font-size: 1.5em;
     font-weight: 400;
     color: #475569;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     line-height: 1.4;
 }
 
@@ -476,7 +476,8 @@ st.markdown("""
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    margin: 0 auto !important;
+    /* Başlık ile buton ve buton ile ikonlar arası mesafe için ortak boşluk */
+    margin: 12px auto !important;
 }
 
 .download-cv-btn-wrapper > *,
@@ -520,7 +521,8 @@ st.markdown("""
     align-items: center;
     gap: 18px;
     flex-wrap: wrap;
-    margin-top: 0;
+    /* Download butonu ile ikonlar arasındaki mesafe (başlık-buton mesafesi ile benzer) */
+    margin-top: 12px;
 }
 .social-links a {
     text-decoration: none;
