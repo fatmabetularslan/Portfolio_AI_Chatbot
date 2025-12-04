@@ -302,8 +302,8 @@ st.markdown(f"""
       <a href="#projects" class="nav-link">{nav_texts['projects']}</a>
       <a href="#skills" class="nav-link">{nav_texts['skills']}</a>
       <a href="#awards" class="nav-link">{nav_texts['awards']}</a>
-      <a href="#references" class="nav-link">{nav_texts['references']}</a>
       <a href="#articles" class="nav-link">{nav_texts['articles']}</a>
+      <a href="#references" class="nav-link">{nav_texts['references']}</a>
       <a href="#contact" class="nav-link">{nav_texts['contact']}</a>
     </div>
     <div class="nav-menu-toggles">
