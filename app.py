@@ -408,8 +408,7 @@ st.markdown("""
     text-align: center;
     padding: 60px 20px 40px 20px;
     max-width: 700px;
-    /* Alt boşluğu küçült: başlık ile Download CV butonu arası ~6px'e insin */
-    margin: 0 auto 6px auto;
+    margin: 0 auto 6px auto; /* alt boşluk */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -429,18 +428,17 @@ st.markdown("""
     font-size: 1.5em;
     font-weight: 400;
     color: #475569;
-    /* Başlık ile CV butonu arasındaki boşluk için,
-       asıl mesafeyi buton wrapper'da kontrol edeceğiz */
-    margin-bottom: 0;
+    margin-bottom: 0;  /* başlık altında boşluk yok */
     line-height: 1.4;
 }
 
-/* Lokasyon */
+/* Lokasyon (istersen sonra geri açarsın)
 .hero-location {
     font-size: 1rem;
     color: #6b7280;
     margin-bottom: 28px;
 }
+*/
 
 /* Profil fotoğrafı */
 .hero-profile-img {
@@ -464,52 +462,29 @@ st.markdown("""
     gap: 32px;
 }
 
-/* Buton + sosyal medya */
+/* Buton + sosyal medya alanı */
 .hero-actions {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 6px !important;
-    margin: 0 !important;
+    gap: 6px !important;          /* iç elemanlar arası gap */
+    margin: 6px 0 0 0 !important; /* başlık ile buton arası = 6px */
     width: 100% !important;
 }
 
+/* Download CV butonu sarmalayan div */
 .download-cv-btn-wrapper {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    margin: 6px auto 0 auto !important;
+    margin: 0 auto !important;    /* ekstra boşluk yok */
 }
 
-/* Streamlit columns' default padding/margin'lerini hero bölümünde sıfırla */
-.hero-actions .stHorizontalBlock,
-.hero-actions [data-testid="column"],
-.hero-actions [data-testid="column"] > div,
-.hero-actions [data-testid="block-container"] {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-.hero-actions .stDownloadButton {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.download-cv-btn-wrapper > *,
-.download-cv-btn-wrapper button,
-.download-cv-btn-wrapper div[data-baseweb="button"],
-.download-cv-btn-wrapper .stDownloadButton,
-.download-cv-btn-wrapper .stDownloadButton > button {
-    margin: 0 auto !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-.download-cv-btn-wrapper button,
-.download-cv-btn-wrapper div[data-baseweb="button"],
-.download-cv-btn-wrapper .stDownloadButton button {
+/* HTML ile yaptığımız CV butonu */
+.download-cv-btn {
+    text-decoration: none !important;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     color: white !important;
     border: none !important;
@@ -521,24 +496,26 @@ st.markdown("""
     transition: transform 0.2s, box-shadow 0.2s !important;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
     min-width: 150px !important;
-    margin: 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
-.download-cv-btn-wrapper button:hover,
-.download-cv-btn-wrapper div[data-baseweb="button"]:hover,
-.download-cv-btn-wrapper .stDownloadButton button:hover {
+
+/* hover efekti */
+.download-cv-btn:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
     background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
 }
 
+/* Sosyal ikonlar: buton ile arası 6px */
 .social-links {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 18px;
     flex-wrap: wrap;
-    /* Download butonu ile ikonlar arasındaki mesafe (başlık-buton mesafesi ile benzer) */
-    margin-top: 6px;
+    margin-top: 6px; /* Download CV ile ikonlar arası mesafe = 6px */
 }
 .social-links a {
     text-decoration: none;
@@ -563,7 +540,6 @@ st.markdown("""
 }
 
 .stApp[data-theme="dark"] .hero-title { color: #e5e7eb !important; }
-.stApp[data-theme="dark"] .hero-location { color: #9ca3af !important; }
 .stApp[data-theme="dark"] .hero-profile-img {
     border-color: #8b5cf6;
     box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
@@ -596,7 +572,12 @@ if PROFILE_IMG_PATH.exists():
     profile_b64 = base64.b64encode(profile_bytes).decode("utf-8")
     profile_img_html = f'<img src="data:image/jpeg;base64,{profile_b64}" alt="{name}" class="hero-profile-img" />'
 else:
-    profile_img_html = f'<div class="hero-profile-img" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;font-weight:700;">{name[0]}</div>'
+    profile_img_html = (
+        f'<div class="hero-profile-img" '
+        f'style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); '
+        f'display:flex;align-items:center;justify-content:center;'
+        f'color:white;font-size:3rem;font-weight:700;">{name[0]}</div>'
+    )
 
 st.markdown(f"""
 <div class="hero-section">
@@ -606,24 +587,22 @@ st.markdown(f"""
     <div class="hero-actions">
 """, unsafe_allow_html=True)
 
-# CV butonu
+# CV butonu (HTML + base64 ile)
 try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
+    pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")
 
-    # Butonu gerçekten ortaya almak için 3 sütun kullan
-    left_col, center_col, right_col = st.columns([1, 2, 1])
-    with center_col:
-        st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
-        st.download_button(
-            label="📥 Download CV",
-            data=pdf_bytes,
-            file_name="Fatma_Betul_Arslan_CV.pdf",
-            mime="application/pdf",
-            use_container_width=True,
-            key="hero_cv_download_btn",
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
+    download_html = f"""
+        <div class="download-cv-btn-wrapper">
+            <a href="data:application/pdf;base64,{pdf_b64}"
+               download="Fatma_Betul_Arslan_CV.pdf"
+               class="download-cv-btn">
+                📥 Download CV
+            </a>
+        </div>
+    """
+    st.markdown(download_html, unsafe_allow_html=True)
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
