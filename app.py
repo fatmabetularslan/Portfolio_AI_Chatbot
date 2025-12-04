@@ -407,7 +407,8 @@ st.markdown("""
     text-align: center;
     padding: 60px 20px 40px 20px;
     max-width: 700px;
-    margin: 0 auto 40px auto;
+    /* Alt boşluğu küçült: başlık ile Download CV butonu arası ~6px'e insin */
+    margin: 0 auto 6px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
