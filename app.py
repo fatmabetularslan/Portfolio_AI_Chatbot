@@ -447,27 +447,28 @@ st.markdown("""
 /* Download CV butonu */
 .download-cv-btn {
     text-decoration: none !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
-    border: none !important;
-    padding: 10px 26px !important;
-    border-radius: 8px !important;
+    background: #ffffff !important;
+    color: #4f46e5 !important;
+    border: 2px solid #4f46e5 !important;
+    padding: 8px 22px !important;
+    border-radius: 999px !important;
     font-weight: 600 !important;
-    font-size: 0.98em !important;
+    font-size: 0.95em !important;
     cursor: pointer !important;
-    transition: transform 0.2s, box-shadow 0.2s !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    margin: 0;              /* ekstra boşluk yok */
+    gap: 6px !important;
 }
 
 /* hover efekti */
 .download-cv-btn:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4) !important;
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* Sosyal ikonlar: buton ile arası 6px */
