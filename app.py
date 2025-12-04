@@ -1261,6 +1261,7 @@ chat_widget_injection = """
     parentDoc.head.appendChild(style);
   }
 
+  const chatPageUrl = window.parent.location.origin + '/?page=AI_Portfolio_Asistani';
   const root = parentDoc.createElement('div');
   root.id = 'floating-chat-root';
   root.innerHTML = `
@@ -1291,7 +1292,8 @@ chat_widget_injection = """
   const launcher = root.querySelector('#floating-chat-launcher');
   const panel = root.querySelector('#floating-chat-panel');
   const closeBtn = root.querySelector('#floating-chat-close');
-  if (!launcher || !panel || !closeBtn) { return; }
+  const wakeBtn = root.querySelector('.wake-button');
+  if (!launcher || !panel || !closeBtn || !wakeBtn) { return; }
 
   let isOpen = false;
   const togglePanel = (force) => {
@@ -1311,6 +1313,11 @@ chat_widget_injection = """
   closeBtn.addEventListener('click', (event) => {
     event.stopPropagation();
     togglePanel(false);
+  });
+  wakeBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    window.parent.open(chatPageUrl, '_blank');
   });
   parentDoc.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
