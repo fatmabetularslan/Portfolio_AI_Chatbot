@@ -1282,7 +1282,7 @@ chat_widget_injection = """
       <iframe
         src="/?embedded_chat=1"
         title="AI Portföy Asistanı"
-        style="width: 100%; height: 460px; border: none; border-radius: 18px; overflow: hidden;"
+        style="width: 100%; height: 540px; border: none; border-radius: 18px; overflow: hidden;"
       ></iframe>
     </div>
   `;
