@@ -21,7 +21,7 @@ current_lang = st.session_state["lang"]
 
 # --- Global CSS: tema + header gizleme ---
 st.markdown("""
-<style>
+    <style>
 /* Streamlit header'ını gizle */
 header[data-testid="stHeader"],
 .stApp > header,
@@ -49,8 +49,8 @@ body {
 .stApp > div:first-child {
     padding-top: 0 !important;
 }
-</style>
-""", unsafe_allow_html=True)
+    </style>
+    """, unsafe_allow_html=True)
 
 # Tema CSS
 st.markdown(
@@ -592,16 +592,20 @@ st.markdown(f"""
 try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
-    st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
-    st.download_button(
-        label="📥 Download CV",
-        data=pdf_bytes,
-        file_name="Fatma_Betul_Arslan_CV.pdf",
-        mime="application/pdf",
-        use_container_width=False,
-        key="hero_cv_download_btn",
-    )
-    st.markdown("</div>", unsafe_allow_html=True)
+
+    # Butonu gerçekten ortaya almak için 3 sütun kullan
+    left_col, center_col, right_col = st.columns([1, 2, 1])
+    with center_col:
+        st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
+        st.download_button(
+            label="📥 Download CV",
+            data=pdf_bytes,
+            file_name="Fatma_Betul_Arslan_CV.pdf",
+            mime="application/pdf",
+            use_container_width=True,
+            key="hero_cv_download_btn",
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
@@ -642,12 +646,12 @@ st.markdown("""
     margin-bottom: 30px;
     text-align: center;
     color: #1e293b;
-    position: relative;
+  position: relative;
     padding-bottom: 15px;
 }
 .section-title::after {
-    content: '';
-    position: absolute;
+  content: '';
+  position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
@@ -877,7 +881,7 @@ for exp in cv_data.get("experience", []):
         <div class="experience-duration">{duration}</div>
         <div class="experience-description">{description}</div>
     </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 for edu in cv_data.get("education", []):
     institution = edu.get("institution", "")
