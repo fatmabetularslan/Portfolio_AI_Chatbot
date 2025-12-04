@@ -990,6 +990,26 @@ st.markdown("""
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+.articles-grid .article-card {
+    height: 100%;
+}
+.articles-grid .article-card:last-child:nth-child(2n+1) {
+    grid-column: 1 / -1;
+    max-width: 520px;
+    margin: 0 auto;
+    width: 100%;
+}
+@media (max-width: 900px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+}
 .stApp[data-theme="dark"] .article-card {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     border-color: #475569;
@@ -1001,6 +1021,7 @@ st.markdown("""
 
 medium_articles = cv_data.get("medium_articles", [])
 if medium_articles:
+    cards = []
     for article in medium_articles[:5]:
         title_m = article.get("title", "")
         url_m = article.get("url", "")
@@ -1008,13 +1029,16 @@ if medium_articles:
         summary_en = article.get("summary_en", "")
         summary = summary_tr if current_lang == "tr" else summary_en
 
-        st.markdown(f"""
+        cards.append(f"""
         <div class="article-card">
             <div class="article-title">{title_m}</div>
             <div class="article-summary">{summary}</div>
             <a href="{url_m}" target="_blank" class="article-link">📖 Read on Medium</a>
         </div>
-        """, unsafe_allow_html=True)
+        """)
+
+    cards_html = "".join(cards)
+    st.markdown(f'<div class="articles-grid">{cards_html}</div>', unsafe_allow_html=True)
 else:
     no_text = "Yazı bulunamadı." if current_lang == "tr" else "No articles available."
     st.markdown(
