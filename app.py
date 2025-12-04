@@ -1118,175 +1118,183 @@ st.markdown(f"""
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-chat_widget_html = """
-<style>
-#floating-chat-root {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
-  z-index: 10000;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-#floating-chat-launcher {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border: none;
-  border-radius: 999px;
-  padding: 11px 20px;
-  background: linear-gradient(135deg, #5f3dc4 0%, #7c3aed 50%, #a855f7 100%);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 14px 32px rgba(76, 29, 149, 0.25);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-#floating-chat-launcher:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(76, 29, 149, 0.3);
-}
-#floating-chat-launcher .icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
-}
-#floating-chat-panel {
-  width: 360px;
-  max-width: calc(100vw - 32px);
-  background: #ffffff;
-  border-radius: 28px;
-  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
-  padding: 20px 22px;
-  display: none;
-  flex-direction: column;
-  gap: 16px;
-}
-#floating-chat-panel.is-visible {
-  display: flex;
-}
-#floating-chat-panel header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 700;
-  font-size: 1rem;
-  color: #0f172a;
-}
-#floating-chat-panel header button {
-  border: none;
-  background: none;
-  font-size: 1.4rem;
-  color: #cbd5f5;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-#floating-chat-panel header button:hover {
-  color: #94a3b8;
-}
-#floating-chat-panel .status-box {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: #f1f5f9;
-}
-#floating-chat-panel .status-box span {
-  font-size: 2rem;
-}
-#floating-chat-panel .status-box .texts {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-#floating-chat-panel .status-title {
-  font-weight: 600;
-  font-size: 1.05rem;
-  color: #0f172a;
-}
-#floating-chat-panel .status-desc {
-  font-size: 0.94rem;
-  color: #475569;
-}
-#floating-chat-panel .wake-button {
-  border: none;
-  border-radius: 14px;
-  padding: 11px 18px;
-  font-weight: 600;
-  background: #2563eb;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-#floating-chat-panel .wake-button:hover {
-  background: #1d4ed8;
-  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
-}
-#floating-chat-panel .support-hint {
-  font-size: 0.85rem;
-  color: #94a3b8;
-  text-align: center;
-}
-#floating-chat-panel .support-hint a {
-  color: #3b82f6;
-  text-decoration: none;
-}
-#floating-chat-panel .support-hint a:hover {
-  text-decoration: underline;
-}
-@media (max-width: 640px) {
-  #floating-chat-root {
-    right: 12px;
-    bottom: 12px;
-  }
-  #floating-chat-panel {
-    width: calc(100vw - 24px);
-  }
-}
-</style>
-<div id="floating-chat-root">
-  <button id="floating-chat-launcher">
-    <span>AI Asistanına sor!</span>
-    <div class="icon">🤖</div>
-  </button>
-  <div id="floating-chat-panel">
-    <header>
-      <div>AI Portföy Asistanı</div>
-      <button id="floating-chat-close" aria-label="Kapat">×</button>
-    </header>
-    <div class="status-box">
-      <span>😴</span>
-      <div class="texts">
-        <div class="status-title">Zzzz...</div>
-        <div class="status-desc">Uygulama uykuda. Dilersen tekrar ayağa kaldırabilirim.</div>
-      </div>
-    </div>
-    <button class="wake-button">Evet, uygulamayı uyandır!</button>
-    <div class="support-hint">
-      Sorun mu var? <a href="https://discuss.streamlit.io" target="_blank">Destekle iletişime geç</a>.
-    </div>
-  </div>
-</div>
+chat_widget_injection = """
 <script>
 (function() {
-  const launcher = document.getElementById('floating-chat-launcher');
-  const panel = document.getElementById('floating-chat-panel');
-  const closeBtn = document.getElementById('floating-chat-close');
-  if (!launcher || !panel || !closeBtn) {
-    return;
+  const parentDoc = window.parent.document;
+  if (!parentDoc) { return; }
+  if (parentDoc.getElementById('floating-chat-root')) { return; }
+
+  if (!parentDoc.getElementById('floating-chat-style')) {
+    const style = parentDoc.createElement('style');
+    style.id = 'floating-chat-style';
+    style.textContent = `
+      #floating-chat-root {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+        z-index: 10000;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      #floating-chat-launcher {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: none;
+        border-radius: 999px;
+        padding: 11px 20px;
+        background: linear-gradient(135deg, #5f3dc4 0%, #7c3aed 50%, #a855f7 100%);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 14px 32px rgba(76, 29, 149, 0.25);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      #floating-chat-launcher:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(76, 29, 149, 0.3);
+      }
+      #floating-chat-launcher .icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+      }
+      #floating-chat-panel {
+        width: 360px;
+        max-width: calc(100vw - 32px);
+        background: #ffffff;
+        border-radius: 28px;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+        padding: 20px 22px;
+        display: none;
+        flex-direction: column;
+        gap: 16px;
+      }
+      #floating-chat-panel.is-visible {
+        display: flex;
+      }
+      #floating-chat-panel header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #0f172a;
+      }
+      #floating-chat-panel header button {
+        border: none;
+        background: none;
+        font-size: 1.4rem;
+        color: #cbd5f5;
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+      #floating-chat-panel header button:hover {
+        color: #94a3b8;
+      }
+      #floating-chat-panel .status-box {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: #f1f5f9;
+      }
+      #floating-chat-panel .status-box span {
+        font-size: 2rem;
+      }
+      #floating-chat-panel .status-box .texts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      #floating-chat-panel .status-title {
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: #0f172a;
+      }
+      #floating-chat-panel .status-desc {
+        font-size: 0.94rem;
+        color: #475569;
+      }
+      #floating-chat-panel .wake-button {
+        border: none;
+        border-radius: 14px;
+        padding: 11px 18px;
+        font-weight: 600;
+        background: #2563eb;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.2s ease, box-shadow 0.2s ease;
+      }
+      #floating-chat-panel .wake-button:hover {
+        background: #1d4ed8;
+        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
+      }
+      #floating-chat-panel .support-hint {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        text-align: center;
+      }
+      #floating-chat-panel .support-hint a {
+        color: #3b82f6;
+        text-decoration: none;
+      }
+      #floating-chat-panel .support-hint a:hover {
+        text-decoration: underline;
+      }
+      @media (max-width: 640px) {
+        #floating-chat-root { right: 12px; bottom: 12px; }
+        #floating-chat-panel { width: calc(100vw - 24px); }
+      }
+    `;
+    parentDoc.head.appendChild(style);
   }
+
+  const root = parentDoc.createElement('div');
+  root.id = 'floating-chat-root';
+  root.innerHTML = `
+    <button id="floating-chat-launcher">
+      <span>AI Asistanına sor!</span>
+      <div class="icon">🤖</div>
+    </button>
+    <div id="floating-chat-panel">
+      <header>
+        <div>AI Portföy Asistanı</div>
+        <button id="floating-chat-close" aria-label="Kapat">×</button>
+      </header>
+      <div class="status-box">
+        <span>😴</span>
+        <div class="texts">
+          <div class="status-title">Zzzz...</div>
+          <div class="status-desc">Uygulama uykuda. Dilersen tekrar ayağa kaldırabilirim.</div>
+        </div>
+      </div>
+      <button class="wake-button">Evet, uygulamayı uyandır!</button>
+      <div class="support-hint">
+        Sorun mu var? <a href="https://discuss.streamlit.io" target="_blank">Destekle iletişime geç</a>.
+      </div>
+    </div>
+  `;
+  parentDoc.body.appendChild(root);
+
+  const launcher = root.querySelector('#floating-chat-launcher');
+  const panel = root.querySelector('#floating-chat-panel');
+  const closeBtn = root.querySelector('#floating-chat-close');
+  if (!launcher || !panel || !closeBtn) { return; }
+
   let isOpen = false;
-  function togglePanel(force) {
+  const togglePanel = (force) => {
     if (typeof force === 'boolean') {
       isOpen = force;
     } else {
@@ -1297,15 +1305,14 @@ chat_widget_html = """
     } else {
       panel.classList.remove('is-visible');
     }
-  }
-  launcher.addEventListener('click', function() {
-    togglePanel();
-  });
-  closeBtn.addEventListener('click', function(event) {
+  };
+
+  launcher.addEventListener('click', () => togglePanel());
+  closeBtn.addEventListener('click', (event) => {
     event.stopPropagation();
     togglePanel(false);
   });
-  document.addEventListener('keydown', function(event) {
+  parentDoc.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       togglePanel(false);
     }
@@ -1313,4 +1320,4 @@ chat_widget_html = """
 })();
 </script>
 """
-components.html(chat_widget_html, height=0, width=0)
+components.html(chat_widget_injection, height=0, width=0)
