@@ -545,32 +545,32 @@ def run(*, tool_def, rag, cv_json):
 
     # --- Welcome Mesajı (Hemen görünür, animasyon yok) ---
     if not st.session_state.get("welcome_message_shown", False):
-        welcome_text = {
-            "tr": {
-                "title": "👋 Merhaba!",
+            welcome_text = {
+                "tr": {
+                    "title": "👋 Merhaba!",
                 "message": "Ben Fatma Betül'ün AI destekli portföy asistanıyım. CV'sini, projelerini ve deneyimlerini senin için hızlıca özetleyebilirim. Başlamak için aşağıdaki başlıklardan birini seçebilir veya bana doğrudan bir soru yazabilirsin.",
-                "question": "Ne hakkında bilgi almak istersin?"
-            },
-            "en": {
-                "title": "👋 Hello!",
+                    "question": "Ne hakkında bilgi almak istersin?"
+                },
+                "en": {
+                    "title": "👋 Hello!",
                 "message": "I'm Fatma Betül's AI-powered portfolio assistant. I can quickly summarize her CV, projects, and professional experience for you. To begin, you can select one of the sections below or simply ask me a question directly.",
                 "question": "What would you like to learn more about?"
+                }
             }
-        }
-        
-        current_lang = st.session_state.get("lang", "tr")
-        text = welcome_text[current_lang]
-        
-        with st.chat_message("🤖"):
-            st.markdown(f"""
+            
+            current_lang = st.session_state.get("lang", "tr")
+            text = welcome_text[current_lang]
+            
+            with st.chat_message("🤖"):
+                st.markdown(f"""
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 18px; border-radius: 12px; margin: 8px 0;">
                 <div style="font-size: 1.1em; font-weight: 600; margin-bottom: 6px;">{text['title']}</div>
                 <div style="font-size: 0.95em; line-height: 1.4; margin-bottom: 8px;">{text['message']}</div>
                 <div style="font-size: 1em; font-weight: 500; color: rgba(255,255,255,0.9);">{text['question']}</div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.session_state["welcome_message_shown"] = True
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.session_state["welcome_message_shown"] = True
 
     # --- Küçük Chip Tarzı Butonlar (İki Sütunlu) ---
     st.markdown("""
@@ -1181,7 +1181,7 @@ def run(*, tool_def, rag, cv_json):
             name = proj.get("name", "")
             if not name:
                 continue
-            name_tokens = [tok for tok in re.split(r"[^a-z0-9]+", name.lower()) if len(tok) > 2]
+            name_tokens = [tok for tok in re.split(r"[^a-z0-9çğıöşü]+", name.lower()) if len(tok) > 2]
             if not name_tokens:
                 continue
             match_count = sum(1 for tok in name_tokens if tok in msg_lower)
@@ -1197,7 +1197,25 @@ def run(*, tool_def, rag, cv_json):
                 )
                 project_context_blocks.append(formatted)
 
+        # Eğitim bilgilerini her zaman (özellikle 'eğitim', 'education', 'üniversite' vb. geçtiğinde)
+        education_block = ""
+        edu_list = cv_json.get("education", [])
+        if edu_list:
+            parts = []
+            for edu in edu_list:
+                inst = edu.get("institution", "")
+                degree = edu.get("degree", "")
+                years = edu.get("years", "")
+                parts.append(f"{inst} - {degree} ({years})")
+            education_block = "Eğitim Bilgileri:\n" + "\n".join(parts)
+
         context_chunks = list(retrieved_chunks)
+
+        # Kullanıcı sorusu eğitimle ilgiliyse eğitim bloğunu bağlama özellikle ekle
+        if any(word in msg_lower for word in ["eğitim", "school", "university", "üniversite"]):
+            if education_block:
+                context_chunks.append(education_block)
+
         if project_context_blocks:
             context_chunks.append("Eşleşen Projeler:\n" + "\n\n".join(project_context_blocks))
         elif projects:
