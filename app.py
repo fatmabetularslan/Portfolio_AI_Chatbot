@@ -1237,22 +1237,6 @@ chat_widget_injection = """
         cursor: pointer;
         transition: background 0.2s ease, box-shadow 0.2s ease;
       }
-      #floating-chat-panel .wake-button:hover {
-        background: #1d4ed8;
-        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
-      }
-      #floating-chat-panel .support-hint {
-        font-size: 0.85rem;
-        color: #94a3b8;
-        text-align: center;
-      }
-      #floating-chat-panel .support-hint a {
-        color: #3b82f6;
-        text-decoration: none;
-      }
-      #floating-chat-panel .support-hint a:hover {
-        text-decoration: underline;
-      }
       @media (max-width: 640px) {
         #floating-chat-root { right: 12px; bottom: 12px; }
         #floating-chat-panel { width: calc(100vw - 24px); }
@@ -1261,7 +1245,6 @@ chat_widget_injection = """
     parentDoc.head.appendChild(style);
   }
 
-  const chatPageUrl = window.parent.location.origin + '/?page=AI_Portfolio_Asistani';
   const root = parentDoc.createElement('div');
   root.id = 'floating-chat-root';
   root.innerHTML = `
@@ -1274,17 +1257,11 @@ chat_widget_injection = """
         <div>AI Portföy Asistanı</div>
         <button id="floating-chat-close" aria-label="Kapat">×</button>
       </header>
-      <div class="status-box">
-        <span>😴</span>
-        <div class="texts">
-          <div class="status-title">Zzzz...</div>
-          <div class="status-desc">Uygulama uykuda. Dilersen tekrar ayağa kaldırabilirim.</div>
-        </div>
-      </div>
-      <button class="wake-button">Evet, uygulamayı uyandır!</button>
-      <div class="support-hint">
-        Sorun mu var? <a href="https://discuss.streamlit.io" target="_blank">Destekle iletişime geç</a>.
-      </div>
+      <iframe
+        src="/AI_Portföy_Asistanı"
+        title="AI Portföy Asistanı"
+        style="width: 100%; height: 460px; border: none; border-radius: 18px; overflow: hidden;"
+      ></iframe>
     </div>
   `;
   parentDoc.body.appendChild(root);
@@ -1292,8 +1269,7 @@ chat_widget_injection = """
   const launcher = root.querySelector('#floating-chat-launcher');
   const panel = root.querySelector('#floating-chat-panel');
   const closeBtn = root.querySelector('#floating-chat-close');
-  const wakeBtn = root.querySelector('.wake-button');
-  if (!launcher || !panel || !closeBtn || !wakeBtn) { return; }
+  if (!launcher || !panel || !closeBtn) { return; }
 
   let isOpen = false;
   const togglePanel = (force) => {
@@ -1313,11 +1289,6 @@ chat_widget_injection = """
   closeBtn.addEventListener('click', (event) => {
     event.stopPropagation();
     togglePanel(false);
-  });
-  wakeBtn.addEventListener('click', (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    window.parent.open(chatPageUrl, '_blank');
   });
   parentDoc.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
