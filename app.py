@@ -4,11 +4,26 @@ import json
 from common_css import LIGHT_CSS, DARK_CSS
 from pathlib import Path
 import streamlit.components.v1 as components
+from rag_system import load_cv_index
+from tools.tool_definitions import ToolDefinitions
+import modern_chatbot
 
 st.set_page_config(page_title="Fatma Betül Arslan", page_icon="🤖", layout="centered")
 
 PDF_PATH = "assets/Fatma-Betül-ARSLAN-cv.pdf"
 PROFILE_IMG_PATH = Path("assets/vesika.jpg")
+
+
+@st.cache_resource(show_spinner=False)
+def _init_chat_resources():
+    rag = load_cv_index("betül-cv.json")
+    tool_def = ToolDefinitions()
+    try:
+        tool_def.initialize_job_analyzer(None, rag.cv_json, rag)
+    except Exception as exc:
+        st.warning(f"Job analyzer başlatılamadı: {exc}")
+    return rag, tool_def
+
 
 # --- State ---
 if "lang" not in st.session_state:
@@ -19,6 +34,13 @@ if "page" not in st.session_state:
     st.session_state["page"] = "home"
 
 current_lang = st.session_state["lang"]
+
+# Eğer ?embedded_chat=1 ile gelindiyse sadece chatbot'u render et
+qp_for_embed = st.query_params
+if qp_for_embed.get("embedded_chat") == "1":
+    rag, tool_def = _init_chat_resources()
+    modern_chatbot.run(tool_def=tool_def, rag=rag, cv_json=rag.cv_json)
+    st.stop()
 
 # --- Global CSS: tema + header gizleme ---
 st.markdown("""
@@ -1258,7 +1280,7 @@ chat_widget_injection = """
         <button id="floating-chat-close" aria-label="Kapat">×</button>
       </header>
       <iframe
-        src="/AI_Portföy_Asistanı"
+        src="/?embedded_chat=1"
         title="AI Portföy Asistanı"
         style="width: 100%; height: 460px; border: none; border-radius: 18px; overflow: hidden;"
       ></iframe>
