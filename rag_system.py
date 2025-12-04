@@ -56,44 +56,30 @@ def load_cv_index(cv_path):
 
 class RAGSystem:
     def __init__(self, cv_path: str):
-        # Pre-computed embedding dosyasını kontrol et
-        embedding_file = "embeddings_data.pkl"
-        
-        if os.path.exists(embedding_file):
-            # Pre-computed embedding'leri yükle
-            with open(embedding_file, 'rb') as f:
-                data = pickle.load(f)
-            
-            self.cv_json = data['cv_json']
-            self.chunks = data['chunks']
-            self.index = data['embeddings']
-            self.alias = data['alias']
-            
-        else:
-            # Fallback: Eski yöntem (API kullanarak)
-            self.cv_json = json.load(open(cv_path, encoding="utf-8"))
-            self.chunks = self._build_chunks(self.cv_json)
-            
-            # Progress bar ile embedding'leri hesapla
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-            
-            embeddings = []
-            for i, chunk in enumerate(self.chunks):
-                status_text.text(f"Embedding hesaplanıyor... ({i+1}/{len(self.chunks)})")
-                embeddings.append(embed_cached(chunk))
-                progress_bar.progress((i + 1) / len(self.chunks))
-            
-            status_text.text("Embedding'ler hazır!")
-            progress_bar.empty()
-            status_text.empty()
-            
-            self.index = np.vstack(embeddings)
-            self.alias = {
-                "deneyim": "experience", "tecrübe": "experience",
-                "eğitim": "education",  "projeler": "projects",
-                "ödüller": "awards",    "yetenek": "skills",
-            }
+        # Her çalıştırmada güncel CV JSON'dan embedding üret
+        # (böylece CV'de yaptığın değişiklikler anında chatbota yansır)
+        self.cv_json = json.load(open(cv_path, encoding="utf-8"))
+        self.chunks = self._build_chunks(self.cv_json)
+
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+
+        embeddings = []
+        for i, chunk in enumerate(self.chunks):
+            status_text.text(f"Embedding hesaplanıyor... ({i+1}/{len(self.chunks)})")
+            embeddings.append(embed_cached(chunk))
+            progress_bar.progress((i + 1) / len(self.chunks))
+
+        status_text.text("Embedding'ler hazır!")
+        progress_bar.empty()
+        status_text.empty()
+
+        self.index = np.vstack(embeddings)
+        self.alias = {
+            "deneyim": "experience", "tecrübe": "experience",
+            "eğitim": "education",  "projeler": "projects",
+            "ödüller": "awards",    "yetenek": "skills",
+        }
         
         self.full_text = json.dumps(self.cv_json, ensure_ascii=False, indent=2)
 
