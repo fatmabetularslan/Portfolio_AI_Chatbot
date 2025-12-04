@@ -407,18 +407,25 @@ st.markdown("""
 <style>
 .hero-section {
     text-align: center;
-    padding: 60px 20px 40px 20px;
+    padding: 48px 28px 36px 28px;
     max-width: 700px;
-    margin: 0 auto;
+    margin: 0 auto 32px auto;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 32px;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
 /* İsim */
 .hero-name {
-    font-size: 2.5em;
+    font-size: 2.45em;
     font-weight: 700;
-    color: #1e293b;
-    margin: 20px 0 8px 0;
-    line-height: 1.2;
+    color: #0f172a;
+    margin: 16px 0 4px 0;
+    line-height: 1.18;
 }
 
 /* Meslek */
@@ -448,27 +455,27 @@ st.markdown("""
 .download-cv-btn {
     text-decoration: none !important;
     background: #ffffff !important;
-    color: #4f46e5 !important;
-    border: 2px solid #4f46e5 !important;
-    padding: 8px 22px !important;
+    color: #4338ca !important;
+    border: 2px solid #4338ca !important;
+    padding: 10px 28px !important;
     border-radius: 999px !important;
     font-weight: 600 !important;
-    font-size: 0.95em !important;
+    font-size: 0.96em !important;
     cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+    transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+    box-shadow: 0 12px 24px rgba(67, 56, 202, 0.12) !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 6px !important;
+    gap: 8px !important;
 }
 
 /* hover efekti */
 .download-cv-btn:hover {
-    background: #4f46e5 !important;
+    background: #4338ca !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
-    transform: translateY(-1px) !important;
+    box-shadow: 0 16px 28px rgba(67, 56, 202, 0.22) !important;
+    transform: translateY(-2px) !important;
 }
 
 /* Sosyal ikonlar: buton ile arası 6px */
@@ -476,30 +483,33 @@ st.markdown("""
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 18px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin-top: 6px;        /* Download CV -> ikonlar arası = 6px */
+    margin-top: 10px;
 }
 .social-links a {
     text-decoration: none;
-    font-size: 1.1em;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 999px;
-    background: #f3f4f6;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: #ffffff;
     color: #4b5563;
-    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .social-links a:hover {
-    background: #e5e7eb;
-    transform: translateY(-1px);
+    border-color: #4338ca;
+    box-shadow: 0 8px 18px rgba(67, 56, 202, 0.18);
+    transform: translateY(-2px);
 }
 .social-links img {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
+    filter: grayscale(0.1);
 }
 
 /* Dark mode uyumu */
