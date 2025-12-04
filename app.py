@@ -622,10 +622,11 @@ st.markdown("""
     background: #fff;
     border-radius: 12px;
     padding: 24px;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: transform 0.2s, box-shadow 0.2s;
     border-left: 4px solid #3b5bdb;
+    max-width: 780px;
 }
 .experience-card:hover, .education-card:hover, .project-card:hover, .award-card:hover, .reference-card:hover {
     transform: translateY(-4px);
