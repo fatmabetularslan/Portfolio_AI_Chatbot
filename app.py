@@ -1029,13 +1029,13 @@ if medium_articles:
         summary_en = article.get("summary_en", "")
         summary = summary_tr if current_lang == "tr" else summary_en
 
-        cards.append(f"""
-        <div class="article-card">
-            <div class="article-title">{title_m}</div>
-            <div class="article-summary">{summary}</div>
-            <a href="{url_m}" target="_blank" class="article-link">📖 Read on Medium</a>
-        </div>
-        """)
+        cards.append(
+            f'<div class="article-card">'
+            f'<div class="article-title">{title_m}</div>'
+            f'<div class="article-summary">{summary}</div>'
+            f'<a href="{url_m}" target="_blank" class="article-link">📖 Read on Medium</a>'
+            f'</div>'
+        )
 
     cards_html = "".join(cards)
     st.markdown(f'<div class="articles-grid">{cards_html}</div>', unsafe_allow_html=True)
