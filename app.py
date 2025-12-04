@@ -427,7 +427,9 @@ st.markdown("""
     font-size: 1.5em;
     font-weight: 400;
     color: #475569;
-    margin-bottom: 6px;
+    /* Başlık ile CV butonu arasındaki boşluk için,
+       asıl mesafeyi buton wrapper'da kontrol edeceğiz */
+    margin-bottom: 0;
     line-height: 1.4;
 }
 
@@ -476,8 +478,8 @@ st.markdown("""
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    /* Başlık ile buton ve buton ile ikonlar arası mesafe için ortak boşluk */
-    margin: 6px auto !important;
+    /* Başlık ile buton arasındaki dikey boşluk: 6px */
+    margin: 6px auto 0 auto !important;
 }
 
 .download-cv-btn-wrapper > *,
@@ -595,19 +597,17 @@ try:
     with open(PDF_PATH, "rb") as f:
         pdf_bytes = f.read()
 
-    # Butonu gerçekten ortaya almak için 3 sütun kullan
-    left_col, center_col, right_col = st.columns([1, 2, 1])
-    with center_col:
-        st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
-        st.download_button(
-            label="📥 Download CV",
-            data=pdf_bytes,
-            file_name="Fatma_Betul_Arslan_CV.pdf",
-            mime="application/pdf",
-            use_container_width=True,
-            key="hero_cv_download_btn",
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
+    # Butonu hero başlığının hemen altına, tam ortaya yerleştir
+    st.markdown('<div class="download-cv-btn-wrapper">', unsafe_allow_html=True)
+    st.download_button(
+        label="📥 Download CV",
+        data=pdf_bytes,
+        file_name="Fatma_Betul_Arslan_CV.pdf",
+        mime="application/pdf",
+        use_container_width=False,
+        key="hero_cv_download_btn",
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
 except FileNotFoundError:
     st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
