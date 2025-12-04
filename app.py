@@ -479,8 +479,9 @@ st.markdown("""
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    /* Başlık ile buton arasındaki dikey boşluk: 6px */
-    margin: 6px auto 0 auto !important;
+    /* Başlık ile buton arasındaki dikey boşluk: yaklaşık 6px olsun diye
+       Streamlit'in eklediği ekstra boşluğu negatif margin ile telafi ediyoruz */
+    margin: -18px auto 0 auto !important;
 }
 
 .download-cv-btn-wrapper > *,
