@@ -38,6 +38,26 @@ current_lang = st.session_state["lang"]
 # Eğer ?embedded_chat=1 ile gelindiyse sadece chatbot'u render et
 qp_for_embed = st.query_params
 if qp_for_embed.get("embedded_chat") == "1":
+    # Üstteki Streamlit toolbar/header'ı ve ekstra boşlukları gizle
+    st.markdown(
+        """
+        <style>
+        header[data-testid="stHeader"],
+        [data-testid="stToolbar"],
+        .stAppDeployButton {
+            display: none !important;
+        }
+        .stMainBlockContainer, .main .block-container {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        body {
+            padding-top: 0 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     rag, tool_def = _init_chat_resources()
     modern_chatbot.run(tool_def=tool_def, rag=rag, cv_json=rag.cv_json)
     st.stop()
