@@ -1192,8 +1192,8 @@ chat_widget_injection = """
         font-size: 1.15rem;
       }
       #floating-chat-panel {
-        width: 360px;
-        max-width: calc(100vw - 32px);
+        width: 420px;
+        max-width: calc(100vw - 40px);
         background: #ffffff;
         border-radius: 28px;
         box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
@@ -1260,8 +1260,8 @@ chat_widget_injection = """
         transition: background 0.2s ease, box-shadow 0.2s ease;
       }
       @media (max-width: 640px) {
-        #floating-chat-root { right: 12px; bottom: 12px; }
-        #floating-chat-panel { width: calc(100vw - 24px); }
+        #floating-chat-root { right: 8px; bottom: 8px; }
+        #floating-chat-panel { width: calc(100vw - 16px); }
       }
     `;
     parentDoc.head.appendChild(style);
@@ -1282,7 +1282,7 @@ chat_widget_injection = """
       <iframe
         src="/?embedded_chat=1"
         title="AI Portföy Asistanı"
-        style="width: 100%; height: 540px; border: none; border-radius: 18px; overflow: hidden;"
+        style="width: 100%; height: 620px; border: none; border-radius: 18px; overflow: hidden;"
       ></iframe>
     </div>
   `;
