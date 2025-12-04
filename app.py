@@ -308,7 +308,7 @@ st.markdown(f"""
     </div>
     <div class="nav-menu-toggles">
       <form method="GET" style="display:flex;gap:6px;align-items:center;margin:0;">
-        <button class="nav-toggle-btn {en_selected}" name="setlang" value="en" type="submit" title="English">🇬🇧</button>
+        <button class="nav-toggle-btn {en_selected}" name="setlang" value="en" type="submit" title="English">EN</button>
         <button class="nav-toggle-btn {tr_selected}" name="setlang" value="tr" type="submit" title="Türkçe">🇹🇷</button>
         <button class="nav-toggle-btn {light_selected}" name="settheme" value="light" type="submit" title="Light Mode">☀️</button>
         <button class="nav-toggle-btn {dark_selected}" name="settheme" value="dark" type="submit" title="Dark Mode">🌙</button>
