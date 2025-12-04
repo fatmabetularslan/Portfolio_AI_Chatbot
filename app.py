@@ -628,6 +628,16 @@ st.markdown("""
     border-left: 4px solid #3b5bdb;
     max-width: 780px;
 }
+.reference-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.reference-list .reference-card {
+    max-width: 620px;
+    width: 100%;
+}
 .experience-card:hover, .education-card:hover, .project-card:hover, .award-card:hover, .reference-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
@@ -1053,6 +1063,7 @@ st.markdown('<div class="portfolio-section" id="references">', unsafe_allow_html
 refs_title = "📞 Referanslar" if current_lang == "tr" else "📞 References"
 st.markdown(f'<h2 class="section-title">{refs_title}</h2>', unsafe_allow_html=True)
 
+st.markdown('<div class="reference-list">', unsafe_allow_html=True)
 for ref in cv_data.get("references", []):
     name_r = ref.get("name", "")
     title_r = ref.get("title", "")
@@ -1064,6 +1075,7 @@ for ref in cv_data.get("references", []):
         <div class="reference-org">{org_r}</div>
     </div>
     """, unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
 # İletişim
