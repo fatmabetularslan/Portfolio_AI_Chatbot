@@ -395,6 +395,7 @@ st.markdown("""
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # === HERO SECTION ===
+# === HERO SECTION ===
 tag = "betül-cv.json"
 cv_data = json.load(open(tag, encoding="utf-8"))
 
@@ -408,10 +409,7 @@ st.markdown("""
     text-align: center;
     padding: 60px 20px 40px 20px;
     max-width: 700px;
-    margin: 0 auto 6px auto; /* alt boşluk */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin: 0 auto;
 }
 
 /* İsim */
@@ -428,17 +426,9 @@ st.markdown("""
     font-size: 1.5em;
     font-weight: 400;
     color: #475569;
-    margin-bottom: 0;  /* başlık altında boşluk yok */
+    margin: 0 0 6px 0;      /* Veri Bilimci -> buton arası = 6px */
     line-height: 1.4;
 }
-
-/* Lokasyon (istersen sonra geri açarsın)
-.hero-location {
-    font-size: 1rem;
-    color: #6b7280;
-    margin-bottom: 28px;
-}
-*/
 
 /* Profil fotoğrafı */
 .hero-profile-img {
@@ -454,35 +444,7 @@ st.markdown("""
 }
 .hero-profile-img:hover { transform: scale(1.05); }
 
-/* Hero layout */
-.hero-layout {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 32px;
-}
-
-/* Buton + sosyal medya alanı */
-.hero-actions {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 6px !important;          /* iç elemanlar arası gap */
-    margin: 6px 0 0 0 !important; /* başlık ile buton arası = 6px */
-    width: 100% !important;
-}
-
-/* Download CV butonu sarmalayan div */
-.download-cv-btn-wrapper {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    width: 100% !important;
-    margin: 0 auto !important;    /* ekstra boşluk yok */
-}
-
-/* HTML ile yaptığımız CV butonu */
+/* Download CV butonu */
 .download-cv-btn {
     text-decoration: none !important;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
@@ -495,10 +457,10 @@ st.markdown("""
     cursor: pointer !important;
     transition: transform 0.2s, box-shadow 0.2s !important;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
-    min-width: 150px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
+    margin: 0;              /* ekstra boşluk yok */
 }
 
 /* hover efekti */
@@ -515,7 +477,7 @@ st.markdown("""
     align-items: center;
     gap: 18px;
     flex-wrap: wrap;
-    margin-top: 6px; /* Download CV ile ikonlar arası mesafe = 6px */
+    margin-top: 6px;        /* Download CV -> ikonlar arası = 6px */
 }
 .social-links a {
     text-decoration: none;
@@ -539,7 +501,9 @@ st.markdown("""
     height: 22px;
 }
 
-.stApp[data-theme="dark"] .hero-title { color: #e5e7eb !important; }
+/* Dark mode uyumu */
+.stApp[data-theme="dark"] .hero-name { color: #e5e7eb !important; }
+.stApp[data-theme="dark"] .hero-title { color: #cbd5e1 !important; }
 .stApp[data-theme="dark"] .hero-profile-img {
     border-color: #8b5cf6;
     box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
@@ -554,19 +518,12 @@ st.markdown("""
 
 /* responsive */
 @media (max-width: 768px) {
-    .hero-layout {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        text-align: center;
-    }
     .hero-section { text-align: center; }
-    .hero-actions { align-items: center; }
-    .social-links { justify-content: center; }
 }
 </style>
 """, unsafe_allow_html=True)
 
-# profil resmi
+# Profil resmi
 if PROFILE_IMG_PATH.exists():
     profile_bytes = PROFILE_IMG_PATH.read_bytes()
     profile_b64 = base64.b64encode(profile_bytes).decode("utf-8")
@@ -579,35 +536,21 @@ else:
         f'color:white;font-size:3rem;font-weight:700;">{name[0]}</div>'
     )
 
-st.markdown(f"""
-<div class="hero-section">
-    {profile_img_html}
-    <h1 class="hero-name">{name}</h1>
-    <h2 class="hero-title">{title}</h2>
-    <div class="hero-actions">
-""", unsafe_allow_html=True)
-
-# CV butonu (HTML + base64 ile)
+# CV'yi base64'e çevir
 try:
     with open(PDF_PATH, "rb") as f:
-        pdf_bytes = f.read()
-    pdf_b64 = base64.b64encode(pdf_bytes).decode("utf-8")
+        pdf_b64 = base64.b64encode(f.read()).decode("utf-8")
 
-    download_html = f"""
-        <div class="download-cv-btn-wrapper">
-            <a href="data:application/pdf;base64,{pdf_b64}"
-               download="Fatma_Betul_Arslan_CV.pdf"
-               class="download-cv-btn">
-                📥 Download CV
-            </a>
-        </div>
-    """
-    st.markdown(download_html, unsafe_allow_html=True)
-except FileNotFoundError:
-    st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
-
-# sosyal linkler
-st.markdown("""
+    hero_html = f"""
+    <div class="hero-section">
+        {profile_img_html}
+        <h1 class="hero-name">{name}</h1>
+        <h2 class="hero-title">{title}</h2>
+        <a href="data:application/pdf;base64,{pdf_b64}"
+           download="Fatma_Betul_Arslan_CV.pdf"
+           class="download-cv-btn">
+            📥 Download CV
+        </a>
         <div class="social-links">
           <a href="https://github.com/fatmabetularslan" target="_blank">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
@@ -619,13 +562,12 @@ st.markdown("""
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/gmail.svg" alt="Mail">
           </a>
         </div>
-      </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """
+    st.markdown(hero_html, unsafe_allow_html=True)
+except FileNotFoundError:
+    st.error(f"CV dosyası bulunamadı: {PDF_PATH}")
 
-# hero wrapper kapat
-st.markdown("</div>", unsafe_allow_html=True)
 
 # === PORTFÖY BÖLÜMLERİ ===
 st.markdown("""
