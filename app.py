@@ -39,7 +39,8 @@ header {
 }
 
 body {
-    padding-top: 70px !important;
+    /* Sayfanın en üstü ile profil görseli arasındaki boşluğu azalt */
+    padding-top: 40px !important;
 }
 
 .main {
@@ -175,12 +176,12 @@ st.markdown("""
 
 /* scroll davranışı */
 body {
-    padding-top: 70px !important;
+    padding-top: 40px !important;
     scroll-behavior: smooth;
 }
-.main { padding-top: 70px !important; }
+.main { padding-top: 40px !important; }
 .stApp > div:first-child { padding-top: 0 !important; }
-.portfolio-section { scroll-margin-top: 80px; }
+.portfolio-section { scroll-margin-top: 60px; }
 
 @media (max-width: 768px) {
     .nav-menu-content {
@@ -479,8 +480,20 @@ st.markdown("""
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    /* Başlık ile buton arasındaki boşluğu daha da azalt (ekranına göre ~6px civarı) */
-    margin: -30px auto 0 auto !important;
+    margin: 6px auto 0 auto !important;
+}
+
+/* Streamlit columns' default padding/margin'lerini hero bölümünde sıfırla */
+.hero-actions .stHorizontalBlock,
+.hero-actions [data-testid="column"],
+.hero-actions [data-testid="column"] > div,
+.hero-actions [data-testid="block-container"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.hero-actions .stDownloadButton {
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .download-cv-btn-wrapper > *,
